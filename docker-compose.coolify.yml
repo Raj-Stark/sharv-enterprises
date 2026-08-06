@@ -1,0 +1,78 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: sharv_strapi
+      POSTGRES_USER: strapi
+      POSTGRES_PASSWORD: ${SERVICE_PASSWORD_64_SHARV_POSTGRES}
+    volumes:
+      - sharv-postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U strapi -d sharv_strapi"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      HOST: 0.0.0.0
+      PORT: 1337
+      PUBLIC_URL: ${PUBLIC_STRAPI_URL:?Set the public HTTPS Strapi URL in Coolify}
+      APP_KEYS: ${SERVICE_HEX_64_STRAPI_APP_KEY_1},${SERVICE_HEX_64_STRAPI_APP_KEY_2},${SERVICE_HEX_64_STRAPI_APP_KEY_3},${SERVICE_HEX_64_STRAPI_APP_KEY_4}
+      API_TOKEN_SALT: ${SERVICE_HEX_64_STRAPI_API_TOKEN_SALT}
+      ADMIN_JWT_SECRET: ${SERVICE_HEX_64_STRAPI_ADMIN_JWT_SECRET}
+      TRANSFER_TOKEN_SALT: ${SERVICE_HEX_64_STRAPI_TRANSFER_TOKEN_SALT}
+      JWT_SECRET: ${SERVICE_HEX_64_STRAPI_JWT_SECRET}
+      ENCRYPTION_KEY: ${SERVICE_HEX_64_STRAPI_ENCRYPTION_KEY}
+      DATABASE_CLIENT: postgres
+      DATABASE_HOST: postgres
+      DATABASE_PORT: 5432
+      DATABASE_NAME: sharv_strapi
+      DATABASE_USERNAME: strapi
+      DATABASE_PASSWORD: ${SERVICE_PASSWORD_64_SHARV_POSTGRES}
+      DATABASE_SSL: "false"
+      DATABASE_POOL_MIN: 2
+      DATABASE_POOL_MAX: 10
+      FRONTEND_URLS: ${PUBLIC_SITE_URL:?Set the public HTTPS frontend URL in Coolify}
+      TRUST_PROXY: "true"
+      TURNSTILE_ENABLED: "false"
+      STRAPI_TELEMETRY_DISABLED: "true"
+      STRAPI_DISABLE_UPDATE_NOTIFICATION: "true"
+    volumes:
+      - sharv-strapi-uploads:/app/public/uploads
+    depends_on:
+      postgres:
+        condition: service_healthy
+    expose:
+      - "1337"
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_STRAPI_URL: ${PUBLIC_STRAPI_URL:?Set the public HTTPS Strapi URL in Coolify}
+        NEXT_PUBLIC_SITE_URL: ${PUBLIC_SITE_URL:?Set the public HTTPS frontend URL in Coolify}
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      HOSTNAME: 0.0.0.0
+      PORT: 3000
+      STRAPI_URL: http://backend:1337
+      NEXT_PUBLIC_STRAPI_URL: ${PUBLIC_STRAPI_URL:?Set the public HTTPS Strapi URL in Coolify}
+      NEXT_PUBLIC_SITE_URL: ${PUBLIC_SITE_URL:?Set the public HTTPS frontend URL in Coolify}
+    depends_on:
+      backend:
+        condition: service_healthy
+    expose:
+      - "3000"
+
+volumes:
+  sharv-postgres-data:
+  sharv-strapi-uploads:

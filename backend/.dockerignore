@@ -1,0 +1,15 @@
+node_modules
+.cache
+.tmp
+build
+dist
+.env*
+!.env.example
+public/uploads/*
+!public/uploads/.gitkeep
+npm-debug.log*
+.DS_Store
+.git
+.gitignore
+README.md
+exports

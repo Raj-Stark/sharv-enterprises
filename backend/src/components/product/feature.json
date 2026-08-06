@@ -1,0 +1,26 @@
+{
+  "collectionName": "components_product_features",
+  "info": {
+    "displayName": "Feature",
+    "description": "A product feature or customer benefit"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "description": {
+      "type": "text"
+    },
+    "highlighted": {
+      "type": "boolean",
+      "default": false
+    },
+    "sortOrder": {
+      "type": "integer",
+      "min": 0,
+      "default": 0
+    }
+  }
+}

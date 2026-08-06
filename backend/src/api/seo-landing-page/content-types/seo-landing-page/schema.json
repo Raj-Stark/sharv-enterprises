@@ -1,0 +1,109 @@
+{
+  "kind": "collectionType",
+  "collectionName": "seo_landing_pages",
+  "info": {
+    "singularName": "seo-landing-page",
+    "pluralName": "seo-landing-pages",
+    "displayName": "SEO Landing Page",
+    "description": "A controlled programmatic product discovery page"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "internalName": {
+      "type": "string",
+      "required": true
+    },
+    "path": {
+      "type": "string",
+      "required": true,
+      "unique": true,
+      "maxLength": 512
+    },
+    "pageType": {
+      "type": "enumeration",
+      "enum": [
+        "category",
+        "application",
+        "export",
+        "custom"
+      ],
+      "required": true
+    },
+    "audience": {
+      "type": "enumeration",
+      "enum": [
+        "domestic",
+        "export",
+        "both"
+      ],
+      "default": "both"
+    },
+    "h1": {
+      "type": "string",
+      "required": true
+    },
+    "breadcrumbLabel": {
+      "type": "string"
+    },
+    "summary": {
+      "type": "text",
+      "required": true
+    },
+    "content": {
+      "type": "blocks",
+      "required": true
+    },
+    "heroImage": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": [
+        "images"
+      ]
+    },
+    "category": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::product-category.product-category"
+    },
+    "application": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::application.application"
+    },
+    "certification": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::certification.certification"
+    },
+    "products": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::product.product",
+      "inversedBy": "seoLandingPages"
+    },
+    "faqs": {
+      "type": "component",
+      "component": "shared.faq",
+      "repeatable": true
+    },
+    "seo": {
+      "type": "component",
+      "component": "shared.seo",
+      "repeatable": false,
+      "required": true
+    },
+    "featured": {
+      "type": "boolean",
+      "default": false
+    },
+    "sortOrder": {
+      "type": "integer",
+      "min": 0,
+      "default": 0
+    }
+  }
+}

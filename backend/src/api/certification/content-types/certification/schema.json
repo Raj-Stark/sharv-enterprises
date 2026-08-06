@@ -1,0 +1,84 @@
+{
+  "kind": "collectionType",
+  "collectionName": "certifications",
+  "info": {
+    "singularName": "certification",
+    "pluralName": "certifications",
+    "displayName": "Certification",
+    "description": "A product standard, certificate, test report, or compliance record"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "type": {
+      "type": "enumeration",
+      "enum": [
+        "standard",
+        "certificate",
+        "test_report",
+        "compliance"
+      ],
+      "required": true
+    },
+    "standardCode": {
+      "type": "string"
+    },
+    "issuingAuthority": {
+      "type": "string"
+    },
+    "certificateNumber": {
+      "type": "string",
+      "unique": true
+    },
+    "validFrom": {
+      "type": "date"
+    },
+    "validUntil": {
+      "type": "date"
+    },
+    "description": {
+      "type": "text"
+    },
+    "logo": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": [
+        "images"
+      ]
+    },
+    "document": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": [
+        "files",
+        "images"
+      ]
+    },
+    "verificationUrl": {
+      "type": "string"
+    },
+    "relatedProducts": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::product.product",
+      "mappedBy": "certifications"
+    },
+    "featured": {
+      "type": "boolean",
+      "default": false
+    },
+    "sortOrder": {
+      "type": "integer",
+      "default": 0,
+      "min": 0
+    }
+  }
+}

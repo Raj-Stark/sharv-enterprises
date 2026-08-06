@@ -1,0 +1,31 @@
+.DS_Store
+node_modules/
+*.log
+*.pid
+
+# Local environment and secrets
+.env
+.env.*
+!.env.example
+
+# Framework and build output
+.next/
+dist/
+build/
+.cache/
+coverage/
+*.tsbuildinfo
+
+# Local CMS data and exports
+.tmp/
+exports/
+*.db
+*.sqlite
+*.sqlite3
+backend/public/uploads/*
+!backend/public/uploads/.gitkeep
+
+# Local deployment links
+.vercel/
+.strapi/
+.strapi-cloud.json

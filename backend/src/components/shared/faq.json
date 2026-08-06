@@ -1,0 +1,23 @@
+{
+  "collectionName": "components_shared_faqs",
+  "info": {
+    "displayName": "FAQ",
+    "description": "A reusable question and answer"
+  },
+  "options": {},
+  "attributes": {
+    "question": {
+      "type": "string",
+      "required": true
+    },
+    "answer": {
+      "type": "text",
+      "required": true
+    },
+    "sortOrder": {
+      "type": "integer",
+      "min": 0,
+      "default": 0
+    }
+  }
+}

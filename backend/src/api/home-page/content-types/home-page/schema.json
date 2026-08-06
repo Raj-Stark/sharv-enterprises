@@ -1,0 +1,61 @@
+{
+  "kind": "singleType",
+  "collectionName": "home_pages",
+  "info": {
+    "singularName": "home-page",
+    "pluralName": "home-pages",
+    "displayName": "Home Page",
+    "description": "Editable homepage hero, delivery coverage and search metadata"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "heroEyebrow": {
+      "type": "string",
+      "required": true,
+      "maxLength": 60
+    },
+    "heroTitle": {
+      "type": "string",
+      "required": true,
+      "maxLength": 120
+    },
+    "heroDescription": {
+      "type": "text",
+      "required": true,
+      "maxLength": 320
+    },
+    "heroImage": {
+      "type": "media",
+      "multiple": false,
+      "required": true,
+      "allowedTypes": [
+        "images"
+      ]
+    },
+    "deliveryEyebrow": {
+      "type": "string",
+      "maxLength": 60
+    },
+    "deliveryTitle": {
+      "type": "string",
+      "maxLength": 120
+    },
+    "deliveryDescription": {
+      "type": "text",
+      "maxLength": 320
+    },
+    "deliveryAreas": {
+      "type": "component",
+      "component": "homepage.delivery-area",
+      "repeatable": true
+    },
+    "seo": {
+      "type": "component",
+      "component": "shared.seo",
+      "repeatable": false
+    }
+  }
+}

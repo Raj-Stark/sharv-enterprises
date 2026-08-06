@@ -1,0 +1,33 @@
+{
+  "collectionName": "components_product_specifications",
+  "info": {
+    "displayName": "Specification",
+    "description": "A grouped product specification with an optional unit"
+  },
+  "options": {},
+  "attributes": {
+    "label": {
+      "type": "string",
+      "required": true
+    },
+    "value": {
+      "type": "string",
+      "required": true
+    },
+    "unit": {
+      "type": "string"
+    },
+    "groupName": {
+      "type": "string"
+    },
+    "highlighted": {
+      "type": "boolean",
+      "default": false
+    },
+    "sortOrder": {
+      "type": "integer",
+      "min": 0,
+      "default": 0
+    }
+  }
+}

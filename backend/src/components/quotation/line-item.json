@@ -1,0 +1,47 @@
+{
+  "collectionName": "components_quotation_line_items",
+  "info": {
+    "displayName": "Quotation Line Item",
+    "description": "A requested catalogue or custom product with quantity and commercial preferences"
+  },
+  "options": {},
+  "attributes": {
+    "product": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::product.product"
+    },
+    "productNameSnapshot": {
+      "type": "string",
+      "required": true,
+      "maxLength": 200
+    },
+    "skuSnapshot": {
+      "type": "string",
+      "maxLength": 100
+    },
+    "quantity": {
+      "type": "decimal",
+      "required": true,
+      "min": 0.001
+    },
+    "unit": {
+      "type": "enumeration",
+      "enum": [
+        "piece",
+        "pack",
+        "box",
+        "set",
+        "meter",
+        "kilogram"
+      ],
+      "required": true,
+      "default": "piece"
+    },
+    "requirements": {
+      "type": "text",
+      "maxLength": 600
+    }
+  },
+  "config": {}
+}
