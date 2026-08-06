@@ -14,16 +14,16 @@ export class StrapiRequestError extends Error {
 
 export function getStrapiServerUrl(): string {
   return (
-    process.env.STRAPI_URL ??
-    process.env.NEXT_PUBLIC_STRAPI_URL ??
+    process.env.STRAPI_URL?.trim() ||
+    process.env.NEXT_PUBLIC_STRAPI_URL?.trim() ||
     DEFAULT_STRAPI_URL
   ).replace(/\/$/, '')
 }
 
 export function getStrapiPublicUrl(): string {
   return (
-    process.env.NEXT_PUBLIC_STRAPI_URL ??
-    process.env.STRAPI_URL ??
+    process.env.NEXT_PUBLIC_STRAPI_URL?.trim() ||
+    process.env.STRAPI_URL?.trim() ||
     DEFAULT_STRAPI_URL
   ).replace(/\/$/, '')
 }

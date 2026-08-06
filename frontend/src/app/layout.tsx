@@ -10,7 +10,9 @@ import './globals.css'
 export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000'),
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_SITE_URL?.trim() || 'http://localhost:3000',
+  ),
   title: {
     default: 'Sharv Enterprises | Mechanical Sealing Partner',
     template: '%s | Sharv Enterprises',
