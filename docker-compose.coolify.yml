@@ -23,7 +23,7 @@ services:
       NODE_ENV: production
       HOST: 0.0.0.0
       PORT: 1337
-      PUBLIC_URL: ${PUBLIC_STRAPI_URL:?Set the public HTTPS Strapi URL in Coolify}
+      PUBLIC_URL: ${SERVICE_URL_BACKEND}
       APP_KEYS: ${SERVICE_HEX_64_STRAPI_APP_KEY_1},${SERVICE_HEX_64_STRAPI_APP_KEY_2},${SERVICE_HEX_64_STRAPI_APP_KEY_3},${SERVICE_HEX_64_STRAPI_APP_KEY_4}
       API_TOKEN_SALT: ${SERVICE_HEX_64_STRAPI_API_TOKEN_SALT}
       ADMIN_JWT_SECRET: ${SERVICE_HEX_64_STRAPI_ADMIN_JWT_SECRET}
@@ -39,7 +39,7 @@ services:
       DATABASE_SSL: "false"
       DATABASE_POOL_MIN: 2
       DATABASE_POOL_MAX: 10
-      FRONTEND_URLS: ${PUBLIC_SITE_URL:?Set the public HTTPS frontend URL in Coolify}
+      FRONTEND_URLS: ${SERVICE_URL_FRONTEND}
       TRUST_PROXY: "true"
       TURNSTILE_ENABLED: "false"
       STRAPI_TELEMETRY_DISABLED: "true"
@@ -57,16 +57,16 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
       args:
-        NEXT_PUBLIC_STRAPI_URL: ${PUBLIC_STRAPI_URL:?Set the public HTTPS Strapi URL in Coolify}
-        NEXT_PUBLIC_SITE_URL: ${PUBLIC_SITE_URL:?Set the public HTTPS frontend URL in Coolify}
+        NEXT_PUBLIC_STRAPI_URL: ${SERVICE_URL_BACKEND}
+        NEXT_PUBLIC_SITE_URL: ${SERVICE_URL_FRONTEND}
     restart: unless-stopped
     environment:
       NODE_ENV: production
       HOSTNAME: 0.0.0.0
       PORT: 3000
       STRAPI_URL: http://backend:1337
-      NEXT_PUBLIC_STRAPI_URL: ${PUBLIC_STRAPI_URL:?Set the public HTTPS Strapi URL in Coolify}
-      NEXT_PUBLIC_SITE_URL: ${PUBLIC_SITE_URL:?Set the public HTTPS frontend URL in Coolify}
+      NEXT_PUBLIC_STRAPI_URL: ${SERVICE_URL_BACKEND}
+      NEXT_PUBLIC_SITE_URL: ${SERVICE_URL_FRONTEND}
     depends_on:
       backend:
         condition: service_healthy

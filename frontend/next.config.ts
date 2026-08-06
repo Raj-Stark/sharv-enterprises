@@ -1,8 +1,16 @@
 import type { NextConfig } from "next";
 
-const strapiUrl = new URL(
-  process.env.NEXT_PUBLIC_STRAPI_URL?.trim() || "http://localhost:1337",
-);
+const fallbackStrapiUrl = "http://localhost:1337";
+
+function resolveStrapiUrl(): URL {
+  try {
+    return new URL(process.env.NEXT_PUBLIC_STRAPI_URL?.trim() || fallbackStrapiUrl);
+  } catch {
+    return new URL(fallbackStrapiUrl);
+  }
+}
+
+const strapiUrl = resolveStrapiUrl();
 const isLocalStrapi = ["localhost", "127.0.0.1", "::1"].includes(
   strapiUrl.hostname,
 );

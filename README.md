@@ -605,22 +605,20 @@ karta hai:
 - persistent volumes: PostgreSQL data aur Strapi uploaded media
 
 Coolify mein Docker Compose resource create karke compose location
-`/docker-compose.coolify.yml` select karo. Deployment se pehle sirf ye public
-variables fill karni hain:
+`/docker-compose.coolify.yml` select karo. Compose load hone ke baad frontend aur
+backend ke liye `Generate Domain` use karo. Compose Coolify ke generated
+`SERVICE_URL_FRONTEND` aur `SERVICE_URL_BACKEND` variables ko application URLs,
+CORS aur Next.js build configuration mein automatically reuse karta hai; manual
+public URL duplication ki zaroorat nahi hai.
 
-```env
-PUBLIC_SITE_URL=https://your-frontend-domain.example
-PUBLIC_STRAPI_URL=https://your-strapi-domain.example
-```
-
-Coolify compose file mein referenced `SERVICE_PASSWORD_*` aur
-`SERVICE_HEX_64_*` values automatically generate karta hai. In secrets ko
-hard-code ya Git mein commit mat karo.
+Coolify referenced `SERVICE_PASSWORD_*` aur `SERVICE_HEX_64_*` values
+automatically generate karta hai. In secrets ko hard-code ya Git mein commit mat
+karo.
 
 Compose resource load hone ke baad domains service ports ke saath assign karo:
 
-- frontend: `https://your-frontend-domain.example:3000`
-- backend: `https://your-strapi-domain.example:1337`
+- frontend service: container port `3000`
+- backend service: container port `1337`
 - PostgreSQL ko public domain ya host port mat do.
 
 First deploy ke baad Strapi admin open karke admin account create karo. Local
@@ -634,7 +632,8 @@ Production checklist:
 
 - Both public domains HTTPS par load hon.
 - Backend `/_health` aur frontend `/robots.txt` success return karein.
-- Frontend images `PUBLIC_STRAPI_URL/uploads/...` se load hon.
+- Frontend images generated backend service URL ke `/uploads/...` path se load
+  hon.
 - Quotation POST browser se CORS error ke bina work kare.
 - PostgreSQL aur uploads volumes ke scheduled Coolify backups configure hon.
 - Strapi admin aur database services public raw ports par expose na hon.
