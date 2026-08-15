@@ -45,6 +45,17 @@ function addBlogCardPopulate(
   params.set(`${prefix}[tags]`, 'true')
 }
 
+function hasRequiredBlogRelations(
+  post: BlogPostSummary | null | undefined,
+): post is BlogPostSummary {
+  return Boolean(
+    post?.author?.documentId &&
+      post.author.name?.trim() &&
+      post.category?.documentId &&
+      post.category.name?.trim(),
+  )
+}
+
 function addDiscoverySort(params: URLSearchParams): void {
   params.set('sort[0]', 'featured:desc')
   params.set('sort[1]', 'sortOrder:asc')
@@ -243,7 +254,7 @@ export async function getBlogPosts(
     params,
   )
 
-  return response.data
+  return response.data.filter(hasRequiredBlogRelations)
 }
 
 export function getHomepageBlogPosts(): Promise<BlogPostSummary[]> {
@@ -299,7 +310,9 @@ export const getBlogPostBySlug = cache(
       StrapiCollectionResponse<BlogPostDetail>
     >('/api/blog-posts', params)
 
-    return response.data[0] ?? null
+    const post = response.data[0]
+
+    return hasRequiredBlogRelations(post) ? post : null
   },
 )
 

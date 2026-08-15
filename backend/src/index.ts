@@ -1,5 +1,6 @@
 import type { Core } from '@strapi/strapi';
 
+import { registerBlogPostPublicationValidation } from './api/blog-post/content-types/blog-post/publication-validation';
 import { registerCertificationValidation } from './api/certification/content-types/certification/validation';
 import { registerProductCategoryHierarchyValidation } from './api/product-category/content-types/product-category/hierarchy';
 import { registerQuotationWhatsappTracking } from './api/quotation-request/content-types/quotation-request/tracking';
@@ -17,6 +18,7 @@ export default {
    * This gives you an opportunity to extend code.
    */
   register({ strapi }: { strapi: Core.Strapi }) {
+    registerBlogPostPublicationValidation(strapi);
     registerCertificationValidation(strapi);
     registerProductCategoryHierarchyValidation(strapi);
     registerQuotationWhatsappTracking(strapi);
