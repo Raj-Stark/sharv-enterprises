@@ -14,31 +14,31 @@ export const metadata: Metadata = {
     process.env.NEXT_PUBLIC_SITE_URL?.trim() || 'http://localhost:3000',
   ),
   title: {
-    default: 'Sharv Enterprises | Mechanical Sealing Partner',
+    default: 'Sharv Enterprises | Industrial Packaging Supplies',
     template: '%s | Sharv Enterprises',
   },
   description:
-    'Explore mechanical sealing products for pumps and rotating equipment with domestic and export quotation support.',
+    'Explore packaging tapes, stretch films, protective packaging, boxes and security seals with domestic and export quotation support.',
   openGraph: {
     type: 'website',
     siteName: 'Sharv Enterprises',
-    title: 'Sharv Enterprises | Mechanical Sealing Partner',
+    title: 'Sharv Enterprises | Industrial Packaging Supplies',
     description:
-      'Mechanical sealing products with application-led discovery for domestic buyers and export enquiries.',
+      'Industrial packaging materials and security seals with product-led discovery for domestic buyers and export enquiries.',
     images: [
       {
         url: '/og.jpg',
         width: 2100,
         height: 1395,
-        alt: 'Mechanical pump seal components',
+        alt: 'Sharv Enterprises industrial packaging supplies',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Sharv Enterprises | Mechanical Sealing Partner',
+    title: 'Sharv Enterprises | Industrial Packaging Supplies',
     description:
-      'Mechanical sealing products with application-led discovery for domestic buyers and export enquiries.',
+      'Industrial packaging materials and security seals with product-led discovery for domestic buyers and export enquiries.',
     images: ['/og.jpg'],
   },
 }

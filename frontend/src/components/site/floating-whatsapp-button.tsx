@@ -7,8 +7,14 @@ import { WhatsAppIcon } from '@/components/icons/whatsapp-icon'
 
 export function FloatingWhatsAppButton() {
   const pathname = usePathname()
+  const pathSegments = pathname.split('/').filter(Boolean)
+  const isProductDetailPage = pathSegments[0] === 'products' && pathSegments.length === 2
+  const isProductsCatalogue = pathname === '/products'
+  const isBlogDetailPage = pathSegments[0] === 'blogs' && pathSegments.length === 2
+  const isContactPage = pathname === '/contact'
+  const isAboutPage = pathname === '/about'
 
-  if (pathname === '/quote') return null
+  if (pathname === '/quote' || isProductDetailPage || isProductsCatalogue || isBlogDetailPage || isContactPage || isAboutPage) return null
 
   return (
     <Link

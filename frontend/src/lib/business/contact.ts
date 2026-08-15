@@ -1,0 +1,4 @@
+export const OFFICIAL_COMPANY_NAME = 'Sharv Enterprises'
+export const OFFICIAL_WHATSAPP_DISPLAY = '+91 98188 36151'
+export const OFFICIAL_WHATSAPP_DIGITS = '919818836151'
+export const OFFICIAL_WHATSAPP_URL = `https://wa.me/${OFFICIAL_WHATSAPP_DIGITS}`

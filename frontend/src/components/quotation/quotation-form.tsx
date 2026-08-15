@@ -19,8 +19,8 @@ type SubmissionState =
   | { status: 'error'; message: string }
 
 const inputClass =
-  'mt-2 min-h-12 w-full rounded-lg border border-slate-300 bg-white px-4 text-sm text-black outline-none transition placeholder:text-slate-400 focus:border-black focus:ring-2 focus:ring-black/10'
-const labelClass = 'text-[11px] font-black uppercase tracking-[0.1em] text-black'
+  'mt-2 min-h-12 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 text-sm font-medium text-slate-950 outline-none transition placeholder:text-slate-400 focus:border-brand-blue focus:bg-white focus:ring-3 focus:ring-blue-100'
+const labelClass = 'text-[10px] font-extrabold uppercase tracking-[0.09em] text-slate-700'
 
 function stringValue(formData: FormData, key: string): string {
   const value = formData.get(key)
@@ -51,12 +51,14 @@ function validWhatsappUrl(value: string): boolean {
 export function QuotationForm({
   products,
   endpoint,
+  defaultDeliveryDestination,
   defaultProductDocumentId,
   defaultEnquiryType = 'domestic',
   turnstileSiteKey,
 }: {
   products: ProductSummary[]
   endpoint: string
+  defaultDeliveryDestination?: string
   defaultProductDocumentId?: string
   defaultEnquiryType?: 'domestic' | 'export'
   turnstileSiteKey?: string
@@ -194,15 +196,15 @@ export function QuotationForm({
   if (submission.status === 'success') {
     return (
       <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-[0_24px_70px_rgba(15,23,42,0.08)] sm:p-9">
-        <p className="text-[10px] font-black uppercase tracking-[0.18em] text-black">
+        <p className="text-[10px] font-extrabold uppercase tracking-[0.1em] text-orange-600">
           WhatsApp handoff ready
         </p>
-        <h2 className="mt-3 text-3xl font-black tracking-tight text-black">
+        <h2 className="mt-3 text-3xl font-extrabold tracking-tight text-slate-950">
           Your enquiry has been saved.
         </h2>
         <p className="mt-4 max-w-xl text-sm leading-7 text-slate-600">
-          Reference: <strong className="text-black">{submission.requestNumber}</strong>. WhatsApp mein prepared
-          message review karke <strong className="text-black">Send</strong> tap karein.
+          Reference: <strong className="text-slate-950">{submission.requestNumber}</strong>. WhatsApp mein prepared
+          message review karke <strong className="text-slate-950">Send</strong> tap karein.
         </p>
         <a
           className="mt-6 inline-flex min-h-12 items-center justify-center gap-2 rounded-lg bg-whatsapp px-6 text-xs font-black uppercase tracking-[0.12em] text-white transition hover:bg-whatsapp-dark"
@@ -221,15 +223,15 @@ export function QuotationForm({
 
   return (
     <form
-      className="rounded-3xl border border-slate-200 bg-white p-5 shadow-[0_24px_70px_rgba(15,23,42,0.08)] sm:p-8"
+      className="rounded-3xl border border-slate-200 bg-white p-5 shadow-[0_24px_70px_rgba(12,53,86,0.1)] sm:p-8"
       onSubmit={handleSubmit}
     >
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <p className="text-[10px] font-black uppercase tracking-[0.18em] text-black/55">Quick quotation</p>
-          <h2 className="mt-2 text-2xl font-black tracking-tight text-black sm:text-3xl">Tell us what you need.</h2>
+          <p className="text-[10px] font-extrabold uppercase tracking-[0.1em] text-orange-600">Quick quotation</p>
+          <h2 className="mt-2 text-2xl font-extrabold tracking-[-0.02em] text-slate-950 sm:text-3xl">Tell us what you need.</h2>
         </div>
-        <span className="rounded-full bg-slate-100 px-3 py-2 text-[10px] font-black uppercase tracking-[0.12em] text-black">
+        <span className="rounded-full bg-blue-50 px-3 py-2 text-[10px] font-extrabold uppercase tracking-[0.08em] text-brand-blue">
           About 1 minute
         </span>
       </div>
@@ -239,7 +241,7 @@ export function QuotationForm({
         <div className="mt-2 grid grid-cols-2 rounded-xl bg-slate-100 p-1">
           {(['domestic', 'export'] as const).map((type) => (
             <label
-              className={`cursor-pointer rounded-lg px-4 py-3 text-center text-xs font-black capitalize transition ${enquiryType === type ? 'bg-black text-white shadow-sm' : 'text-black hover:bg-white'}`}
+              className={`cursor-pointer rounded-lg px-4 py-3 text-center text-xs font-extrabold capitalize transition ${enquiryType === type ? 'bg-brand-navy text-white shadow-sm' : 'text-slate-700 hover:bg-white'}`}
               key={type}
             >
               <input
@@ -300,17 +302,29 @@ export function QuotationForm({
           {!selectedProduct && (
             <label className={`${labelClass} sm:col-span-2`}>
               Product name *
-              <input className={inputClass} maxLength={200} name="productName" placeholder="Product name or seal reference" required />
+              <input className={inputClass} maxLength={200} name="productName" placeholder="Product name, SKU or reference" required />
             </label>
           )}
           <label className={labelClass}>
-            Quantity *
-            <input className={inputClass} defaultValue="1" min="0.001" name="quantity" required step="0.001" type="number" />
+            Quantity and unit *
+            <span className="mt-2 grid grid-cols-[minmax(0,1fr)_7.75rem] gap-2">
+              <input aria-label="Quantity" className={`${inputClass} !mt-0`} defaultValue="1" min="0.001" name="quantity" required step="0.001" type="number" />
+              <select aria-label="Unit" className={`${inputClass} !mt-0 px-3`} defaultValue="piece" name="unit" required>
+                <option value="piece">Pieces</option>
+                <option value="roll">Rolls</option>
+                <option value="pack">Packs</option>
+                <option value="box">Boxes</option>
+                <option value="set">Sets</option>
+                <option value="meter">Metres</option>
+                <option value="kilogram">Kilograms</option>
+              </select>
+            </span>
           </label>
           <label className={labelClass}>
             {enquiryType === 'export' ? 'Destination country *' : 'Delivery city *'}
             <input
               className={inputClass}
+              defaultValue={defaultDeliveryDestination}
               maxLength={200}
               name="deliveryDestination"
               placeholder={enquiryType === 'export' ? 'Country or port' : 'City or state'}
@@ -328,7 +342,6 @@ export function QuotationForm({
           </label>
       </div>
 
-      <input name="unit" type="hidden" value="piece" />
       <div className="absolute -left-[10000px] top-auto size-px overflow-hidden" aria-hidden="true">
         <label>Website<input autoComplete="off" name="website" tabIndex={-1} /></label>
       </div>
@@ -348,7 +361,7 @@ export function QuotationForm({
           </div>
         )}
         {submission.status === 'error' && (
-          <div className="mt-5 rounded-lg border border-red-200 bg-red-50 p-4 text-sm font-bold text-black" role="alert">
+          <div className="mt-5 rounded-xl border border-red-200 bg-red-50 p-4 text-sm font-bold text-red-800" role="alert">
             {submission.message}
           </div>
         )}
