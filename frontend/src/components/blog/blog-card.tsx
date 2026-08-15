@@ -23,6 +23,8 @@ export function BlogCard({
 }) {
   const imageUrl = getMediaUrl(post.coverImage?.url)
   const publishedDate = formatDate(post.publishedAt)
+  const categoryName = post.category?.name ?? 'Technical insight'
+  const authorName = post.author?.name ?? 'Sharv Enterprises editorial team'
   const Heading = headingLevel === 3 ? 'h3' : 'h2'
 
   return (
@@ -47,7 +49,7 @@ export function BlogCard({
       </Link>
       <div className="flex flex-1 flex-col p-6">
         <div className="flex flex-wrap items-center gap-2 text-[9px] font-black uppercase tracking-[0.14em] text-slate-400">
-          <span className="text-orange-600">{post.category.name}</span>
+          <span className="text-orange-600">{categoryName}</span>
           {publishedDate && <span>{publishedDate}</span>}
         </div>
         <Heading className="mt-3 text-xl font-black leading-tight tracking-tight text-slate-950">
@@ -59,7 +61,7 @@ export function BlogCard({
           {post.excerpt}
         </p>
         <div className="mt-auto flex items-center justify-between gap-4 border-t border-slate-100 pt-5 text-xs text-slate-500">
-          <span>{post.author.name}</span>
+          <span>{authorName}</span>
           <Link className="font-black uppercase tracking-[0.12em] text-orange-600" href={`/blogs/${post.slug}`}>
             Read →
           </Link>
