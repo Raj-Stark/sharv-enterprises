@@ -1,6 +1,7 @@
 import Image from 'next/image'
 import type { ReactNode } from 'react'
 
+import { getBlockText, slugifyArticleHeading } from '@/lib/content/article'
 import { getMediaUrl } from '@/lib/strapi/client'
 import type { BlocksNode, TextNode } from '@/lib/strapi/types'
 
@@ -39,10 +40,11 @@ function renderBlock(node: BlocksNode, key: string): ReactNode {
   const children = renderChildren(node.children, key)
 
   if (node.type === 'heading') {
-    if (node.level === 2) return <h2 key={key}>{children}</h2>
-    if (node.level === 3) return <h3 key={key}>{children}</h3>
-    if (node.level === 4) return <h4 key={key}>{children}</h4>
-    return <h2 key={key}>{children}</h2>
+    const id = slugifyArticleHeading(getBlockText(node)) || undefined
+    if (node.level === 2) return <h2 id={id} key={key}>{children}</h2>
+    if (node.level === 3) return <h3 id={id} key={key}>{children}</h3>
+    if (node.level === 4) return <h4 id={id} key={key}>{children}</h4>
+    return <h2 id={id} key={key}>{children}</h2>
   }
 
   if (node.type === 'list') {
@@ -87,11 +89,17 @@ function renderBlock(node: BlocksNode, key: string): ReactNode {
   return <p key={key}>{children}</p>
 }
 
-export function BlocksRenderer({ content }: { content?: BlocksNode[] | null }) {
+export function BlocksRenderer({
+  className = 'prose-catalogue',
+  content,
+}: {
+  className?: string
+  content?: BlocksNode[] | null
+}) {
   if (!content?.length) return null
 
   return (
-    <div className="prose-catalogue">
+    <div className={className}>
       {content.map((node, index) => renderBlock(node, `root-${index}`))}
     </div>
   )

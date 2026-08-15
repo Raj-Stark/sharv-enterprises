@@ -7,6 +7,8 @@ const QUOTATION_REQUEST_UID =
   'api::quotation-request.quotation-request' as const;
 const PRODUCT_UID = 'api::product.product' as const;
 const SITE_SETTING_UID = 'api::site-setting.site-setting' as const;
+const OFFICIAL_WHATSAPP_NUMBER = '+919818836151';
+const OFFICIAL_WHATSAPP_DIGITS = '919818836151';
 const MAX_ITEMS = 5;
 const MAX_WHATSAPP_MESSAGE_LENGTH = 3000;
 const PHONE_PATTERN = /^[0-9+() .-]{8,30}$/;
@@ -15,6 +17,7 @@ const SOURCE_PATH_PATTERN = /^\/(?!\/)[^?#\s]*$/;
 const ENQUIRY_TYPES = new Set(['domestic', 'export'] as const);
 const UNITS = new Set([
   'piece',
+  'roll',
   'pack',
   'box',
   'set',
@@ -38,7 +41,6 @@ type QuotationLineItemInput = {
 
 type SiteSettingSnapshot = {
   companyName?: string | null;
-  whatsappNumber?: string | null;
   defaultInquiryMessage?: string | null;
 };
 
@@ -122,16 +124,6 @@ function normalizeBuyerWhatsappNumber(data: UnknownRecord): string {
   }
 
   return `+${digits}`;
-}
-
-function normalizeConfiguredWhatsappNumber(value?: string | null): string | null {
-  if (!value || !PHONE_PATTERN.test(value.trim())) {
-    return null;
-  }
-
-  const digits = value.replace(/\D/g, '');
-
-  return digits.length >= 8 && digits.length <= 15 ? `+${digits}` : null;
 }
 
 async function generateRequestNumber(strapi: any): Promise<string> {
@@ -296,32 +288,13 @@ function setHandoffResponse(
   statusCode: number,
 ): void {
   const whatsappMessage = buildWhatsappMessage(quotationRequest, siteSetting);
-  const recipient = String(quotationRequest.recipientWhatsappNumber).replace(
-    /\D/g,
-    '',
-  );
-
   ctx.status = statusCode;
   ctx.body = {
     data: {
       requestNumber: quotationRequest.requestNumber,
       status: 'whatsapp_initiated',
-      whatsappUrl: `https://wa.me/${recipient}?text=${encodeURIComponent(whatsappMessage)}`,
+      whatsappUrl: `https://wa.me/${OFFICIAL_WHATSAPP_DIGITS}?text=${encodeURIComponent(whatsappMessage)}`,
       whatsappMessage,
-    },
-  };
-}
-
-function respondWhatsappUnavailable(ctx: any): void {
-  ctx.status = 503;
-  ctx.body = {
-    data: null,
-    error: {
-      status: 503,
-      name: 'ServiceUnavailableError',
-      message:
-        'WhatsApp quotation is temporarily unavailable because the business number is not configured.',
-      details: {},
     },
   };
 }
@@ -366,20 +339,8 @@ export default factories.createCoreController(
         .documents(SITE_SETTING_UID)
         .findFirst({
           status: 'published',
-          fields: [
-            'companyName',
-            'whatsappNumber',
-            'defaultInquiryMessage',
-          ],
+          fields: ['companyName', 'defaultInquiryMessage'],
         })) as SiteSettingSnapshot | null;
-      const recipientWhatsappNumber = normalizeConfiguredWhatsappNumber(
-        siteSetting?.whatsappNumber,
-      );
-
-      if (!recipientWhatsappNumber) {
-        respondWhatsappUnavailable(ctx);
-        return;
-      }
 
       const enquiryType = requiredEnum(data, 'enquiryType', ENQUIRY_TYPES);
       const fullName = requiredString(data, 'fullName', 120);
@@ -416,7 +377,7 @@ export default factories.createCoreController(
         enquiryType,
         fullName,
         whatsappNumber,
-        recipientWhatsappNumber,
+        recipientWhatsappNumber: OFFICIAL_WHATSAPP_NUMBER,
         companyName,
         deliveryDestination,
         items,

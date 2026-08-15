@@ -1,6 +1,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 
+import { cleanCatalogueLabel } from '@/lib/business/catalogue'
 import { getMediaUrl } from '@/lib/strapi/client'
 import type { ProductCategorySummary } from '@/lib/strapi/types'
 
@@ -27,10 +28,10 @@ export function CategoryCard({ category }: { category: ProductCategorySummary })
       <div className="relative flex h-full flex-col justify-end">
         {category.parentCategory && (
           <span className="mb-2 text-[9px] font-black uppercase tracking-[0.18em] text-orange-300">
-            {category.parentCategory.name}
+            {cleanCatalogueLabel(category.parentCategory.name)}
           </span>
         )}
-        <h3 className="text-2xl font-black tracking-tight">{category.name}</h3>
+        <h3 className="text-2xl font-black tracking-tight">{cleanCatalogueLabel(category.name)}</h3>
         {category.description && (
           <p className="mt-2 line-clamp-2 text-sm leading-6 text-slate-300">
             {category.description}

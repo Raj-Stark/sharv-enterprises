@@ -1,5 +1,10 @@
 import Link from 'next/link'
 
+import {
+  OFFICIAL_COMPANY_NAME,
+  OFFICIAL_WHATSAPP_DISPLAY,
+  OFFICIAL_WHATSAPP_URL,
+} from '@/lib/business/contact'
 import type { SiteSetting } from '@/lib/strapi/types'
 
 import { Brand } from './brand'
@@ -9,7 +14,7 @@ type SiteFooterProps = {
 }
 
 export function SiteFooter({ setting }: SiteFooterProps) {
-  const companyName = setting?.companyName ?? 'Sharv Enterprises'
+  const companyName = setting?.companyName ?? OFFICIAL_COMPANY_NAME
 
   return (
     <footer className="border-t-4 border-orange-500 bg-slate-950 text-slate-300" id="site-footer">
@@ -19,12 +24,12 @@ export function SiteFooter({ setting }: SiteFooterProps) {
             <Brand companyName={companyName} tone="inverse" />
           </div>
           <p className="mt-5 text-sm leading-6 text-slate-400">
-            Mechanical sealing products for pumps and rotating equipment, with
-            structured technical information for domestic and export enquiries.
+            Packaging materials, protective supplies and security seals with
+            product-led quotation support for domestic and export enquiries.
           </p>
         </div>
         <div>
-          <h2 className="text-xs font-black uppercase tracking-[0.18em] text-white">
+          <h2 className="text-xs font-extrabold uppercase tracking-[0.1em] text-white">
             Explore
           </h2>
           <ul className="mt-4 space-y-3 text-sm">
@@ -40,19 +45,19 @@ export function SiteFooter({ setting }: SiteFooterProps) {
             </li>
             <li>
               <Link className="hover:text-white" href="/applications">
-                Applications
+                Use cases
               </Link>
             </li>
             <li>
               <Link className="hover:text-white" href="/blogs">
-                Technical insights
+                Packaging guides
               </Link>
             </li>
             <li><Link className="hover:text-white" href="/about">About us</Link></li>
           </ul>
         </div>
         <div>
-          <h2 className="text-xs font-black uppercase tracking-[0.18em] text-white">
+          <h2 className="text-xs font-extrabold uppercase tracking-[0.1em] text-white">
             Buying
           </h2>
           <ul className="mt-4 space-y-3 text-sm">
@@ -62,10 +67,15 @@ export function SiteFooter({ setting }: SiteFooterProps) {
           </ul>
         </div>
         <div>
-          <h2 className="text-xs font-black uppercase tracking-[0.18em] text-white">
+          <h2 className="text-xs font-extrabold uppercase tracking-[0.1em] text-white">
             Enquiries
           </h2>
           <ul className="mt-4 space-y-3 text-sm">
+            <li>
+              <a className="font-bold text-white hover:text-green-300" href={OFFICIAL_WHATSAPP_URL} rel="noreferrer" target="_blank">
+                WhatsApp {OFFICIAL_WHATSAPP_DISPLAY}
+              </a>
+            </li>
             {setting?.enquiryEmail && (
               <li>
                 <a className="break-all hover:text-white" href={`mailto:${setting.enquiryEmail}`}>
@@ -93,7 +103,7 @@ export function SiteFooter({ setting }: SiteFooterProps) {
         <div className="mx-auto flex max-w-7xl flex-col gap-2 px-5 py-5 text-xs text-slate-500 sm:flex-row sm:items-center sm:justify-between sm:px-8">
           <span>© {new Date().getFullYear()} {companyName}</span>
           <span className="flex flex-wrap items-center gap-x-4 gap-y-2">
-            <span>Product information subject to technical confirmation.</span>
+            <span>Product availability and specifications subject to confirmation.</span>
             <Link className="hover:text-slate-300" href="/media-credits">
               Media credits
             </Link>

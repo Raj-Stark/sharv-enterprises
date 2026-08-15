@@ -115,96 +115,81 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
       <div className="border-b border-slate-200 bg-white">
         <div className="mx-auto max-w-7xl px-5 py-4 sm:px-8">
-          <nav className="flex min-w-0 items-center gap-2 text-[9px] font-black uppercase tracking-[0.14em] text-slate-500" aria-label="Breadcrumb">
-            <Link className="shrink-0 hover:text-black" href="/">Home</Link>
+          <nav className="flex min-w-0 items-center gap-2 text-[10px] font-extrabold uppercase tracking-[0.1em] text-slate-500" aria-label="Breadcrumb">
+            <Link className="shrink-0 transition hover:text-brand-blue" href="/">Home</Link>
             <span aria-hidden="true">/</span>
-            <Link className="shrink-0 hover:text-black" href="/products">Products</Link>
+            <Link className="shrink-0 transition hover:text-brand-blue" href="/products">Products</Link>
             <span aria-hidden="true">/</span>
-            <Link className="hidden truncate hover:text-black sm:block" href={`/products/category/${product.category.slug}`}>
+            <Link className="hidden truncate transition hover:text-brand-blue sm:block" href={`/products/category/${product.category.slug}`}>
               {product.category.name}
             </Link>
             <span className="hidden sm:inline" aria-hidden="true">/</span>
-            <span className="truncate text-black">{product.name}</span>
+            <span className="truncate font-extrabold text-slate-800">{product.name}</span>
           </nav>
         </div>
       </div>
 
-      <section className="border-b border-slate-200 bg-[#f3f6f8] py-8 sm:py-12 lg:py-14">
-        <div className="mx-auto grid max-w-7xl gap-8 px-5 sm:px-8 lg:grid-cols-[minmax(0,1.08fr)_minmax(25rem,0.92fr)] lg:items-start lg:gap-14">
-          <ProductGallery images={productImages} productName={product.name} featured={product.featured} />
+      <section className="border-b border-slate-200 bg-brand-surface py-8 sm:py-12 lg:py-16">
+        <div className="mx-auto grid max-w-7xl gap-9 px-5 sm:px-8 lg:grid-cols-[minmax(0,1fr)_minmax(27rem,1fr)] lg:items-center lg:gap-16">
+          <ProductGallery featured={product.featured} images={productImages} productName={product.name} />
 
-          <div className="lg:py-2">
-            <div className="flex flex-wrap items-center gap-2">
-              <Link
-                className="rounded-full bg-black px-3 py-2 text-[9px] font-black uppercase tracking-[0.16em] text-white transition hover:bg-slate-800"
-                href={`/products/category/${product.category.slug}`}
-              >
-                {product.category.name}
-              </Link>
-              {product.modelNumber && (
-                <span className="rounded-full border border-slate-300 bg-white px-3 py-2 font-mono text-[9px] font-black uppercase tracking-[0.12em] text-black">
-                  {product.modelNumber}
-                </span>
-              )}
-            </div>
+          <div>
+            <Link className="inline-flex items-center gap-2 rounded-full border border-blue-200 bg-white px-3 py-2 text-[10px] font-extrabold uppercase tracking-[0.09em] text-brand-blue transition hover:border-brand-blue hover:text-brand-navy" href={`/products/category/${product.category.slug}`}>
+              {product.category.name} <span aria-hidden="true">→</span>
+            </Link>
 
-            <h1 className="mt-5 max-w-2xl text-4xl font-black leading-[1.02] tracking-[-0.05em] text-black sm:text-5xl lg:text-[3.25rem]">
+            <h1 className="mt-4 max-w-2xl text-[2.35rem] font-extrabold leading-[1.05] tracking-[-0.035em] text-slate-950 sm:text-5xl lg:text-[3.25rem]">
               {product.name}
             </h1>
-            <p className="mt-5 max-w-2xl text-base leading-7 text-slate-600">
+            <p className="mt-4 max-w-2xl text-base leading-7 text-slate-600">
               {product.shortDescription}
             </p>
 
-            <dl className="mt-6 grid grid-cols-2 gap-2">
-              <div className="rounded-xl border border-slate-200 bg-white p-4">
-                <dt className="text-[8px] font-black uppercase tracking-[0.16em] text-slate-400">Model</dt>
-                <dd className="mt-2 truncate text-sm font-black text-black">{product.modelNumber ?? 'On request'}</dd>
-              </div>
-              <div className="rounded-xl border border-slate-200 bg-white p-4">
-                <dt className="text-[8px] font-black uppercase tracking-[0.16em] text-slate-400">SKU</dt>
-                <dd className="mt-2 truncate text-sm font-black text-black">{product.sku ?? 'On request'}</dd>
-              </div>
-            </dl>
-
-            {quickSpecifications.length > 0 && (
-              <dl className="mt-3 grid gap-2 sm:grid-cols-3">
-                {quickSpecifications.map((specification) => (
-                  <div className="rounded-xl border border-slate-200 bg-white p-4" key={specification.id}>
-                    <dt className="line-clamp-1 text-[8px] font-black uppercase tracking-[0.12em] text-slate-400">{specification.label}</dt>
-                    <dd className="mt-2 line-clamp-2 text-sm font-black text-black">
-                      {specification.value}{specification.unit ? ` ${specification.unit}` : ''}
-                    </dd>
-                  </div>
-                ))}
-              </dl>
-            )}
-
-            <Link
-              className="mt-5 inline-flex min-h-13 w-full items-center justify-center gap-2 rounded-xl bg-whatsapp px-6 text-xs font-black uppercase tracking-[0.14em] text-white transition hover:bg-whatsapp-dark focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-whatsapp"
-              href={quoteHref}
-            >
-              <WhatsAppIcon className="size-4" />
-              Get WhatsApp quote
-            </Link>
-            <p className="mt-3 text-center text-[11px] leading-5 text-slate-500">
-              Product reference is automatically added to the short quotation form.
+            <p className="mt-5 flex flex-wrap gap-x-6 gap-y-2 text-xs text-slate-600">
+              <span><strong className="font-extrabold text-slate-950">Model:</strong> {product.modelNumber ?? 'On request'}</span>
+              <span><strong className="font-extrabold text-slate-950">SKU:</strong> {product.sku ?? 'On request'}</span>
             </p>
 
-            <div className="mt-5 grid grid-cols-3 overflow-hidden rounded-xl border border-slate-200 bg-white text-center">
-              {['Fit confirmation', 'India supply', 'Export enquiries'].map((item, index) => (
-                <div className={`px-2 py-3 text-[9px] font-black uppercase tracking-[0.08em] text-black ${index > 0 ? 'border-l border-slate-200' : ''}`} key={item}>
-                  {item}
+            <div className="flex flex-col">
+            {quickSpecifications.length > 0 && (
+              <div className="order-2 mt-6 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm lg:order-1">
+                <div className="flex items-center justify-between gap-4">
+                  <p className="text-[10px] font-extrabold uppercase tracking-[0.1em] text-slate-500">At a glance</p>
+                  <a className="text-[10px] font-extrabold uppercase tracking-[0.08em] text-brand-blue hover:text-brand-navy" href="#specifications">All specifications ↓</a>
                 </div>
-              ))}
+                <dl className="mt-4 grid grid-cols-2 gap-x-5 gap-y-4 border-t border-slate-200 pt-4 sm:grid-cols-3">
+                  {quickSpecifications.map((specification) => (
+                    <div className="min-w-0" key={specification.id}>
+                      <dt className="text-[9px] font-extrabold uppercase tracking-[0.08em] text-slate-500">{specification.label}</dt>
+                      <dd className="mt-1 text-sm font-extrabold leading-5 text-slate-950">{specification.value}{specification.unit ? ` ${specification.unit}` : ''}</dd>
+                    </div>
+                  ))}
+                </dl>
+              </div>
+            )}
+
+            <div className="order-1 mt-6 flex flex-col gap-4 sm:flex-row sm:items-center lg:order-2">
+              <Link
+                className="inline-flex min-h-13 items-center justify-center gap-2 rounded-xl bg-whatsapp px-7 text-xs font-extrabold uppercase tracking-[0.08em] text-white transition hover:bg-whatsapp-dark focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-whatsapp"
+                href={quoteHref}
+              >
+                <WhatsAppIcon className="size-4" />
+                Request a quotation
+              </Link>
+              <Link className="inline-flex min-h-11 items-center justify-center text-xs font-extrabold uppercase tracking-[0.08em] text-brand-blue underline decoration-blue-200 underline-offset-4 transition hover:text-brand-navy" href={`/products/category/${product.category.slug}`}>
+                More in this category <span className="ml-2" aria-hidden="true">→</span>
+              </Link>
+            </div>
+            <p className="order-1 mt-3 flex items-center gap-2 text-xs leading-5 text-slate-600 lg:order-2"><span className="text-emerald-700" aria-hidden="true">✓</span> Product reference is added automatically. Domestic and export enquiries are supported.</p>
             </div>
 
             {product.applications && product.applications.length > 0 && (
-              <div className="mt-6">
-                <p className="text-[9px] font-black uppercase tracking-[0.16em] text-slate-400">Common applications</p>
+              <div className="mt-7 border-t border-slate-200 pt-5">
+                <p className="text-[10px] font-extrabold uppercase tracking-[0.1em] text-slate-500">Common applications</p>
                 <div className="mt-3 flex flex-wrap gap-2">
                   {product.applications.map((application) => (
                     <Link
-                      className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-black transition hover:border-black"
+                      className="text-sm font-bold text-brand-blue underline decoration-blue-200 underline-offset-4 transition hover:text-brand-navy"
                       href={`/applications/${application.slug}`}
                       key={application.documentId}
                     >
@@ -218,13 +203,13 @@ export default async function ProductPage({ params }: ProductPageProps) {
         </div>
       </section>
 
-      <nav className="border-b border-slate-200 bg-white" aria-label="On this product page">
-        <div className="mx-auto flex max-w-7xl items-center overflow-x-auto px-5 sm:px-8">
-          <span className="hidden shrink-0 pr-6 text-[9px] font-black uppercase tracking-[0.18em] text-slate-400 md:block">Product information</span>
-          <div className="flex min-w-max gap-1 py-2">
+      <nav className="sticky top-[100px] z-40 border-b border-slate-200 bg-white/95 backdrop-blur-xl" aria-label="On this product page">
+        <div className="mx-auto flex max-w-7xl items-center gap-5 overflow-x-auto px-5 sm:px-8">
+          <span className="shrink-0 text-[10px] font-extrabold uppercase tracking-[0.1em] text-slate-400">Jump to</span>
+          <div className="flex min-w-max gap-6">
             {pageSections.map((section) => (
               <a
-                className="rounded-lg px-4 py-3 text-[10px] font-black uppercase tracking-[0.11em] text-slate-600 transition hover:bg-slate-100 hover:text-black"
+                className="border-b-2 border-transparent py-4 text-[10px] font-extrabold uppercase tracking-[0.08em] text-slate-600 transition hover:border-brand-blue hover:text-brand-blue"
                 href={section.href}
                 key={section.href}
               >
@@ -235,82 +220,130 @@ export default async function ProductPage({ params }: ProductPageProps) {
         </div>
       </nav>
 
-      <section className="scroll-mt-28 bg-white py-14 sm:py-20" id="overview">
+      <section className="scroll-mt-44 bg-white py-14 sm:py-20" id="overview">
         <div className="mx-auto max-w-7xl px-5 sm:px-8">
-          <div className="grid gap-8 lg:grid-cols-[0.38fr_0.62fr] lg:gap-16">
-            <header>
-              <p className="text-[10px] font-black uppercase tracking-[0.18em] text-slate-500">Product overview</p>
-              <h2 className="mt-3 text-3xl font-black tracking-[-0.04em] text-black sm:text-4xl">What this product is for.</h2>
-              <p className="mt-4 max-w-sm text-sm leading-7 text-slate-500">
-                Review the CMS-managed technical description before confirming the final fit and material selection.
-              </p>
-            </header>
-            <article className="rounded-3xl border border-slate-200 bg-[#f8fafb] p-6 sm:p-9">
-              <BlocksRenderer content={product.description} />
-            </article>
-          </div>
+          <header>
+            <div>
+              <p className="text-[11px] font-extrabold uppercase tracking-[0.12em] text-orange-600">Product overview</p>
+              <h2 className="mt-3 max-w-2xl text-[2rem] font-extrabold leading-[1.12] tracking-[-0.025em] text-slate-950 sm:text-[2.65rem]">About this product</h2>
+            </div>
+          </header>
 
-          {features.length > 0 && (
-            <section className="mt-12 border-t border-slate-200 pt-10">
-              <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-                <div>
-                  <p className="text-[10px] font-black uppercase tracking-[0.18em] text-slate-500">At a glance</p>
-                  <h2 className="mt-2 text-3xl font-black tracking-[-0.03em] text-black">Key features</h2>
+          <div className="mt-9 overflow-hidden rounded-[2rem] border border-slate-200 bg-slate-200 shadow-[0_20px_55px_rgba(12,53,86,0.09)]">
+            <div className={`grid gap-px ${features.length > 0 ? 'lg:grid-cols-[0.82fr_1.18fr]' : ''}`}>
+              <article className="relative overflow-hidden bg-brand-navy p-6 text-white sm:p-8 lg:p-10">
+                <div className="industrial-grid pointer-events-none absolute inset-0 opacity-[0.08]" />
+                <div className="relative">
+                  <p className="text-[10px] font-extrabold uppercase tracking-[0.1em] text-orange-300">Product summary</p>
+                  <h3 className="mt-3 text-2xl font-extrabold leading-tight tracking-[-0.02em] text-white">What it is designed for</h3>
+                  <p className="mt-4 max-w-xl text-[15px] leading-7 text-blue-100/80">{product.shortDescription}</p>
+                  <Link className="mt-6 inline-flex items-center text-[10px] font-extrabold uppercase tracking-[0.09em] text-white underline decoration-white/30 underline-offset-4 hover:text-blue-100" href={`/products/category/${product.category.slug}`}>
+                    Explore {product.category.name} <span className="ml-2" aria-hidden="true">→</span>
+                  </Link>
                 </div>
-                <p className="max-w-md text-xs leading-6 text-slate-500">Final selection remains subject to application and operating-condition review.</p>
+              </article>
+
+              {features.length > 0 && (
+              <div className="bg-slate-200">
+                <div className="flex items-center justify-between gap-4 bg-white px-5 py-5 sm:px-6 lg:px-7">
+                  <div>
+                    <p className="text-[10px] font-extrabold uppercase tracking-[0.1em] text-orange-600">Buyer highlights</p>
+                    <h3 className="mt-1 text-xl font-extrabold text-slate-950">Key features</h3>
+                  </div>
+                  <span className="text-xs font-bold text-slate-500">{features.length} capabilities</span>
+                </div>
+                <ul className="grid grid-cols-2 gap-px">
+                  {features.map((feature, index) => (
+                    <li className="bg-white p-4 sm:grid sm:grid-cols-[auto_1fr] sm:gap-3 sm:p-5" key={feature.id}>
+                      <span className="grid size-8 place-items-center rounded-lg bg-blue-50 font-mono text-[10px] font-bold text-brand-blue">{String(index + 1).padStart(2, '0')}</span>
+                      <div className="mt-3 sm:mt-0">
+                        <h3 className="text-sm font-extrabold leading-snug text-slate-950 sm:text-base">{feature.title}</h3>
+                        {feature.description && <p className="mt-1 hidden text-sm leading-6 text-slate-600 sm:block">{feature.description}</p>}
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+                <p className="bg-white px-5 py-4 text-xs leading-5 text-slate-500 sm:px-6">Final selection is confirmed against the application and operating conditions.</p>
               </div>
-              <div className="mt-7 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                {features.map((feature, index) => (
-                  <article className={`rounded-2xl border p-5 ${feature.highlighted ? 'border-black bg-black text-white' : 'border-slate-200 bg-white text-black'}`} key={feature.id}>
-                    <span className={`font-mono text-[10px] font-black ${feature.highlighted ? 'text-white/55' : 'text-slate-400'}`}>{String(index + 1).padStart(2, '0')}</span>
-                    <h3 className="mt-4 text-base font-black leading-tight">{feature.title}</h3>
-                    {feature.description && <p className={`mt-2 text-xs leading-6 ${feature.highlighted ? 'text-white/65' : 'text-slate-500'}`}>{feature.description}</p>}
-                  </article>
-                ))}
-              </div>
-            </section>
-          )}
+              )}
+            </div>
+
+            {(product.description?.length ?? 0) > 0 && (
+              <details className="group bg-white">
+                <summary className="flex cursor-pointer list-none items-center justify-between gap-5 border-t border-slate-200 px-5 py-5 marker:hidden sm:px-7">
+                  <div>
+                    <p className="text-[10px] font-extrabold uppercase tracking-[0.09em] text-slate-500">Detailed information</p>
+                    <p className="mt-1 text-sm font-extrabold text-slate-950">Read the complete product description</p>
+                  </div>
+                  <span className="grid size-9 shrink-0 place-items-center rounded-full border border-slate-200 text-lg font-bold text-brand-blue transition group-open:rotate-45" aria-hidden="true">+</span>
+                </summary>
+                <div className="max-w-4xl border-t border-slate-100 px-5 py-7 sm:px-7 sm:py-8">
+                  <BlocksRenderer content={product.description} />
+                </div>
+              </details>
+            )}
+          </div>
         </div>
       </section>
 
       {specifications.length > 0 && (
-        <section className="scroll-mt-28 border-y border-slate-200 bg-[#f3f6f8] py-14 sm:py-20" id="specifications">
-          <div className="mx-auto max-w-7xl px-5 sm:px-8">
-            <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+        <section className="scroll-mt-44 border-y border-slate-200 bg-brand-surface py-14 sm:py-20" id="specifications">
+          <div className="mx-auto grid max-w-7xl gap-10 px-5 sm:px-8 lg:grid-cols-[0.34fr_0.66fr] lg:items-start lg:gap-14">
+            <div>
               <div>
-                <p className="text-[10px] font-black uppercase tracking-[0.18em] text-slate-500">Technical data</p>
-                <h2 className="mt-2 text-3xl font-black tracking-[-0.04em] text-black sm:text-4xl">Specifications</h2>
+                <p className="text-[11px] font-extrabold uppercase tracking-[0.12em] text-orange-600">Technical data</p>
+                <h2 className="mt-3 text-[2rem] font-extrabold leading-[1.12] tracking-[-0.025em] text-slate-950 sm:text-[2.65rem]">Specifications</h2>
               </div>
-              <p className="max-w-lg text-xs leading-6 text-slate-500">Use these values as a starting point; dimensional compatibility is confirmed during enquiry review.</p>
+              <p className="mt-5 text-[15px] leading-7 text-slate-600">Published values are grouped like a technical data sheet, so buyers can compare the product against their application requirements.</p>
+              <div className="mt-7 border-t border-slate-300 pt-6">
+                <p className="text-sm font-extrabold text-slate-950">Need a custom configuration?</p>
+                <p className="mt-2 text-xs leading-5 text-slate-600">Share the required size, colour, quantity or operating condition for confirmation.</p>
+                <Link className="mt-5 inline-flex min-h-11 items-center justify-center rounded-xl bg-brand-blue px-5 text-[11px] font-extrabold uppercase tracking-[0.08em] text-white transition hover:bg-brand-navy" href={quoteHref}>
+                  Discuss requirement <span className="ml-2" aria-hidden="true">→</span>
+                </Link>
+              </div>
             </div>
-            <div className="mt-8 grid items-start gap-5 md:grid-cols-2 lg:grid-cols-3">
+
+            <div className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-[0_20px_55px_rgba(12,53,86,0.09)]">
+              <div className="flex items-center justify-between gap-4 bg-brand-navy px-5 py-5 text-white sm:px-6">
+                <div>
+                  <p className="text-[10px] font-extrabold uppercase tracking-[0.1em] text-blue-100/70">Technical data sheet</p>
+                  <p className="mt-1 text-base font-extrabold text-white">{product.modelNumber ?? product.name}</p>
+                </div>
+                <span className="font-mono text-xs text-blue-100/70">{String(specifications.length).padStart(2, '0')} values</span>
+              </div>
+
               {specificationGroups.map(([group, groupSpecifications]) => (
-                <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white" key={group}>
-                  <h3 className="bg-black px-5 py-4 text-xs font-black uppercase tracking-[0.14em] text-white">{group}</h3>
-                  <dl>
-                    {groupSpecifications.map((specification, index) => (
-                      <div className={`flex items-start justify-between gap-5 px-5 py-4 ${index > 0 ? 'border-t border-slate-200' : ''} ${specification.highlighted ? 'bg-[#edf3f6]' : ''}`} key={specification.id}>
-                        <dt className="text-sm text-slate-500">{specification.label}</dt>
-                        <dd className="text-right text-sm font-black text-black">{specification.value}{specification.unit ? ` ${specification.unit}` : ''}</dd>
+                <section className="grid border-t border-slate-200 first:border-t-0 sm:grid-cols-[9.5rem_1fr]" key={group}>
+                  <h3 className="bg-blue-50 px-5 py-4 text-[10px] font-extrabold uppercase tracking-[0.09em] text-brand-blue sm:px-6 sm:py-5">{group}</h3>
+                  <dl className="divide-y divide-slate-200">
+                    {groupSpecifications.map((specification) => (
+                      <div className={`flex items-start justify-between gap-5 px-5 py-4 sm:px-6 ${specification.highlighted ? 'bg-orange-50/50' : ''}`} key={specification.id}>
+                        <dt className="text-sm text-slate-600">{specification.label}</dt>
+                        <dd className="text-right text-sm font-extrabold leading-6 text-slate-950">{specification.value}{specification.unit ? ` ${specification.unit}` : ''}</dd>
                       </div>
                     ))}
                   </dl>
                 </section>
               ))}
+
+              <div className="border-t border-slate-200 bg-slate-50 px-5 py-4 sm:px-6">
+                <p className="text-xs leading-5 text-slate-500">Final dimensions and compatibility are confirmed during enquiry review.</p>
+              </div>
             </div>
           </div>
         </section>
       )}
 
       {product.certifications && product.certifications.length > 0 && (
-        <section className="scroll-mt-28 border-b border-slate-200 bg-white py-14 sm:py-20" id="certifications">
+        <section className="scroll-mt-44 border-b border-slate-200 bg-white py-14 sm:py-20" id="certifications">
           <div className="mx-auto max-w-7xl px-5 sm:px-8">
             <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
               <div>
-                <p className="text-[10px] font-black uppercase tracking-[0.18em] text-slate-500">Published records</p>
-                <h2 className="mt-2 text-3xl font-black tracking-[-0.04em] text-black sm:text-4xl">Standards & compliance</h2>
+                <p className="text-[11px] font-extrabold uppercase tracking-[0.12em] text-orange-600">Published records</p>
+                <h2 className="mt-3 text-[2rem] font-extrabold leading-[1.12] tracking-[-0.025em] text-slate-950 sm:text-[2.65rem]">Standards & compliance</h2>
               </div>
-              <p className="max-w-xl text-xs leading-6 text-slate-500">Open the supporting record or verification source where it is available.</p>
+              <p className="max-w-xl text-[15px] leading-7 text-slate-600">Open the supporting record or verification source where it is available.</p>
             </div>
             <div className="mt-7 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
               {product.certifications.map((certification) => {
@@ -318,16 +351,16 @@ export default async function ProductPage({ params }: ProductPageProps) {
                 const verificationUrl = safeExternalUrl(certification.verificationUrl)
 
                 return (
-                  <article className="rounded-2xl border border-slate-200 bg-[#f8fafb] p-5" key={certification.documentId}>
+                  <article className="rounded-2xl border border-slate-200 bg-brand-surface p-5 sm:p-6" key={certification.documentId}>
                     <div className="flex items-start justify-between gap-3">
-                      <span className="grid size-9 shrink-0 place-items-center rounded-full bg-black text-sm font-black text-white" aria-hidden="true">✓</span>
-                      {certification.standardCode && <span className="rounded-full bg-white px-3 py-2 text-[9px] font-black uppercase tracking-[0.12em] text-black">{certification.standardCode}</span>}
+                      <span className="grid size-9 shrink-0 place-items-center rounded-full bg-brand-navy text-sm font-black text-white" aria-hidden="true">✓</span>
+                      {certification.standardCode && <span className="rounded-full bg-white px-3 py-2 text-[9px] font-extrabold uppercase tracking-[0.1em] text-brand-blue">{certification.standardCode}</span>}
                     </div>
-                    <h3 className="mt-4 text-base font-black leading-tight text-black">{certification.name}</h3>
-                    {certification.issuingAuthority && <p className="mt-2 text-xs text-slate-500">Issued by {certification.issuingAuthority}</p>}
-                    {(certification.validFrom || certification.validUntil) && <p className="mt-1 text-xs text-slate-500">Validity: {formatDate(certification.validFrom) ?? '—'} – {formatDate(certification.validUntil) ?? '—'}</p>}
+                    <h3 className="mt-4 text-base font-extrabold leading-tight text-slate-950">{certification.name}</h3>
+                    {certification.issuingAuthority && <p className="mt-2 text-xs text-slate-600">Issued by {certification.issuingAuthority}</p>}
+                    {(certification.validFrom || certification.validUntil) && <p className="mt-1 text-xs text-slate-600">Validity: {formatDate(certification.validFrom) ?? '—'} – {formatDate(certification.validUntil) ?? '—'}</p>}
                     {(documentUrl || verificationUrl) && (
-                      <div className="mt-4 flex gap-4 border-t border-slate-200 pt-3 text-[10px] font-black uppercase tracking-[0.12em] text-black">
+                      <div className="mt-4 flex gap-4 border-t border-slate-200 pt-3 text-[10px] font-extrabold uppercase tracking-[0.1em] text-brand-blue">
                         {documentUrl && <a className="underline underline-offset-4" href={documentUrl} rel="noreferrer" target="_blank">Document ↗</a>}
                         {verificationUrl && <a className="underline underline-offset-4" href={verificationUrl} rel="noreferrer" target="_blank">Verify ↗</a>}
                       </div>
@@ -341,15 +374,15 @@ export default async function ProductPage({ params }: ProductPageProps) {
       )}
 
       <section className="bg-brand-navy text-white">
-        <div className="mx-auto flex max-w-7xl flex-col gap-6 px-5 py-12 sm:px-8 lg:flex-row lg:items-center lg:justify-between">
-          <div>
-            <p className="text-[10px] font-black uppercase tracking-[0.18em] text-white/55">Need technical confirmation?</p>
-            <h2 className="mt-2 max-w-3xl text-3xl font-black tracking-[-0.04em] text-white">Ask about {product.modelNumber ?? product.name} on WhatsApp.</h2>
-            <p className="mt-3 text-sm text-white/65">The product reference will already be selected in the short quote form.</p>
+        <div className="mx-auto flex max-w-7xl flex-col gap-6 px-5 py-10 sm:px-8 sm:py-12 lg:flex-row lg:items-center lg:justify-between">
+          <div className="max-w-3xl">
+            <p className="text-[10px] font-extrabold uppercase tracking-[0.1em] text-blue-100/70">Need technical confirmation?</p>
+            <h2 className="mt-2 text-2xl font-extrabold leading-tight tracking-[-0.02em] text-white sm:text-3xl">Request fit, custom-option and pricing details.</h2>
+            <p className="mt-2 text-sm leading-6 text-blue-100/75">{product.modelNumber ?? product.name} will already be selected in the enquiry.</p>
           </div>
-          <Link className="inline-flex min-h-13 shrink-0 items-center justify-center gap-2 rounded-xl bg-whatsapp px-7 text-xs font-black uppercase tracking-[0.14em] text-white transition hover:bg-whatsapp-dark focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-whatsapp" href={quoteHref}>
+          <Link className="inline-flex min-h-13 shrink-0 items-center justify-center gap-2 rounded-xl bg-whatsapp px-7 text-xs font-extrabold uppercase tracking-[0.08em] text-white transition hover:bg-whatsapp-dark focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-whatsapp" href={quoteHref}>
             <WhatsAppIcon className="size-4" />
-            Get WhatsApp quote
+            Request quotation
           </Link>
         </div>
       </section>
@@ -357,8 +390,8 @@ export default async function ProductPage({ params }: ProductPageProps) {
       {product.relatedBlogPosts && product.relatedBlogPosts.length > 0 && (
         <section className="border-t border-slate-200 bg-white py-14 sm:py-20">
           <div className="mx-auto max-w-7xl px-5 sm:px-8">
-            <p className="text-[10px] font-black uppercase tracking-[0.18em] text-slate-500">Related insights</p>
-            <h2 className="mt-2 text-3xl font-black tracking-[-0.04em] text-black">Technical articles</h2>
+            <p className="text-[11px] font-extrabold uppercase tracking-[0.12em] text-orange-600">Related insights</p>
+            <h2 className="mt-3 text-[2rem] font-extrabold leading-[1.12] tracking-[-0.025em] text-slate-950 sm:text-[2.65rem]">Technical articles</h2>
             <div className="mt-8 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
               {product.relatedBlogPosts.map((post) => <BlogCard key={post.documentId} post={post} />)}
             </div>
@@ -366,7 +399,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
         </section>
       )}
 
-      <div id="faqs">
+      <div className="scroll-mt-44" id="faqs">
         <FaqList faqs={faqs} eyebrow="Product FAQ" title="Common questions" />
       </div>
     </main>

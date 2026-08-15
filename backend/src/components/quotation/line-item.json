@@ -29,6 +29,7 @@
       "type": "enumeration",
       "enum": [
         "piece",
+        "roll",
         "pack",
         "box",
         "set",

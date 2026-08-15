@@ -1,6 +1,10 @@
 import Link from 'next/link'
 
 import { WhatsAppIcon } from '@/components/icons/whatsapp-icon'
+import {
+  OFFICIAL_WHATSAPP_DISPLAY,
+  OFFICIAL_WHATSAPP_URL,
+} from '@/lib/business/contact'
 
 import { Brand } from './brand'
 
@@ -19,47 +23,49 @@ const primaryNavigation = [
 
 export function SiteHeader({ companyName }: SiteHeaderProps) {
   return (
-    <header className="sticky top-0 z-50 border-b border-slate-200/90 bg-white/95 shadow-[0_8px_28px_rgba(5,47,95,0.07)] backdrop-blur">
-      <div className="border-b-2 border-orange-500 bg-slate-950 text-white">
-        <div className="mx-auto flex min-h-8 max-w-7xl items-center justify-between gap-4 px-5 text-[10px] font-bold uppercase tracking-[0.16em] sm:px-8">
-          <span>Mechanical sealing products</span>
-          <span className="hidden text-slate-300 sm:inline">India supply · Export enquiries</span>
+    <header className="sticky top-0 z-50 border-b border-slate-200/90 bg-white/95 backdrop-blur-xl">
+      <div className="bg-brand-navy text-white">
+        <div className="mx-auto flex min-h-7 max-w-7xl items-center justify-between gap-4 px-5 text-[10px] font-extrabold uppercase tracking-[0.1em] sm:px-8">
+          <span>Packaging · Protection · Security</span>
+          <a className="hidden text-blue-100/75 transition hover:text-white sm:inline" href={OFFICIAL_WHATSAPP_URL} rel="noreferrer" target="_blank">
+            WhatsApp {OFFICIAL_WHATSAPP_DISPLAY}
+          </a>
         </div>
       </div>
-      <div className="relative mx-auto flex min-h-20 max-w-7xl items-center justify-between gap-4 px-5 py-2 sm:px-8">
+      <div className="relative mx-auto flex min-h-18 max-w-7xl items-center justify-between gap-4 px-5 py-2 sm:px-8">
         <Brand companyName={companyName} />
         <nav
-          className="hidden items-center gap-4 text-[13px] font-bold text-slate-700 xl:flex xl:gap-6"
+          className="hidden items-center gap-5 text-sm font-semibold text-slate-700 lg:flex xl:gap-7"
           aria-label="Primary navigation"
         >
           {primaryNavigation.map((item) => (
-            <Link className="border-b-2 border-transparent py-2 transition-colors hover:border-orange-500 hover:text-slate-950" href={item.href} key={item.href}>
+            <Link className="border-b-2 border-transparent py-2 transition-colors hover:border-brand-blue hover:text-brand-blue" href={item.href} key={item.href}>
               {item.label}
             </Link>
           ))}
         </nav>
-        <details className="relative ml-auto xl:hidden">
-          <summary className="cursor-pointer list-none border border-slate-300 px-4 py-3 text-[10px] font-black uppercase tracking-[0.14em] text-slate-950 marker:hidden">
+        <details className="relative ml-auto lg:hidden">
+          <summary className="cursor-pointer list-none rounded-lg border border-slate-300 px-4 py-3 text-[11px] font-extrabold uppercase tracking-[0.08em] text-slate-950 marker:hidden">
             Menu
           </summary>
-          <nav className="absolute right-0 top-full mt-3 grid w-64 border border-slate-200 bg-white p-3 text-sm font-bold text-slate-700 shadow-[0_20px_60px_rgba(15,23,42,0.16)]" aria-label="Mobile navigation">
+          <nav className="absolute right-0 top-full mt-3 grid w-64 rounded-xl border border-slate-200 bg-white p-3 text-sm font-bold text-slate-700 shadow-[0_20px_60px_rgba(15,23,42,0.16)]" aria-label="Mobile navigation">
             {primaryNavigation.map((item) => (
-              <Link className="px-3 py-3 hover:bg-orange-50 hover:text-orange-700" href={item.href} key={item.href}>
+              <Link className="rounded-lg px-3 py-3 hover:bg-blue-50 hover:text-brand-blue" href={item.href} key={item.href}>
                 {item.label}
               </Link>
             ))}
-            <Link className="mt-2 inline-flex items-center justify-center gap-2 bg-whatsapp px-3 py-3 text-center text-xs uppercase tracking-[0.12em] text-white" href="/quote">
+            <Link className="mt-2 inline-flex items-center justify-center gap-2 rounded-lg bg-brand-blue px-3 py-3 text-center text-xs uppercase tracking-[0.12em] text-white" href="/quote">
               <WhatsAppIcon className="size-4" />
-              WhatsApp quote
+              Get a quote
             </Link>
           </nav>
         </details>
         <Link
-          className="hidden min-h-11 items-center justify-center gap-2 rounded-sm bg-whatsapp px-4 text-xs font-black uppercase tracking-[0.12em] text-white transition-colors hover:bg-whatsapp-dark focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-whatsapp sm:inline-flex sm:px-5"
+          className="hidden min-h-11 items-center justify-center gap-2 rounded-xl bg-brand-blue px-4 text-xs font-extrabold uppercase tracking-[0.07em] text-white transition hover:-translate-y-0.5 hover:bg-brand-navy focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-blue sm:inline-flex sm:px-5"
           href="/quote"
         >
-          <WhatsAppIcon className="size-4" />
-          WhatsApp quote
+          <WhatsAppIcon className="size-4 text-green-300" />
+          Get a quote
         </Link>
       </div>
     </header>

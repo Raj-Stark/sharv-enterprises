@@ -14,7 +14,8 @@
   "attributes": {
     "companyName": {
       "type": "string",
-      "required": true
+      "required": true,
+      "default": "Sharv Enterprises"
     },
     "enquiryEmail": {
       "type": "email"
@@ -25,6 +26,7 @@
     "whatsappNumber": {
       "type": "string",
       "required": true,
+      "default": "+91 98188 36151",
       "maxLength": 30
     },
     "defaultInquiryMessage": {

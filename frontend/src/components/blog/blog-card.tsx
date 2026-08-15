@@ -42,27 +42,27 @@ export function BlogCard({
           <div className="industrial-grid absolute inset-0 bg-slate-900" />
         )}
         {post.featured && (
-          <span className="absolute left-4 top-4 bg-slate-950 px-3 py-1.5 text-[9px] font-black uppercase tracking-[0.16em] text-white">
+          <span className="absolute left-4 top-4 bg-slate-950 px-3 py-1.5 text-[10px] font-extrabold uppercase tracking-[0.08em] text-white">
             Featured insight
           </span>
         )}
       </Link>
       <div className="flex flex-1 flex-col p-6">
-        <div className="flex flex-wrap items-center gap-2 text-[9px] font-black uppercase tracking-[0.14em] text-slate-400">
+        <div className="flex flex-wrap items-center gap-2 text-[10px] font-extrabold uppercase tracking-[0.08em] text-slate-500">
           <span className="text-orange-600">{categoryName}</span>
           {publishedDate && <span>{publishedDate}</span>}
         </div>
-        <Heading className="mt-3 text-xl font-black leading-tight tracking-tight text-slate-950">
+        <Heading className="mt-3 text-xl font-extrabold leading-snug tracking-[-0.015em] text-slate-950">
           <Link className="hover:text-orange-600" href={`/blogs/${post.slug}`}>
             {post.title}
           </Link>
         </Heading>
-        <p className="mt-3 line-clamp-3 text-sm leading-6 text-slate-600">
+        <p className="mt-3 line-clamp-3 text-[15px] leading-6 text-slate-600">
           {post.excerpt}
         </p>
         <div className="mt-auto flex items-center justify-between gap-4 border-t border-slate-100 pt-5 text-xs text-slate-500">
           <span>{authorName}</span>
-          <Link className="font-black uppercase tracking-[0.12em] text-orange-600" href={`/blogs/${post.slug}`}>
+          <Link className="font-extrabold uppercase tracking-[0.07em] text-orange-600" href={`/blogs/${post.slug}`}>
             Read →
           </Link>
         </div>
