@@ -56,7 +56,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
           />
         )}
         <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/90 to-slate-950/50" />
-        <div className="relative mx-auto max-w-7xl px-5 py-16 sm:px-8 sm:py-24">
+        <div className="relative mx-auto max-w-7xl px-5 py-8 sm:px-8 sm:py-10 lg:py-12">
           <nav className="text-[10px] font-black uppercase tracking-[0.16em] text-slate-500" aria-label="Breadcrumb">
             <Link className="hover:text-white" href="/">Home</Link>
             <span className="px-2">/</span>
@@ -65,15 +65,15 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
             <span className="text-orange-400">{category.name}</span>
           </nav>
           {category.parentCategory && (
-            <p className="mt-10 text-[10px] font-black uppercase tracking-[0.2em] text-orange-400">
+            <p className="mt-5 text-[10px] font-black uppercase tracking-[0.16em] text-orange-400">
               {category.parentCategory.name}
             </p>
           )}
-          <h1 className="mt-4 max-w-4xl text-4xl font-black tracking-[-0.045em] sm:text-6xl">
+          <h1 className="mt-3 max-w-4xl text-[2.15rem] font-black leading-[1.08] tracking-[-0.04em] sm:text-[2.7rem] lg:text-5xl">
             {category.name}
           </h1>
           {category.description && (
-            <p className="mt-6 max-w-2xl text-base leading-8 text-slate-300">
+            <p className="mt-4 max-w-2xl text-base leading-7 text-slate-300">
               {category.description}
             </p>
           )}

@@ -12,6 +12,7 @@ import { SectionHeading } from '@/components/site/section-heading'
 import { TestimonialCarousel } from '@/components/testimonials/testimonial-carousel'
 import { buildSeoMetadata } from '@/lib/seo/metadata'
 import { getMediaUrl } from '@/lib/strapi/client'
+import type { ProductSummary } from '@/lib/strapi/types'
 import {
   getHomePage,
   getHomepageApplications,
@@ -80,23 +81,22 @@ const whyChooseUs = [
     eyebrow: 'Trade-ready',
     title: 'Built for India and export',
     description:
-      'Domestic and export paths ask for the destination details relevant to each type of requirement.',
+      'One quotation path captures the destination details needed for India and export requirements.',
     outcome: 'Relevant quote details',
   },
 ] as const
 
 const exportMarkets = [
+  { name: 'Germany', shortName: 'Germany', flag: '🇩🇪' },
+  { name: 'United Kingdom', shortName: 'UK', flag: '🇬🇧' },
   { name: 'United Arab Emirates', shortName: 'UAE', flag: '🇦🇪' },
   { name: 'Saudi Arabia', shortName: 'Saudi Arabia', flag: '🇸🇦' },
-  { name: 'Oman', shortName: 'Oman', flag: '🇴🇲' },
   { name: 'Qatar', shortName: 'Qatar', flag: '🇶🇦' },
   { name: 'Kuwait', shortName: 'Kuwait', flag: '🇰🇼' },
   { name: 'Bahrain', shortName: 'Bahrain', flag: '🇧🇭' },
   { name: 'Nepal', shortName: 'Nepal', flag: '🇳🇵' },
   { name: 'Bangladesh', shortName: 'Bangladesh', flag: '🇧🇩' },
   { name: 'Sri Lanka', shortName: 'Sri Lanka', flag: '🇱🇰' },
-  { name: 'Kenya', shortName: 'Kenya', flag: '🇰🇪' },
-  { name: 'Tanzania', shortName: 'Tanzania', flag: '🇹🇿' },
   { name: 'Singapore', shortName: 'Singapore', flag: '🇸🇬' },
 ] as const
 
@@ -148,6 +148,21 @@ export default async function Home() {
   const heroEyebrow = homePage?.heroEyebrow ?? fallbackHero.eyebrow
   const heroTitle = homePage?.heroTitle ?? fallbackHero.title
   const heroDescription = homePage?.heroDescription ?? fallbackHero.description
+  const productShowcase = homePage?.productShowcase
+  const selectedShowcaseProducts = [
+    productShowcase?.primaryProduct,
+    productShowcase?.secondaryProduct,
+    productShowcase?.tertiaryProduct,
+  ].filter((product): product is ProductSummary => Boolean(product?.documentId))
+  const selectedShowcaseProductIds = new Set(
+    selectedShowcaseProducts.map((product) => product.documentId),
+  )
+  const showcaseProducts = [
+    ...selectedShowcaseProducts,
+    ...products.filter(
+      (product) => !selectedShowcaseProductIds.has(product.documentId),
+    ),
+  ].slice(0, 3)
   const featuredCategoryProducts = products
     .filter(
       (product, index, allProducts) =>
@@ -171,7 +186,12 @@ export default async function Home() {
           'Industrial packaging products'
         }
         imageUrl={getMediaUrl(heroImage?.url)}
-        products={products.slice(0, 3)}
+        products={showcaseProducts}
+        showcaseBadgeEyebrow={productShowcase?.badgeEyebrow?.trim() || 'Built for business'}
+        showcaseBadgeTitle={productShowcase?.badgeTitle?.trim() || 'Pack · Protect · Dispatch'}
+        showcaseCtaLabel={productShowcase?.ctaLabel?.trim() || 'View all'}
+        showcaseFooterEyebrow={productShowcase?.footerEyebrow?.trim() || 'Live catalogue'}
+        showcaseFooterText={productShowcase?.footerText?.trim() || 'Compare products. Keep context in your quote.'}
         title={heroTitle}
       />
 
@@ -186,7 +206,7 @@ export default async function Home() {
                   description="Jump straight into the product family that fits your packing, protection or cargo-security requirement."
                 />
               </div>
-              <Link className="shrink-0 text-xs font-extrabold uppercase tracking-[0.08em] text-brand-blue hover:text-brand-navy" href="/products#categories">
+              <Link className="shrink-0 text-xs font-extrabold uppercase tracking-[0.08em] text-brand-blue hover:text-brand-navy" href="/products#families">
                 View all categories <span aria-hidden="true">→</span>
               </Link>
             </div>
@@ -274,8 +294,7 @@ export default async function Home() {
               />
             </div>
             <div className="flex flex-wrap gap-2" aria-label="Enquiry support types">
-              <span className="rounded-full border border-blue-200 bg-blue-50 px-4 py-2 text-[11px] font-extrabold uppercase tracking-[0.08em] text-brand-blue">Domestic requirements</span>
-              <span className="rounded-full border border-orange-200 bg-orange-50 px-4 py-2 text-[11px] font-extrabold uppercase tracking-[0.08em] text-orange-700">Export requirements</span>
+              <span className="rounded-full border border-blue-200 bg-blue-50 px-4 py-2 text-[11px] font-extrabold uppercase tracking-[0.08em] text-brand-blue">India &amp; export requirements</span>
             </div>
           </div>
 
@@ -435,8 +454,8 @@ export default async function Home() {
                 Start an export requirement for a frequently requested destination. Product availability, documentation and commercial terms are confirmed against the exact country or port.
               </p>
             </div>
-            <Link className="inline-flex min-h-12 items-center justify-center rounded-xl bg-brand-blue px-6 text-xs font-extrabold uppercase tracking-[0.08em] text-white shadow-[0_12px_28px_rgba(25,84,124,0.2)] transition hover:-translate-y-0.5 hover:bg-brand-navy" href="/quote?type=export">
-              Start export enquiry <span className="ml-3" aria-hidden="true">→</span>
+            <Link className="inline-flex min-h-12 items-center justify-center rounded-xl bg-brand-blue px-6 text-xs font-extrabold uppercase tracking-[0.08em] text-white shadow-[0_12px_28px_rgba(25,84,124,0.2)] transition hover:-translate-y-0.5 hover:bg-brand-navy" href="/quote">
+              Start an enquiry <span className="ml-3" aria-hidden="true">→</span>
             </Link>
           </div>
 
@@ -445,7 +464,7 @@ export default async function Home() {
               <Link
                 aria-label={`Start an export quotation for ${market.name}`}
                 className="group relative overflow-hidden rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition duration-300 hover:-translate-y-1 hover:border-blue-200 hover:shadow-[0_18px_40px_rgba(25,84,124,0.12)] sm:p-5"
-                href={`/quote?type=export&destination=${encodeURIComponent(market.name)}`}
+                href={`/quote?destination=${encodeURIComponent(market.name)}`}
                 key={market.name}
               >
                 <span className="absolute right-3 top-3 text-sm font-black text-slate-300 transition group-hover:translate-x-0.5 group-hover:text-brand-blue" aria-hidden="true">↗</span>
@@ -463,7 +482,7 @@ export default async function Home() {
               <p className="text-sm font-extrabold text-slate-950">Your destination is not listed?</p>
               <p className="mt-1 text-xs leading-5 text-slate-600">Share the country or destination port and we’ll evaluate the requirement.</p>
             </div>
-            <Link className="shrink-0 text-xs font-extrabold uppercase tracking-[0.08em] text-brand-blue hover:text-brand-navy" href="/quote?type=export">
+            <Link className="shrink-0 text-xs font-extrabold uppercase tracking-[0.08em] text-brand-blue hover:text-brand-navy" href="/quote">
               Add another destination <span aria-hidden="true">→</span>
             </Link>
           </div>

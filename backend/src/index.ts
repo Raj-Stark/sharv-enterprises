@@ -9,6 +9,7 @@ import {
   enforcePublicPermissionAllowlist,
   validateQuotationSecurityConfig,
 } from './security/public-permissions';
+import { seedStarterContent } from './bootstrap/starter-content';
 
 export default {
   /**
@@ -35,5 +36,6 @@ export default {
    */
   async bootstrap({ strapi }: { strapi: Core.Strapi }) {
     await enforcePublicPermissionAllowlist(strapi);
+    await seedStarterContent(strapi);
   },
 };

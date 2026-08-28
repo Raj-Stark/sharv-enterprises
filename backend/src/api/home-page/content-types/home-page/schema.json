@@ -5,7 +5,7 @@
     "singularName": "home-page",
     "pluralName": "home-pages",
     "displayName": "Home Page",
-    "description": "Editable homepage hero, delivery coverage and search metadata"
+    "description": "Editable homepage hero, product showcase, delivery coverage and search metadata"
   },
   "options": {
     "draftAndPublish": true
@@ -34,6 +34,11 @@
       "allowedTypes": [
         "images"
       ]
+    },
+    "productShowcase": {
+      "type": "component",
+      "component": "homepage.product-showcase",
+      "repeatable": false
     },
     "deliveryEyebrow": {
       "type": "string",

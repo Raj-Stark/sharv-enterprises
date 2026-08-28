@@ -67,7 +67,7 @@ export default async function ApplicationPage({ params }: ApplicationPageProps) 
           />
         )}
         <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/90 to-slate-950/40" />
-        <div className="relative mx-auto max-w-7xl px-5 py-16 sm:px-8 sm:py-24">
+        <div className="relative mx-auto max-w-7xl px-5 py-8 sm:px-8 sm:py-10 lg:py-12">
           <nav className="text-[10px] font-black uppercase tracking-[0.16em] text-slate-500" aria-label="Breadcrumb">
             <Link className="hover:text-white" href="/">Home</Link>
             <span className="px-2">/</span>
@@ -75,9 +75,9 @@ export default async function ApplicationPage({ params }: ApplicationPageProps) 
             <span className="px-2">/</span>
             <span className="text-orange-400">{application.name}</span>
           </nav>
-          <p className="mt-10 text-[10px] font-black uppercase tracking-[0.2em] text-orange-400">Application</p>
-          <h1 className="mt-4 max-w-4xl text-4xl font-black tracking-[-0.05em] sm:text-6xl">{application.name}</h1>
-          <p className="mt-6 max-w-2xl text-base leading-8 text-slate-300">{application.summary}</p>
+          <p className="mt-5 text-[10px] font-black uppercase tracking-[0.16em] text-orange-400">Application</p>
+          <h1 className="mt-3 max-w-4xl text-[2.15rem] font-black leading-[1.08] tracking-[-0.04em] sm:text-[2.7rem] lg:text-5xl">{application.name}</h1>
+          <p className="mt-4 max-w-2xl text-base leading-7 text-slate-300">{application.summary}</p>
         </div>
       </section>
 

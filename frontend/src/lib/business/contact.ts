@@ -1,4 +1,9 @@
 export const OFFICIAL_COMPANY_NAME = 'Sharv Enterprises'
+export const OFFICIAL_SITE_DOMAIN = 'sharventerprises.com'
+export const OFFICIAL_EMAIL = `info@${OFFICIAL_SITE_DOMAIN}`
+export const OFFICIAL_EMAIL_URL = `mailto:${OFFICIAL_EMAIL}`
+export const OFFICIAL_PHONE_DISPLAY = '+91 98188 36151'
+export const OFFICIAL_PHONE_URL = 'tel:+919818836151'
 export const OFFICIAL_WHATSAPP_DISPLAY = '+91 98188 36151'
 export const OFFICIAL_WHATSAPP_DIGITS = '919818836151'
 export const OFFICIAL_WHATSAPP_URL = `https://wa.me/${OFFICIAL_WHATSAPP_DIGITS}`

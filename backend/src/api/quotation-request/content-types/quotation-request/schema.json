@@ -5,7 +5,7 @@
     "singularName": "quotation-request",
     "pluralName": "quotation-requests",
     "displayName": "Quotation Request",
-    "description": "Domestic and export quotation enquiries submitted by buyers"
+    "description": "Unified quotation enquiries submitted by buyers"
   },
   "options": {
     "draftAndPublish": false
@@ -24,14 +24,6 @@
       "unique": true,
       "maxLength": 64,
       "private": true
-    },
-    "enquiryType": {
-      "type": "enumeration",
-      "enum": [
-        "domestic",
-        "export"
-      ],
-      "required": true
     },
     "fullName": {
       "type": "string",

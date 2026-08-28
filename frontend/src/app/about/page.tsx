@@ -5,40 +5,37 @@ import Link from 'next/link'
 import { WhatsAppIcon } from '@/components/icons/whatsapp-icon'
 import { cleanCatalogueLabel } from '@/lib/business/catalogue'
 import { OFFICIAL_WHATSAPP_DISPLAY } from '@/lib/business/contact'
-import { getMediaUrl } from '@/lib/strapi/client'
-import { getProductCategories, getProducts } from '@/lib/strapi/queries'
+import { getProductCategories } from '@/lib/strapi/queries'
 
 export const metadata: Metadata = {
-  title: 'About Us',
+  title: 'About Sharv Enterprises',
   description:
-    'Learn how Sharv Enterprises helps buyers discover packaging, protection and security products for domestic and export requirements.',
+    'Sharv Enterprises supplies industrial packaging materials for packing, protection and domestic or export dispatch requirements.',
   alternates: { canonical: '/about' },
 }
 
-const buyerBenefits = [
-  {
-    title: 'A catalogue you can review',
-    description: 'Product images, categories and published details help you understand the available range before an enquiry.',
-  },
-  {
-    title: 'Requirement-led conversations',
-    description: 'Product type, size, quantity and destination keep the discussion relevant from the first message.',
-  },
-  {
-    title: 'Domestic and export context',
-    description: 'The same structured enquiry path captures the commercial details needed for either requirement.',
-  },
-  {
-    title: 'One clear point of contact',
-    description: `Continue with Sharv Enterprises on the official WhatsApp number ${OFFICIAL_WHATSAPP_DISPLAY}.`,
-  },
+const fallbackProductRange = [
+  'Stretch Films',
+  'Container Seals',
+  'Strapping Rolls',
+  'Packaging Tapes',
+  'Bubble Wrap',
+  'Corrugated Boxes',
 ] as const
 
 const enquirySteps = [
-  ['Share the need', 'Tell us the product or application, required size and approximate quantity.'],
-  ['Review the range', 'Use the catalogue to compare relevant product families and available references.'],
-  ['Confirm the details', 'Add delivery destination and any specification needed for a useful quotation.'],
-  ['Continue on WhatsApp', 'Your enquiry moves into one tracked conversation with a clear reference.'],
+  {
+    title: 'Share the requirement',
+    description: 'Send the product type, size or grade, quantity and delivery destination available to you.',
+  },
+  {
+    title: 'Review relevant options',
+    description: 'We keep the discussion focused on the product family and specifications connected to your need.',
+  },
+  {
+    title: 'Continue the quotation',
+    description: 'Confirm the remaining details and continue the conversation on our official WhatsApp number.',
+  },
 ] as const
 
 function ArrowIcon() {
@@ -49,217 +46,143 @@ function ArrowIcon() {
   )
 }
 
-function CheckIcon() {
-  return (
-    <svg aria-hidden="true" className="size-4" fill="none" viewBox="0 0 20 20">
-      <path d="m5 10.5 3 3 7-7" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" />
-    </svg>
-  )
-}
-
 export default async function AboutPage() {
-  const [products, categories] = await Promise.all([
-    getProducts().catch(() => []),
-    getProductCategories().catch(() => []),
-  ])
-  const featuredProduct = products.find((product) => product.featured) ?? products[0]
-  const featuredImage = getMediaUrl(featuredProduct?.coverImage?.url)
-  const categoryHighlights = categories.slice(0, 6)
+  const categories = await getProductCategories().catch(() => [])
+  const rangeItems = categories.length > 0
+    ? categories.slice(0, 6).map((category) => ({
+        href: `/products?category=${encodeURIComponent(category.slug)}`,
+        label: cleanCatalogueLabel(category.name),
+      }))
+    : fallbackProductRange.map((label) => ({ href: '/products', label }))
 
   return (
     <main className="overflow-hidden bg-white">
-      <section className="relative bg-brand-navy text-white">
-        <div className="industrial-grid absolute inset-0 opacity-20" aria-hidden="true" />
-        <div className="absolute -right-32 -top-28 size-96 rounded-full border border-white/10" aria-hidden="true" />
-        <div className="absolute -right-10 top-24 size-60 rounded-full bg-brand-blue/25 blur-3xl" aria-hidden="true" />
-
-        <div className="relative mx-auto grid min-h-[36rem] max-w-7xl items-center gap-12 px-5 py-12 sm:px-8 sm:py-16 lg:grid-cols-[1.05fr_0.95fr] lg:gap-16 lg:py-20">
+      <section className="relative border-b border-slate-200 bg-brand-surface">
+        <div className="industrial-grid absolute inset-0 opacity-30" aria-hidden="true" />
+        <div className="relative mx-auto grid max-w-7xl items-center gap-8 px-5 py-8 sm:px-8 sm:py-10 lg:grid-cols-[0.9fr_1.1fr] lg:gap-12 lg:py-12">
           <div>
-            <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.14em] text-white/55">
-              <Link className="transition hover:text-white" href="/">Home</Link>
+            <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-[10px] font-extrabold uppercase tracking-[0.1em] text-slate-500">
+              <Link className="transition hover:text-brand-blue" href="/">Home</Link>
               <span aria-hidden="true">/</span>
-              <span className="text-white">About us</span>
+              <span className="text-slate-900">About us</span>
             </nav>
 
-            <p className="mt-10 flex items-center gap-3 text-[11px] font-extrabold uppercase tracking-[0.16em] text-blue-100">
-              <span className="h-px w-8 bg-brand-accent" aria-hidden="true" />
-              Packaging · Protection · Security
-            </p>
-            <h1 className="mt-5 max-w-3xl text-4xl font-black leading-[1.05] tracking-[-0.045em] sm:text-5xl lg:text-[3.75rem]">
-              Practical product sourcing, with clearer choices from the start.
+            <p className="mt-6 text-[11px] font-extrabold uppercase tracking-[0.13em] text-orange-600">About Sharv Enterprises</p>
+            <h1 className="mt-3 max-w-2xl text-[2.15rem] font-black leading-[1.07] tracking-[-0.04em] text-brand-navy sm:text-[2.7rem] lg:text-5xl">
+              Packaging products for everyday operations and export dispatch.
             </h1>
-            <p className="mt-6 max-w-2xl text-base leading-8 text-white/72 sm:text-lg">
-              Sharv Enterprises helps domestic and export buyers discover packaging, protection and security products through a focused catalogue and a structured enquiry experience.
+            <p className="mt-4 max-w-xl text-[15px] leading-7 text-slate-600 sm:text-base">
+              We supply industrial packaging materials for packing, protection and dispatch requirements across local and export-oriented businesses.
             </p>
 
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              <Link className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-white px-6 text-xs font-extrabold uppercase tracking-[0.09em] text-brand-navy transition hover:bg-blue-50" href="/products">
-                Explore products
+            <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+              <Link className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-brand-navy px-6 text-xs font-extrabold uppercase tracking-[0.08em] text-white transition hover:bg-brand-blue" href="/products#families">
+                View product range
                 <ArrowIcon />
               </Link>
-              <Link className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl border border-white/25 px-6 text-xs font-extrabold uppercase tracking-[0.09em] text-white transition hover:border-white/50 hover:bg-white/8" href="/quote">
-                <WhatsAppIcon className="size-4" />
-                Start an enquiry
+              <Link className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-slate-300 bg-white px-6 text-xs font-extrabold uppercase tracking-[0.08em] text-brand-navy transition hover:border-brand-blue" href="/quote">
+                <WhatsAppIcon className="size-4 text-whatsapp" />
+                Send a requirement
               </Link>
             </div>
           </div>
 
-          <div className="relative mx-auto w-full max-w-xl lg:justify-self-end">
-            <div className="absolute -left-4 top-10 hidden h-[72%] w-2 rounded-full bg-brand-accent lg:block" aria-hidden="true" />
-            <div className="relative min-h-[24rem] overflow-hidden rounded-[1.75rem] border border-white/15 bg-[#e9eff3] shadow-[0_30px_80px_rgba(0,0,0,0.3)] sm:min-h-[31rem]">
-              {featuredImage ? (
-                <Image
-                  alt={featuredProduct?.coverImage.alternativeText ?? featuredProduct?.name ?? 'Sharv Enterprises product'}
-                  className="object-cover"
-                  fill
-                  priority
-                  sizes="(max-width: 1024px) 100vw, 44vw"
-                  src={featuredImage}
-                />
-              ) : (
-                <div className="absolute inset-0 grid place-items-center p-10">
-                  <Image alt="Sharv Enterprises" className="h-auto w-full" height={600} src="/brand/sharv-enterprises-logo-transparent.png" width={1800} />
+          <figure className="relative overflow-hidden rounded-3xl border border-slate-200 bg-slate-200 shadow-[0_24px_60px_rgba(12,53,86,0.14)]">
+            <div className="relative aspect-[16/10]">
+              <Image
+                alt="Stretch-wrapped and strapped cartons prepared beside an export container"
+                className="object-cover"
+                fill
+                priority
+                sizes="(max-width: 1024px) 100vw, 55vw"
+                src="/images/about/export-packaging-dispatch.jpg"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-brand-navy/75 via-transparent to-transparent" aria-hidden="true" />
+              <figcaption className="absolute inset-x-5 bottom-5 flex flex-wrap items-end justify-between gap-3 text-white sm:inset-x-6 sm:bottom-6">
+                <div>
+                  <p className="text-[10px] font-extrabold uppercase tracking-[0.12em] text-blue-100">Domestic & export enquiries</p>
+                  <p className="mt-1 text-lg font-black">Pack · Protect · Dispatch</p>
                 </div>
-              )}
-              <div className="absolute inset-x-4 bottom-4 rounded-2xl border border-white/60 bg-white/92 p-5 text-slate-950 shadow-xl backdrop-blur-md sm:inset-x-6 sm:bottom-6 sm:p-6">
-                <p className="text-[10px] font-extrabold uppercase tracking-[0.14em] text-brand-blue">From our published catalogue</p>
-                <div className="mt-2 flex items-end justify-between gap-4">
-                  <div>
-                    <p className="text-lg font-black leading-snug sm:text-xl">{featuredProduct ? cleanCatalogueLabel(featuredProduct.name) : 'Packaging product range'}</p>
-                    {featuredProduct?.category?.name ? <p className="mt-1 text-sm text-slate-600">{cleanCatalogueLabel(featuredProduct.category.name)}</p> : null}
-                  </div>
-                  <Link aria-label="View this product" className="grid size-10 shrink-0 place-items-center rounded-full bg-brand-navy text-white transition hover:bg-brand-blue" href={featuredProduct ? `/products/${featuredProduct.slug}` : '/products'}>
-                    <ArrowIcon />
-                  </Link>
-                </div>
-              </div>
+                <span className="rounded-full border border-white/25 bg-brand-navy/70 px-3 py-2 text-[10px] font-bold uppercase tracking-[0.08em] backdrop-blur-sm">Industrial packaging</span>
+              </figcaption>
             </div>
-          </div>
+          </figure>
         </div>
       </section>
 
-      <section className="relative z-10 mx-auto -mt-px max-w-7xl px-5 sm:px-8" aria-label="Catalogue overview">
-        <div className="grid overflow-hidden rounded-b-2xl border-x border-b border-slate-200 bg-white shadow-[0_18px_50px_rgba(15,23,42,0.08)] sm:grid-cols-3">
-          <div className="border-b border-slate-200 px-6 py-6 sm:border-b-0 sm:border-r sm:px-8">
-            <p className="text-3xl font-black tracking-[-0.04em] text-brand-navy">{products.length || 'Live'}</p>
-            <p className="mt-1 text-xs font-bold uppercase tracking-[0.08em] text-slate-500">Published products</p>
-          </div>
-          <div className="border-b border-slate-200 px-6 py-6 sm:border-b-0 sm:border-r sm:px-8">
-            <p className="text-3xl font-black tracking-[-0.04em] text-brand-navy">{categories.length || 'Focused'}</p>
-            <p className="mt-1 text-xs font-bold uppercase tracking-[0.08em] text-slate-500">Product families</p>
-          </div>
-          <div className="px-6 py-6 sm:px-8">
-            <p className="text-lg font-black text-brand-navy">India + Export</p>
-            <p className="mt-1 text-xs font-bold uppercase tracking-[0.08em] text-slate-500">Enquiry support</p>
-          </div>
-        </div>
-      </section>
-
-      <section className="py-16 sm:py-24">
-        <div className="mx-auto grid max-w-7xl gap-12 px-5 sm:px-8 lg:grid-cols-[0.86fr_1.14fr] lg:gap-20">
-          <div className="lg:sticky lg:top-28 lg:self-start">
-            <p className="text-[11px] font-extrabold uppercase tracking-[0.15em] text-brand-blue">Who we are</p>
-            <h2 className="mt-4 text-3xl font-black leading-tight tracking-[-0.04em] text-slate-950 sm:text-4xl">
-              A more useful bridge between browsing and buying.
-            </h2>
-            <div className="mt-6 space-y-4 text-[15px] leading-7 text-slate-600 sm:text-base sm:leading-8">
-              <p>Industrial product sourcing often starts with incomplete information. Our role is to make that first step easier: show the range clearly, collect the right requirement details and keep the next conversation focused.</p>
-              <p>Instead of broad promises, we give buyers a practical path from product discovery to a quotation request for packaging, protection and security needs.</p>
-            </div>
-            <Link className="mt-8 inline-flex min-h-11 items-center gap-2 text-xs font-extrabold uppercase tracking-[0.08em] text-brand-blue transition hover:text-brand-navy" href="/contact">
-              Contact Sharv Enterprises
-              <ArrowIcon />
-            </Link>
-          </div>
-
-          <div className="rounded-[1.75rem] bg-brand-surface p-5 sm:p-8">
-            <div className="flex items-center justify-between border-b border-slate-200 pb-5">
-              <h3 className="text-xl font-black tracking-[-0.025em] text-slate-950">What buyers can expect</h3>
-              <span className="hidden rounded-full bg-white px-3 py-2 text-[10px] font-extrabold uppercase tracking-[0.1em] text-brand-blue shadow-sm sm:inline-flex">Clear by design</span>
-            </div>
-            <div className="divide-y divide-slate-200">
-              {buyerBenefits.map((item) => (
-                <article className="grid gap-4 py-6 sm:grid-cols-[2.5rem_1fr]" key={item.title}>
-                  <span className="grid size-9 place-items-center rounded-full bg-white text-brand-blue shadow-sm"><CheckIcon /></span>
-                  <div>
-                    <h3 className="text-base font-black text-slate-950">{item.title}</h3>
-                    <p className="mt-2 text-sm leading-6 text-slate-600">{item.description}</p>
-                  </div>
-                </article>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {categoryHighlights.length ? (
-        <section className="border-y border-slate-200 bg-slate-50 py-16 sm:py-24" id="range">
-          <div className="mx-auto max-w-7xl px-5 sm:px-8">
-            <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
-              <div>
-                <p className="text-[11px] font-extrabold uppercase tracking-[0.15em] text-brand-blue">What we work with</p>
-                <h2 className="mt-4 max-w-2xl text-3xl font-black leading-tight tracking-[-0.04em] text-slate-950 sm:text-4xl">A focused range for packaging, protection and security.</h2>
-              </div>
-              <Link className="inline-flex min-h-11 items-center gap-2 text-xs font-extrabold uppercase tracking-[0.08em] text-brand-blue transition hover:text-brand-navy" href="/products#categories">
-                View all categories
-                <ArrowIcon />
-              </Link>
-            </div>
-
-            <div className="mt-10 grid snap-x snap-mandatory auto-cols-[86%] grid-flow-col gap-4 overflow-x-auto pb-4 pr-5 [scrollbar-width:thin] sm:auto-cols-auto sm:grid-flow-row sm:grid-cols-2 sm:overflow-visible sm:pb-0 sm:pr-0 sm:snap-none lg:grid-cols-3">
-              {categoryHighlights.map((category, index) => (
-                <Link className="group min-h-64 snap-start rounded-2xl border border-slate-200 bg-white p-6 transition duration-200 hover:-translate-y-1 hover:border-blue-300 hover:shadow-[0_18px_45px_rgba(15,23,42,0.08)] sm:min-h-0" href={`/products/category/${category.slug}`} key={category.documentId}>
-                  <div className="flex items-start justify-between gap-4">
-                    <span className="font-mono text-xs font-bold text-slate-400">{String(index + 1).padStart(2, '0')}</span>
-                    <span className="grid size-9 place-items-center rounded-full bg-brand-surface text-brand-blue transition group-hover:bg-brand-navy group-hover:text-white"><ArrowIcon /></span>
-                  </div>
-                  <h3 className="mt-8 text-xl font-black tracking-[-0.025em] text-slate-950">{cleanCatalogueLabel(category.name)}</h3>
-                  <p className="mt-3 line-clamp-2 text-sm leading-6 text-slate-600">{category.description || 'Explore the published range and share your requirement for product selection support.'}</p>
-                </Link>
-              ))}
-            </div>
-          </div>
-        </section>
-      ) : null}
-
-      <section className="py-16 sm:py-24">
-        <div className="mx-auto max-w-7xl px-5 sm:px-8">
-          <div className="grid gap-10 rounded-[1.75rem] bg-brand-navy p-6 text-white sm:p-10 lg:grid-cols-[0.72fr_1.28fr] lg:gap-16 lg:p-14">
-            <div>
-              <p className="text-[11px] font-extrabold uppercase tracking-[0.15em] text-blue-200">Simple buying flow</p>
-              <h2 className="mt-4 text-3xl font-black leading-tight tracking-[-0.04em] sm:text-4xl">From a requirement to a useful conversation.</h2>
-              <p className="mt-5 text-sm leading-7 text-white/65 sm:text-base">Four clear steps reduce back-and-forth and help us understand what you actually need.</p>
-            </div>
-            <ol className="grid gap-px overflow-hidden rounded-2xl bg-white/12 sm:grid-cols-2">
-              {enquirySteps.map(([title, description], index) => (
-                <li className="bg-[#123e60] p-6 sm:p-7" key={title}>
-                  <span className="text-xs font-black text-blue-200">0{index + 1}</span>
-                  <h3 className="mt-5 text-lg font-black text-white">{title}</h3>
-                  <p className="mt-2 text-sm leading-6 text-white/65">{description}</p>
-                </li>
-              ))}
-            </ol>
-          </div>
-        </div>
-      </section>
-
-      <section className="border-t border-slate-200 bg-brand-surface py-14 sm:py-18">
-        <div className="mx-auto flex max-w-7xl flex-col gap-8 px-5 sm:px-8 lg:flex-row lg:items-center lg:justify-between">
+      <section className="py-14 sm:py-18 lg:py-20">
+        <div className="mx-auto grid max-w-7xl gap-10 px-5 sm:px-8 lg:grid-cols-[0.9fr_1.1fr] lg:gap-16">
           <div>
-            <p className="text-[11px] font-extrabold uppercase tracking-[0.15em] text-brand-blue">Have a product requirement?</p>
-            <h2 className="mt-3 max-w-3xl text-3xl font-black leading-tight tracking-[-0.04em] text-slate-950 sm:text-4xl">Share the essentials. We’ll take it from there.</h2>
+            <p className="text-[11px] font-extrabold uppercase tracking-[0.13em] text-orange-600">What we do</p>
+            <h2 className="mt-3 max-w-xl text-3xl font-black leading-tight tracking-[-0.035em] text-slate-950 sm:text-4xl">
+              What we supply, and how we work.
+            </h2>
+          </div>
+
+          <div>
+            <div className="space-y-4 text-[15px] leading-7 text-slate-600 sm:text-base sm:leading-8">
+              <p>
+                Sharv Enterprises is an industrial packaging supplier serving businesses with materials used for packing, protection, unitisation and dispatch.
+              </p>
+              <p>
+                Our range includes stretch films, container seals, strapping rolls, packaging tapes, bubble wrap, corrugated boxes and related products selected according to the buyer&apos;s requirement.
+              </p>
+              <p>
+                We begin with the practical details—product type, size or grade, quantity and delivery destination—so the enquiry stays focused. We support local manufacturers as well as export-oriented businesses, with clear communication from product selection through quotation.
+              </p>
+              <p className="font-bold text-slate-800">
+                Our aim is straightforward: dependable products, transparent communication and long-term working relationships.
+              </p>
+            </div>
+
+            <div className="mt-8 border-t border-slate-200 pt-6">
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <h3 className="text-sm font-black text-slate-950">Product range</h3>
+                <Link className="text-[10px] font-extrabold uppercase tracking-[0.08em] text-brand-blue hover:text-brand-navy" href="/products#families">View catalogue →</Link>
+              </div>
+              <div className="mt-4 grid gap-2 sm:grid-cols-2">
+                {rangeItems.map((item) => (
+                  <Link className="flex min-h-11 items-center justify-between rounded-xl border border-slate-200 bg-white px-4 text-sm font-bold text-slate-800 transition hover:border-blue-300 hover:text-brand-blue" href={item.href} key={item.label}>
+                    {item.label}
+                    <span className="text-slate-400" aria-hidden="true">→</span>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="border-y border-slate-200 bg-brand-surface py-14 sm:py-18" id="how-we-work">
+        <div className="mx-auto max-w-7xl px-5 sm:px-8">
+          <div className="max-w-2xl">
+            <p className="text-[11px] font-extrabold uppercase tracking-[0.13em] text-orange-600">How enquiries are handled</p>
+            <h2 className="mt-3 text-3xl font-black leading-tight tracking-[-0.035em] text-slate-950 sm:text-4xl">A simple path from requirement to quotation.</h2>
+          </div>
+
+          <ol className="mt-8 grid overflow-hidden rounded-2xl border border-slate-200 bg-white md:grid-cols-3">
+            {enquirySteps.map((step, index) => (
+              <li className="border-b border-slate-200 p-6 last:border-b-0 md:border-b-0 md:border-r md:last:border-r-0 sm:p-7" key={step.title}>
+                <span className="font-mono text-xs font-bold text-orange-600">0{index + 1}</span>
+                <h3 className="mt-4 text-lg font-black text-slate-950">{step.title}</h3>
+                <p className="mt-2 text-sm leading-6 text-slate-600">{step.description}</p>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </section>
+
+      <section className="bg-white py-14 sm:py-16">
+        <div className="mx-auto flex max-w-7xl flex-col gap-7 px-5 sm:px-8 lg:flex-row lg:items-center lg:justify-between">
+          <div>
+            <p className="text-[11px] font-extrabold uppercase tracking-[0.13em] text-orange-600">Have a packaging requirement?</p>
+            <h2 className="mt-3 max-w-3xl text-3xl font-black leading-tight tracking-[-0.035em] text-slate-950 sm:text-4xl">Share the product, quantity and destination.</h2>
             <p className="mt-3 text-sm text-slate-600">Official WhatsApp · {OFFICIAL_WHATSAPP_DISPLAY}</p>
           </div>
-          <div className="flex flex-col gap-3 sm:flex-row lg:shrink-0">
-            <Link className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-whatsapp px-6 text-xs font-extrabold uppercase tracking-[0.09em] text-white transition hover:bg-whatsapp-dark" href="/quote">
-              <WhatsAppIcon className="size-4" />
-              Request a quotation
-            </Link>
-            <Link className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl border border-slate-300 bg-white px-6 text-xs font-extrabold uppercase tracking-[0.09em] text-slate-800 transition hover:border-brand-blue hover:text-brand-blue" href="/products">
-              Browse products
-              <ArrowIcon />
-            </Link>
-          </div>
+          <Link className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-whatsapp px-6 text-xs font-extrabold uppercase tracking-[0.08em] text-white transition hover:bg-whatsapp-dark lg:shrink-0" href="/quote">
+            <WhatsAppIcon className="size-4" />
+            Request a quotation
+          </Link>
         </div>
       </section>
     </main>

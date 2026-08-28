@@ -2,7 +2,7 @@ import 'server-only'
 
 import { cache } from 'react'
 
-import { strapiFetch } from './client'
+import { StrapiRequestError, strapiFetch } from './client'
 import type {
   ApplicationDetail,
   ApplicationSummary,
@@ -347,17 +347,51 @@ export const getSiteSetting = cache(async (): Promise<SiteSetting | null> => {
 })
 
 export const getHomePage = cache(async (): Promise<HomePage | null> => {
-  const params = new URLSearchParams()
-  params.set('populate[heroImage]', 'true')
-  params.set('populate[deliveryAreas]', 'true')
-  params.set('populate[seo][populate][ogImage]', 'true')
+  const createParams = (includeProductShowcase: boolean) => {
+    const params = new URLSearchParams()
+    params.set('populate[heroImage]', 'true')
+    params.set('populate[deliveryAreas]', 'true')
+    params.set('populate[seo][populate][ogImage]', 'true')
 
-  const response = await strapiFetch<StrapiSingleResponse<HomePage>>(
-    '/api/home-page',
-    params,
-  )
+    if (includeProductShowcase) {
+      for (const slot of [
+        'primaryProduct',
+        'secondaryProduct',
+        'tertiaryProduct',
+      ]) {
+        params.set(
+          `populate[productShowcase][populate][${slot}][populate][coverImage]`,
+          'true',
+        )
+        params.set(
+          `populate[productShowcase][populate][${slot}][populate][category]`,
+          'true',
+        )
+      }
+    }
 
-  return response.data
+    return params
+  }
+
+  try {
+    const response = await strapiFetch<StrapiSingleResponse<HomePage>>(
+      '/api/home-page',
+      createParams(true),
+    )
+
+    return response.data
+  } catch (error) {
+    if (!(error instanceof StrapiRequestError) || error.status !== 400) {
+      throw error
+    }
+
+    const legacyResponse = await strapiFetch<StrapiSingleResponse<HomePage>>(
+      '/api/home-page',
+      createParams(false),
+    )
+
+    return legacyResponse.data
+  }
 })
 
 async function getAllSitemapEntries(

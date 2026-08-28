@@ -97,16 +97,16 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
       </section>
 
       <article>
-        <header className="border-b border-slate-200 bg-brand-surface py-7 sm:py-12 lg:py-14">
-          <div className="mx-auto grid max-w-7xl gap-7 px-5 sm:gap-9 sm:px-8 lg:grid-cols-[minmax(0,0.95fr)_minmax(28rem,1.05fr)] lg:items-center lg:gap-14">
+        <header className="border-b border-slate-200 bg-brand-surface py-6 sm:py-8 lg:py-10">
+          <div className="mx-auto grid max-w-7xl gap-7 px-5 sm:px-8 lg:grid-cols-[minmax(0,1.05fr)_minmax(26rem,0.95fr)] lg:items-center lg:gap-12">
             <div>
               <Link className="inline-flex rounded-full border border-blue-200 bg-white px-3 py-2 text-[10px] font-extrabold uppercase tracking-[0.09em] text-brand-blue transition hover:border-brand-blue" href={`/blogs?category=${encodeURIComponent(post.category.slug)}`}>
                 {post.category.name}
               </Link>
-              <h1 className="mt-5 max-w-3xl text-[2.35rem] font-extrabold leading-[1.04] tracking-[-0.04em] text-slate-950 sm:text-5xl lg:text-[3.5rem]">{post.title}</h1>
-              <p className="mt-5 max-w-2xl text-[16px] leading-8 text-slate-600 sm:text-lg">{post.excerpt}</p>
+              <h1 className="mt-4 max-w-3xl text-[2.15rem] font-extrabold leading-[1.06] tracking-[-0.04em] text-slate-950 sm:text-[2.7rem] lg:text-5xl">{post.title}</h1>
+              <p className="mt-4 max-w-2xl text-[15px] leading-7 text-slate-600 sm:text-base">{post.excerpt}</p>
 
-              <div className="mt-6 flex items-center justify-between gap-5 border-t border-slate-200 pt-5 sm:mt-7 sm:justify-start">
+              <div className="mt-5 flex items-center justify-between gap-5 border-t border-slate-200 pt-4 sm:justify-start">
                 <div className="flex items-center gap-3">
                   {authorImageUrl && post.author.photo ? (
                     <div className="relative size-10 shrink-0 overflow-hidden rounded-full bg-slate-200">
@@ -130,7 +130,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             </div>
 
             {coverImageUrl && (
-              <div className="relative aspect-video overflow-hidden rounded-3xl border border-slate-200 bg-slate-100 shadow-[0_24px_65px_rgba(12,53,86,0.14)] lg:aspect-[4/3]">
+              <div className="relative aspect-video overflow-hidden rounded-3xl border border-slate-200 bg-slate-100 shadow-[0_20px_55px_rgba(12,53,86,0.12)] lg:aspect-[16/10]">
                 <Image
                   alt={post.coverImage.alternativeText ?? post.title}
                   className="object-cover"

@@ -84,7 +84,7 @@ export default async function SeoLandingPage({ params }: LandingPageProps) {
           />
         )}
         <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/90 to-slate-950/35" />
-        <div className="relative mx-auto max-w-7xl px-5 py-16 sm:px-8 sm:py-24">
+        <div className="relative mx-auto max-w-7xl px-5 py-8 sm:px-8 sm:py-10 lg:py-12">
           <nav className="flex flex-wrap items-center gap-2 text-[10px] font-black uppercase tracking-[0.14em] text-slate-500" aria-label="Breadcrumb">
             <Link className="hover:text-white" href="/">Home</Link>
             {breadcrumbSegments.map((segment, index) => {
@@ -102,12 +102,12 @@ export default async function SeoLandingPage({ params }: LandingPageProps) {
               )
             })}
           </nav>
-          <div className="mt-10 flex flex-wrap gap-2">
+          <div className="mt-5 flex flex-wrap gap-2">
             <span className="bg-orange-500 px-3 py-2 text-[9px] font-black uppercase tracking-[0.16em] text-white">{landing.pageType.replace(/_/g, ' ')}</span>
             <span className="border border-slate-600 px-3 py-2 text-[9px] font-black uppercase tracking-[0.16em] text-slate-300">{audienceLabel(landing.audience)}</span>
           </div>
-          <h1 className="mt-5 max-w-5xl text-4xl font-black tracking-[-0.05em] sm:text-6xl">{landing.h1}</h1>
-          <p className="mt-6 max-w-3xl text-base leading-8 text-slate-300">{landing.summary}</p>
+          <h1 className="mt-4 max-w-5xl text-[2.15rem] font-black leading-[1.08] tracking-[-0.04em] sm:text-[2.7rem] lg:text-5xl">{landing.h1}</h1>
+          <p className="mt-4 max-w-3xl text-base leading-7 text-slate-300">{landing.summary}</p>
         </div>
       </section>
 

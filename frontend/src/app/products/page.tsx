@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 
 import { ProductCatalogue } from '@/components/products/product-catalogue'
+import { ProductFamilyCard } from '@/components/products/product-family-card'
 import { EmptyState } from '@/components/site/empty-state'
 import { cleanCatalogueLabel } from '@/lib/business/catalogue'
 import { getProductCategories, getProducts } from '@/lib/strapi/queries'
@@ -26,20 +27,27 @@ export async function generateMetadata({ searchParams }: ProductsPageProps): Pro
 export default async function ProductsPage({ searchParams }: ProductsPageProps) {
   const rawCategory = (await searchParams).category
   const selectedCategory = Array.isArray(rawCategory) ? rawCategory[0] : rawCategory
-  const [products, categories] = await Promise.all([
-    getProducts(selectedCategory),
+  const [allProducts, categories] = await Promise.all([
+    getProducts(),
     getProductCategories(),
   ])
-  const selectedCategoryName = selectedCategory
-    ? categories.find((category) => category.slug === selectedCategory)?.name
+  const activeCategory = selectedCategory
+    ? categories.find((category) => category.slug === selectedCategory)
     : undefined
-  const cleanSelectedCategoryName = selectedCategoryName
-    ? cleanCatalogueLabel(selectedCategoryName)
+  const cleanSelectedCategoryName = activeCategory
+    ? cleanCatalogueLabel(activeCategory.name)
     : undefined
+  const products = activeCategory
+    ? allProducts.filter((product) => product.category.slug === activeCategory.slug)
+    : []
+  const productFamilies = categories.map((category) => ({
+    category,
+    products: allProducts.filter((product) => product.category.slug === category.slug),
+  }))
 
   return (
     <main>
-      <section className="relative overflow-hidden bg-brand-navy py-8 text-white sm:py-14 lg:py-16">
+      <section className="relative overflow-hidden bg-brand-navy py-7 text-white sm:py-9 lg:py-10">
         <div className="industrial-grid absolute inset-0 opacity-20" />
         <div className="absolute -right-40 -top-52 size-[38rem] rounded-full bg-blue-400/15 blur-3xl" aria-hidden="true" />
         <div className="relative mx-auto max-w-7xl px-5 sm:px-8">
@@ -49,137 +57,150 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
             <span className="text-white">Products</span>
           </nav>
 
-          <div className="mt-6 grid gap-8 sm:mt-7 lg:grid-cols-[minmax(0,1fr)_23rem] lg:items-end lg:gap-16">
-            <div>
+          <div className="mt-5 max-w-5xl border-l-2 border-orange-300/80 pl-5 sm:pl-7">
+            <div className="max-w-4xl">
               <p className="text-[11px] font-extrabold uppercase tracking-[0.12em] text-orange-300">
-                Industrial packaging catalogue
+                {cleanSelectedCategoryName ? 'Selected product family' : 'Industrial packaging catalogue'}
               </p>
-              <h1 className="mt-4 max-w-4xl text-[2.35rem] font-extrabold leading-[1.04] tracking-[-0.035em] text-white sm:text-5xl lg:text-[3.55rem]">
-                Packaging products, easier to compare and source.
+              <h1 className="mt-3 max-w-4xl text-[2.15rem] font-extrabold leading-[1.06] tracking-[-0.035em] text-white sm:text-[2.7rem] lg:text-5xl">
+                {cleanSelectedCategoryName
+                  ? `Explore ${cleanSelectedCategoryName} products.`
+                  : 'Choose the product family you need.'}
               </h1>
-              <p className="mt-4 max-w-2xl text-[15px] leading-7 text-blue-100/75 sm:mt-5 sm:text-base">
-                Browse protective packaging, tapes, stretch films, strapping and security products—with technical details available before you request a quote.
+              <p className="mt-4 max-w-3xl text-[15px] leading-6 text-blue-100/75 sm:text-base sm:leading-7">
+                {cleanSelectedCategoryName
+                  ? `Compare only ${cleanSelectedCategoryName.toLocaleLowerCase()} products, review technical details and request pricing without losing context.`
+                  : 'Start with a focused family so unrelated products stay out of the way. Compare specifications and request a quote without losing context.'}
               </p>
 
-              <div className="mt-6 flex gap-2 sm:mt-7 sm:gap-3">
-                <a className="inline-flex min-h-12 flex-1 items-center justify-center rounded-xl bg-white px-3 text-[10px] font-extrabold uppercase tracking-[0.06em] text-brand-navy transition hover:bg-blue-50 sm:flex-none sm:px-6 sm:text-xs sm:tracking-[0.08em]" href="#catalogue">
-                  Browse products <span className="ml-2" aria-hidden="true">↓</span>
-                </a>
-                <Link className="inline-flex min-h-12 flex-1 items-center justify-center rounded-xl border border-white/20 px-3 text-[10px] font-extrabold uppercase tracking-[0.05em] text-white transition hover:border-white/40 hover:bg-white/10 sm:flex-none sm:px-6 sm:text-xs sm:tracking-[0.08em]" href="/quote">
-                  Share a requirement <span className="ml-2" aria-hidden="true">→</span>
+              <div className="mt-5 flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-5">
+                {cleanSelectedCategoryName ? (
+                  <a className="inline-flex min-h-11 items-center justify-center rounded-xl bg-white px-5 text-[10px] font-extrabold uppercase tracking-[0.06em] text-brand-navy shadow-sm transition hover:bg-blue-50 sm:px-6 sm:text-xs sm:tracking-[0.08em]" href="#catalogue">
+                    View {products.length} {products.length === 1 ? 'product' : 'products'} <span className="ml-2" aria-hidden="true">↓</span>
+                  </a>
+                ) : (
+                  <a className="inline-flex min-h-11 items-center justify-center rounded-xl bg-white px-5 text-[10px] font-extrabold uppercase tracking-[0.06em] text-brand-navy shadow-sm transition hover:bg-blue-50 sm:px-6 sm:text-xs sm:tracking-[0.08em]" href="#families">
+                    Browse product families <span className="ml-2" aria-hidden="true">↓</span>
+                  </a>
+                )}
+                <Link className="inline-flex min-h-11 items-center justify-center px-2 text-[10px] font-extrabold uppercase tracking-[0.05em] text-blue-100 underline decoration-white/25 underline-offset-4 transition hover:text-white sm:text-xs sm:tracking-[0.08em]" href="/quote">
+                  Not sure what fits? Get help <span className="ml-2" aria-hidden="true">→</span>
                 </Link>
               </div>
+            </div>
+          </div>
+        </div>
+      </section>
 
-              <dl className="mt-7 hidden max-w-md grid-cols-2 gap-px overflow-hidden rounded-xl border border-white/10 bg-white/10 sm:grid lg:hidden">
-                <div className="bg-brand-navy/70 px-4 py-3">
-                  <dt className="text-[9px] font-extrabold uppercase tracking-[0.09em] text-blue-100/55">Published</dt>
-                  <dd className="mt-1 text-lg font-extrabold text-white">{products.length} products</dd>
-                </div>
-                <div className="bg-brand-navy/70 px-4 py-3">
-                  <dt className="text-[9px] font-extrabold uppercase tracking-[0.09em] text-blue-100/55">Product families</dt>
-                  <dd className="mt-1 text-lg font-extrabold text-white">{categories.length} categories</dd>
-                </div>
-              </dl>
+      {!activeCategory ? (
+        <section className="scroll-mt-32 bg-brand-surface py-12 sm:py-16 lg:py-20" id="families">
+          <div className="mx-auto max-w-7xl px-5 sm:px-8">
+            <div className="mb-8 grid gap-4 lg:grid-cols-[minmax(0,1fr)_26rem] lg:items-end">
+              <div>
+                <p className="text-[10px] font-extrabold uppercase tracking-[0.1em] text-orange-600">Browse by product family</p>
+                <h2 className="mt-2 max-w-2xl text-[2rem] font-extrabold tracking-[-0.03em] text-slate-950 sm:text-[2.65rem]">
+                  Choose what you need to source.
+                </h2>
+              </div>
+              <p className="max-w-lg text-sm leading-6 text-slate-600 lg:justify-self-end">
+                Products stay separated by use and material type, so you can compare relevant options without unrelated items in the way.
+              </p>
             </div>
 
-            <aside className="hidden rounded-3xl border border-white/15 bg-white/[0.07] p-6 shadow-2xl backdrop-blur-sm lg:block">
-              <div className="grid grid-cols-2 gap-5 border-b border-white/10 pb-5">
-                <div>
-                  <p className="text-3xl font-extrabold text-white">{products.length}</p>
-                  <p className="mt-1 text-xs text-blue-100/60">Published products</p>
-                </div>
-                <div>
-                  <p className="text-3xl font-extrabold text-white">{categories.length}</p>
-                  <p className="mt-1 text-xs text-blue-100/60">Product families</p>
-                </div>
+            {productFamilies.length > 0 ? (
+              <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+                {productFamilies.map(({ category, products: familyProducts }, index) => (
+                  <ProductFamilyCard
+                    category={category}
+                    key={category.documentId}
+                    position={index + 1}
+                    products={familyProducts}
+                  />
+                ))}
               </div>
-              <p className="mt-5 text-[10px] font-extrabold uppercase tracking-[0.1em] text-orange-300">Need selection support?</p>
-              <p className="mt-2 text-sm leading-6 text-blue-100/75">Send the application, size or model reference. Our team will help confirm the suitable option.</p>
-              <Link className="mt-5 inline-flex items-center text-xs font-extrabold text-white underline decoration-white/30 underline-offset-4 hover:text-blue-100" href="/quote">
-                Start a guided enquiry <span className="ml-2" aria-hidden="true">→</span>
+            ) : (
+              <EmptyState
+                actionHref="/quote"
+                actionLabel="Share a requirement"
+                description="Our product families are being prepared. Share your application or specifications and our team will identify a suitable option."
+                title="Product catalogue coming soon"
+              />
+            )}
+
+            <aside className="mt-8 grid gap-5 rounded-2xl border border-blue-200 bg-blue-50/70 p-5 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center sm:p-6">
+              <div>
+                <p className="text-[10px] font-extrabold uppercase tracking-[0.1em] text-brand-blue">Not sure which family fits?</p>
+                <p className="mt-2 text-sm leading-6 text-slate-700">Send the application, required size or a model reference. We’ll help narrow it down before you request pricing.</p>
+              </div>
+              <Link className="inline-flex min-h-11 items-center justify-center rounded-xl bg-brand-blue px-5 text-[10px] font-extrabold uppercase tracking-[0.08em] text-white transition hover:bg-brand-navy" href="/quote">
+                Ask for guidance <span className="ml-2" aria-hidden="true">→</span>
               </Link>
             </aside>
           </div>
-        </div>
-      </section>
-
-      <section className="sticky top-[100px] z-30 border-b border-slate-200 bg-white/95 py-3 shadow-[0_8px_24px_rgba(12,53,86,0.05)] backdrop-blur-xl" id="categories">
-        <div className="mx-auto flex max-w-7xl items-center gap-4 px-5 sm:px-8">
-          <p className="hidden shrink-0 text-[10px] font-extrabold uppercase tracking-[0.09em] text-slate-500 sm:block">Categories</p>
-          {categories.length > 0 ? (
-            <div className="flex min-w-0 flex-1 gap-2 overflow-x-auto py-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-              <Link
-                aria-current={!selectedCategory ? 'page' : undefined}
-                className={`shrink-0 rounded-full border px-4 py-2.5 text-xs font-bold transition-colors ${!selectedCategory ? 'border-brand-blue bg-brand-blue text-white shadow-sm' : 'border-slate-200 bg-white text-slate-700 hover:border-brand-blue hover:text-brand-blue'}`}
-                href="/products"
-              >
-                All products
+        </section>
+      ) : (
+        <section className="scroll-mt-32 bg-brand-surface py-10 sm:py-14 lg:py-16" id="catalogue">
+          <div className="mx-auto max-w-7xl px-5 sm:px-8">
+            <nav className="mb-8 flex items-center gap-3 overflow-x-auto rounded-2xl border border-slate-200 bg-white p-3 shadow-sm [scrollbar-width:none] [&::-webkit-scrollbar]:hidden" aria-label="Switch product family">
+              <Link className="inline-flex min-h-10 shrink-0 items-center rounded-xl bg-brand-navy px-4 text-[10px] font-extrabold uppercase tracking-[0.07em] text-white transition hover:bg-brand-blue" href="/products#families">
+                ← All product families
               </Link>
-              {categories.map((category) => (
-                <Link
-                  aria-current={selectedCategory === category.slug ? 'page' : undefined}
-                  className={`shrink-0 rounded-full border px-4 py-2.5 text-xs font-bold transition-colors ${selectedCategory === category.slug ? 'border-brand-blue bg-brand-blue text-white shadow-sm' : 'border-slate-200 bg-white text-slate-700 hover:border-brand-blue hover:text-brand-blue'}`}
-                  href={`/products?category=${encodeURIComponent(category.slug)}`}
-                  key={category.documentId}
-                >
-                  {cleanCatalogueLabel(category.name)}
-                </Link>
-              ))}
-              {selectedCategory && (
-                <Link className="shrink-0 px-2 py-2.5 text-xs font-extrabold text-brand-blue underline underline-offset-4" href="/products">
-                  Clear ×
-                </Link>
-              )}
-            </div>
-          ) : (
-            <p className="text-sm text-slate-500">
-              Category filters will appear after the first category is published.
-            </p>
-          )}
-        </div>
-      </section>
+              <span className="h-6 w-px shrink-0 bg-slate-200" aria-hidden="true" />
+              {categories.map((category) => {
+                const isActive = category.slug === activeCategory.slug
 
-      <section className="scroll-mt-44 bg-brand-surface py-12 sm:py-16 lg:py-20" id="catalogue">
-        <div className="mx-auto max-w-7xl px-5 sm:px-8">
-          <div className="mb-7 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-            <div>
-              <p className="text-[10px] font-extrabold uppercase tracking-[0.1em] text-orange-600">
-                {cleanSelectedCategoryName ?? 'Complete catalogue'}
+                return (
+                  <Link
+                    aria-current={isActive ? 'page' : undefined}
+                    className={`shrink-0 rounded-xl border px-4 py-2.5 text-xs font-bold transition ${isActive ? 'border-blue-200 bg-blue-50 text-brand-blue' : 'border-transparent text-slate-600 hover:border-slate-200 hover:text-slate-950'}`}
+                    href={`/products?category=${encodeURIComponent(category.slug)}`}
+                    key={category.documentId}
+                  >
+                    {cleanCatalogueLabel(category.name)}
+                  </Link>
+                )
+              })}
+            </nav>
+
+            <div className="mb-7 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+              <div>
+                <p className="text-[10px] font-extrabold uppercase tracking-[0.1em] text-orange-600">Focused product family</p>
+                <h2 className="mt-2 text-[2rem] font-extrabold tracking-[-0.03em] text-slate-950 sm:text-[2.65rem]">
+                  {cleanSelectedCategoryName}
+                </h2>
+              </div>
+              <p className="max-w-md text-sm leading-6 text-slate-600">
+                Compare only this family. Search by product, model or SKU, then open a result for specifications and application guidance.
               </p>
-              <h2 className="mt-2 text-[2rem] font-extrabold tracking-[-0.025em] text-slate-950 sm:text-[2.5rem]">
-                {cleanSelectedCategoryName ? `${cleanSelectedCategoryName} products` : 'Explore our products'}
-              </h2>
             </div>
-            <p className="max-w-md text-sm leading-6 text-slate-600">Search by product, model or SKU. Open a result for specifications and application guidance.</p>
+
+            {products.length > 0 ? (
+              <ProductCatalogue
+                familyName={cleanSelectedCategoryName ?? cleanCatalogueLabel(activeCategory.name)}
+                products={products}
+              />
+            ) : (
+              <EmptyState
+                actionHref="/products#families"
+                actionLabel="Choose another family"
+                description="This family does not have an available product yet. Choose another family or contact us with your requirement."
+                title="No product in this family yet"
+              />
+            )}
+
+            <aside className="mt-10 overflow-hidden rounded-2xl border border-slate-200 bg-white p-5 shadow-[0_16px_40px_rgba(12,53,86,0.07)] sm:flex sm:items-center sm:justify-between sm:gap-8 sm:p-7">
+              <div>
+                <p className="text-[10px] font-extrabold uppercase tracking-[0.1em] text-orange-600">Need a closer match?</p>
+                <h2 className="mt-2 text-xl font-extrabold tracking-[-0.02em] text-slate-950 sm:text-2xl">Share your size, application or reference.</h2>
+                <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600">We can help confirm the suitable option in this family or review a custom requirement.</p>
+              </div>
+              <Link className="mt-5 inline-flex min-h-12 shrink-0 items-center justify-center rounded-xl bg-brand-blue px-6 text-xs font-extrabold uppercase tracking-[0.07em] text-white transition hover:bg-brand-navy sm:mt-0" href="/quote">
+                Get selection help <span className="ml-2" aria-hidden="true">→</span>
+              </Link>
+            </aside>
           </div>
-
-          {products.length > 0 ? (
-            <ProductCatalogue products={products} />
-          ) : (
-            <EmptyState
-              actionHref={selectedCategory ? '/products' : '/'}
-              actionLabel={selectedCategory ? 'View all products' : 'Back to home'}
-              description={
-                selectedCategory
-                  ? 'This category does not have an available product yet. Try the complete catalogue or contact us with your requirement.'
-                  : 'Our product catalogue is being prepared. Share your application or specifications and our team will help identify a suitable option.'
-              }
-              title={selectedCategory ? 'No product in this category yet' : 'Product catalogue coming soon'}
-            />
-          )}
-
-          <aside className="mt-10 overflow-hidden rounded-3xl bg-brand-navy p-6 text-white shadow-[0_20px_50px_rgba(12,53,86,0.14)] sm:flex sm:items-center sm:justify-between sm:gap-8 sm:p-8">
-            <div>
-              <p className="text-[10px] font-extrabold uppercase tracking-[0.1em] text-orange-300">Can’t find an exact match?</p>
-              <h2 className="mt-2 text-2xl font-extrabold tracking-[-0.02em] text-white">Share your size, application or reference.</h2>
-              <p className="mt-2 max-w-2xl text-sm leading-6 text-blue-100/70">We can help identify a suitable published product or review a custom requirement.</p>
-            </div>
-            <Link className="mt-5 inline-flex min-h-12 shrink-0 items-center justify-center rounded-xl bg-white px-6 text-xs font-extrabold uppercase tracking-[0.07em] text-brand-navy transition hover:bg-blue-50 sm:mt-0" href="/quote">
-              Get selection help <span className="ml-2" aria-hidden="true">→</span>
-            </Link>
-          </aside>
-        </div>
-      </section>
+        </section>
+      )}
     </main>
   )
 }

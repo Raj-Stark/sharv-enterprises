@@ -129,8 +129,8 @@ export default async function ProductPage({ params }: ProductPageProps) {
         </div>
       </div>
 
-      <section className="border-b border-slate-200 bg-brand-surface py-8 sm:py-12 lg:py-16">
-        <div className="mx-auto grid max-w-7xl gap-9 px-5 sm:px-8 lg:grid-cols-[minmax(0,1fr)_minmax(27rem,1fr)] lg:items-center lg:gap-16">
+      <section className="border-b border-slate-200 bg-brand-surface py-6 sm:py-8 lg:py-10">
+        <div className="mx-auto grid max-w-7xl gap-7 px-5 sm:px-8 lg:grid-cols-[minmax(0,0.9fr)_minmax(27rem,1.1fr)] lg:items-center lg:gap-12">
           <ProductGallery featured={product.featured} images={productImages} productName={product.name} />
 
           <div>
@@ -138,7 +138,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
               {product.category.name} <span aria-hidden="true">→</span>
             </Link>
 
-            <h1 className="mt-4 max-w-2xl text-[2.35rem] font-extrabold leading-[1.05] tracking-[-0.035em] text-slate-950 sm:text-5xl lg:text-[3.25rem]">
+            <h1 className="mt-4 max-w-2xl text-[2.15rem] font-extrabold leading-[1.06] tracking-[-0.035em] text-slate-950 sm:text-[2.7rem] lg:text-5xl">
               {product.name}
             </h1>
             <p className="mt-4 max-w-2xl text-base leading-7 text-slate-600">
