@@ -8,7 +8,7 @@ import { WhatsAppIcon } from '@/components/icons/whatsapp-icon'
 import { ProductGallery, type ProductGalleryImage } from '@/components/products/product-gallery'
 import { JsonLd } from '@/components/seo/json-ld'
 import { FaqList } from '@/components/site/faq-list'
-import { buildSeoMetadata } from '@/lib/seo/metadata'
+import { buildPageMetadata, buildSeoMetadata } from '@/lib/seo/metadata'
 import { getSiteUrl } from '@/lib/seo/site-url'
 import { getMediaUrl } from '@/lib/strapi/client'
 import { getProductBySlug } from '@/lib/strapi/queries'
@@ -41,7 +41,14 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
   const { slug } = await params
   const product = await getProductBySlug(slug)
 
-  if (!product) return { title: 'Product not found' }
+  if (!product) {
+    return buildPageMetadata({
+      title: 'Product not found',
+      description: 'The requested Sharv Enterprises product could not be found.',
+      pathname: `/products/${slug}`,
+      noIndex: true,
+    })
+  }
 
   return buildSeoMetadata({
     seo: product.seo,

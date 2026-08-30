@@ -5,6 +5,7 @@ import { ProductCatalogue } from '@/components/products/product-catalogue'
 import { ProductFamilyCard } from '@/components/products/product-family-card'
 import { EmptyState } from '@/components/site/empty-state'
 import { cleanCatalogueLabel } from '@/lib/business/catalogue'
+import { buildPageMetadata } from '@/lib/seo/metadata'
 import { getProductCategories, getProducts } from '@/lib/strapi/queries'
 
 type ProductsPageProps = {
@@ -15,13 +16,16 @@ export async function generateMetadata({ searchParams }: ProductsPageProps): Pro
   const rawCategory = (await searchParams).category
   const category = Array.isArray(rawCategory) ? rawCategory[0] : rawCategory
 
-  return {
+  const metadata = buildPageMetadata({
     title: 'Product Catalogue',
     description:
       'Browse published Sharv Enterprises products for domestic supply and export enquiries.',
-    alternates: { canonical: '/products' },
-    robots: category ? { index: false, follow: true } : undefined,
-  }
+    pathname: '/products',
+  })
+
+  return category
+    ? { ...metadata, robots: { index: false, follow: true } }
+    : metadata
 }
 
 export default async function ProductsPage({ searchParams }: ProductsPageProps) {

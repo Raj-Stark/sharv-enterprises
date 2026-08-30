@@ -111,11 +111,11 @@ export async function generateMetadata(): Promise<Metadata> {
   const homePage = await getHomePage().catch(() => null)
 
   if (!homePage) {
-    return {
-      title: fallbackMetadata.title,
-      description: fallbackMetadata.description,
-      alternates: { canonical: '/' },
-    }
+    return buildSeoMetadata({
+      fallbackTitle: fallbackMetadata.title,
+      fallbackDescription: fallbackMetadata.description,
+      pathname: '/',
+    })
   }
 
   return buildSeoMetadata({
@@ -171,10 +171,6 @@ export default async function Home() {
         ) === index,
     )
     .slice(0, 4)
-  const deliveryAreas = [...(homePage?.deliveryAreas ?? [])].sort(
-    (a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0),
-  )
-
   return (
     <main className="overflow-hidden bg-white">
       <StorefrontHero
@@ -536,44 +532,6 @@ export default async function Home() {
                   </Link>
                 )
               })}
-            </div>
-          </div>
-        </section>
-      )}
-
-      {deliveryAreas.length > 0 && (
-        <section className="bg-white py-14 sm:py-20" aria-labelledby="delivery-title">
-          <div className="mx-auto max-w-7xl px-5 sm:px-8">
-            <div className="relative overflow-hidden rounded-[2rem] bg-brand-navy px-6 py-10 text-white sm:px-10 sm:py-12 lg:px-12">
-              <div className="industrial-grid absolute inset-0 opacity-15" />
-              <div className="relative grid gap-10 lg:grid-cols-[0.78fr_1.22fr] lg:items-center">
-                <div className="max-w-xl" id="delivery-title">
-                  <p className="text-[11px] font-extrabold uppercase tracking-[0.12em] text-white/70">
-                    {homePage?.deliveryEyebrow ?? 'Delivery coverage'}
-                  </p>
-                  <h2 className="mt-4 text-3xl font-extrabold leading-[1.08] tracking-[-0.025em] text-white sm:text-[2.75rem]">
-                    {homePage?.deliveryTitle ?? 'Domestic supply and export enquiries.'}
-                  </h2>
-                  <p className="mt-5 text-base leading-7 text-white/80">
-                    {homePage?.deliveryDescription ?? 'Published delivery areas show where requirements can be evaluated. Final availability is confirmed against the product and destination.'}
-                  </p>
-                  <Link className="mt-7 inline-flex min-h-12 items-center justify-center rounded-xl bg-white px-6 text-xs font-extrabold uppercase tracking-[0.08em] text-brand-navy transition hover:bg-blue-50" href="/quote">
-                    Share destination <span className="ml-3" aria-hidden="true">→</span>
-                  </Link>
-                </div>
-
-                <div className="grid gap-4 sm:grid-cols-2">
-                  {deliveryAreas.map((area) => (
-                    <article className="rounded-2xl bg-white p-6 text-slate-950" key={area.id}>
-                      <p className="text-[10px] font-extrabold uppercase tracking-[0.08em] text-brand-blue">
-                        {area.market === 'export' ? 'Export enquiry' : 'Domestic supply'}
-                      </p>
-                      <h3 className="mt-4 text-xl font-extrabold leading-snug tracking-[-0.015em]">{area.name}</h3>
-                      <p className="mt-2 text-[15px] leading-6 text-slate-600">{area.description}</p>
-                    </article>
-                  ))}
-                </div>
-              </div>
             </div>
           </div>
         </section>

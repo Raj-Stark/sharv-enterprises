@@ -11,7 +11,7 @@ import { EmptyState } from '@/components/site/empty-state'
 import { FaqList } from '@/components/site/faq-list'
 import { getMediaUrl } from '@/lib/strapi/client'
 import { getApplicationBySlug, getProductsByApplication } from '@/lib/strapi/queries'
-import { buildSeoMetadata } from '@/lib/seo/metadata'
+import { buildPageMetadata, buildSeoMetadata } from '@/lib/seo/metadata'
 import { getSiteUrl } from '@/lib/seo/site-url'
 
 type ApplicationPageProps = {
@@ -22,11 +22,18 @@ export async function generateMetadata({ params }: ApplicationPageProps): Promis
   const { slug } = await params
   const application = await getApplicationBySlug(slug)
 
-  if (!application) return { title: 'Application not found', robots: { index: false } }
+  if (!application) {
+    return buildPageMetadata({
+      title: 'Application not found',
+      description: 'The requested Sharv Enterprises packaging application could not be found.',
+      pathname: `/applications/${slug}`,
+      noIndex: true,
+    })
+  }
 
   return buildSeoMetadata({
     seo: application.seo,
-    fallbackTitle: `${application.name} Sealing Products`,
+    fallbackTitle: `${application.name} Packaging Products`,
     fallbackDescription: application.summary,
     fallbackImage: application.image,
     pathname: `/applications/${application.slug}`,

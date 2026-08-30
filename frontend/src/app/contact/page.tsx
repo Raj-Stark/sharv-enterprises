@@ -11,15 +11,16 @@ import {
   OFFICIAL_WHATSAPP_DISPLAY,
   OFFICIAL_WHATSAPP_URL,
 } from '@/lib/business/contact'
+import { buildPageMetadata } from '@/lib/seo/metadata'
 import { getStrapiPublicUrl } from '@/lib/strapi/client'
 import { getProducts, getSiteSetting } from '@/lib/strapi/queries'
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildPageMetadata({
   title: 'Contact Us',
   description:
     'Contact Sharv Enterprises for domestic or export packaging requirements through the tracked WhatsApp quotation flow.',
-  alternates: { canonical: '/contact' },
-}
+  pathname: '/contact',
+})
 
 const requirementItems = [
   'Product name, SKU or a clear reference photo',
