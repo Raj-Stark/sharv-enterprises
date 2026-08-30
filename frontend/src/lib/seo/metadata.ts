@@ -77,9 +77,12 @@ export function buildSeoMetadata({
   const description = seo?.metaDescription ?? fallbackDescription
   const openGraphTitle = socialTitle(normalizedTitle(seo?.ogTitle ?? title))
   const image = socialImage(seo?.ogImage, fallbackImage)
+  const documentTitle: Metadata['title'] = title.toLocaleLowerCase().includes('sharv enterprises')
+    ? { absolute: title }
+    : title
 
   return {
-    title,
+    title: documentTitle,
     description,
     alternates: {
       canonical: pathname,
