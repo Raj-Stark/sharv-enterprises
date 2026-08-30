@@ -11,7 +11,7 @@ import { FaqList } from '@/components/site/faq-list'
 import { normalizeArticleContent } from '@/lib/content/article'
 import { getMediaUrl } from '@/lib/strapi/client'
 import { getBlogPostBySlug } from '@/lib/strapi/queries'
-import { buildSeoMetadata } from '@/lib/seo/metadata'
+import { buildPageMetadata, buildSeoMetadata } from '@/lib/seo/metadata'
 import { getSiteUrl } from '@/lib/seo/site-url'
 
 type BlogPostPageProps = {
@@ -28,16 +28,18 @@ function formatDate(value?: string): string | null {
   }).format(new Date(value))
 }
 
-function safeExternalUrl(value?: string | null): string | null {
-  if (!value || !/^https:\/\//i.test(value)) return null
-  return value
-}
-
 export async function generateMetadata({ params }: BlogPostPageProps): Promise<Metadata> {
   const { slug } = await params
   const post = await getBlogPostBySlug(slug)
 
-  if (!post) return { title: 'Article not found', robots: { index: false } }
+  if (!post) {
+    return buildPageMetadata({
+      title: 'Article not found',
+      description: 'The requested Sharv Enterprises packaging article could not be found.',
+      pathname: `/blogs/${slug}`,
+      noIndex: true,
+    })
+  }
 
   return buildSeoMetadata({
     seo: post.seo,
@@ -58,8 +60,6 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   const coverImageUrl = getMediaUrl(post.coverImage?.url)
   const authorImageUrl = getMediaUrl(post.author.photo?.url)
   const publishedDate = formatDate(post.publishedAt)
-  const linkedinUrl = safeExternalUrl(post.author.linkedinUrl)
-  const websiteUrl = safeExternalUrl(post.author.websiteUrl)
   const article = normalizeArticleContent(post.content)
   const articleCtaTitle = article.ctaTitle ?? 'Need help selecting the right packaging product?'
   const articleCtaDescription = article.ctaDescription ?? 'Share your application, operating conditions or model reference with Sharv Enterprises for product guidance.'
@@ -144,7 +144,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           </div>
         </header>
 
-        <div className="mx-auto grid max-w-6xl gap-10 px-5 py-12 sm:px-8 sm:py-16 lg:grid-cols-[minmax(0,1fr)_18rem] lg:gap-16 lg:py-20">
+        <div className={`mx-auto grid gap-10 px-5 py-12 sm:px-8 sm:py-16 lg:gap-16 lg:py-20 ${article.toc.length > 0 ? 'max-w-6xl lg:grid-cols-[minmax(0,1fr)_18rem]' : 'max-w-4xl'}`}>
           <div className="min-w-0">
             {article.toc.length > 0 && (
               <details className="mb-9 rounded-2xl border border-slate-200 bg-slate-50 lg:hidden">
@@ -193,9 +193,9 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             )}
           </div>
 
-          <aside className="hidden lg:block">
-            <div className="sticky top-32 grid gap-5">
-              {article.toc.length > 0 && (
+          {article.toc.length > 0 && (
+            <aside className="hidden lg:block">
+              <div className="sticky top-32">
                 <nav className="rounded-2xl border border-slate-200 bg-white p-5" aria-label="Article contents">
                   <p className="text-[10px] font-extrabold uppercase tracking-[0.1em] text-orange-600">On this page</p>
                   <ol className="mt-4 grid gap-3 border-l border-slate-200 pl-4">
@@ -206,39 +206,9 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                     ))}
                   </ol>
                 </nav>
-              )}
-
-              <div className="rounded-2xl bg-brand-surface p-5">
-                <div className="flex items-center gap-3">
-                  {authorImageUrl && post.author.photo ? (
-                    <div className="relative size-12 shrink-0 overflow-hidden rounded-full bg-slate-200">
-                      <Image alt={post.author.photo.alternativeText ?? post.author.name} className="object-cover" fill sizes="48px" src={authorImageUrl} />
-                    </div>
-                  ) : (
-                    <div className="grid size-12 shrink-0 place-items-center rounded-full bg-brand-navy text-base font-extrabold text-white">{post.author.name.charAt(0)}</div>
-                  )}
-                  <div>
-                    <p className="font-extrabold text-slate-950">{post.author.name}</p>
-                    {post.author.jobTitle && <p className="mt-0.5 text-xs text-slate-500">{post.author.jobTitle}</p>}
-                  </div>
-                </div>
-                <p className="mt-4 text-xs leading-6 text-slate-600">{post.author.bio}</p>
-                {post.author.expertise && <p className="mt-4 border-t border-slate-200 pt-4 text-[10px] font-bold uppercase tracking-[0.08em] text-brand-blue">{post.author.expertise}</p>}
-                {(linkedinUrl || websiteUrl) && (
-                  <div className="mt-4 flex gap-4 text-xs font-bold">
-                    {linkedinUrl && <a className="text-brand-blue hover:text-brand-navy" href={linkedinUrl} rel="noreferrer" target="_blank">LinkedIn</a>}
-                    {websiteUrl && <a className="text-brand-blue hover:text-brand-navy" href={websiteUrl} rel="noreferrer" target="_blank">Website</a>}
-                  </div>
-                )}
               </div>
-
-              <Link className="rounded-2xl bg-brand-navy p-5 text-white transition hover:-translate-y-0.5 hover:shadow-lg" href="/quote">
-                <span className="text-[10px] font-extrabold uppercase tracking-[0.09em] text-orange-300">Ask Sharv</span>
-                <span className="mt-2 block text-base font-extrabold leading-snug">Need help choosing a product?</span>
-                <span className="mt-3 block text-xs font-bold text-blue-100/70">Start an enquiry →</span>
-              </Link>
-            </div>
-          </aside>
+            </aside>
+          )}
         </div>
       </article>
 

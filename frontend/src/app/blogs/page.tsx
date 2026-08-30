@@ -3,6 +3,7 @@ import Link from 'next/link'
 
 import { BlogCard } from '@/components/blog/blog-card'
 import { EmptyState } from '@/components/site/empty-state'
+import { buildPageMetadata } from '@/lib/seo/metadata'
 import { getBlogCategories, getBlogPosts } from '@/lib/strapi/queries'
 
 type BlogsPageProps = {
@@ -13,13 +14,16 @@ export async function generateMetadata({ searchParams }: BlogsPageProps): Promis
   const rawCategory = (await searchParams).category
   const category = Array.isArray(rawCategory) ? rawCategory[0] : rawCategory
 
-  return {
+  const metadata = buildPageMetadata({
     title: 'Insights & Technical Articles',
     description:
-      'Read published articles about mechanical sealing products, applications and sourcing.',
-    alternates: { canonical: '/blogs' },
-    robots: category ? { index: false, follow: true } : undefined,
-  }
+      'Read practical packaging guides about stretch film, tapes, security seals, transit protection and product sourcing.',
+    pathname: '/blogs',
+  })
+
+  return category
+    ? { ...metadata, robots: { index: false, follow: true } }
+    : metadata
 }
 
 export default async function BlogsPage({ searchParams }: BlogsPageProps) {

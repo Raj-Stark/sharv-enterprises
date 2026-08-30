@@ -1,11 +1,13 @@
 import type { Metadata } from 'next'
 
-export const metadata: Metadata = {
+import { buildPageMetadata } from '@/lib/seo/metadata'
+
+export const metadata: Metadata = buildPageMetadata({
   title: 'Media Credits',
   description: 'Source and licence details for third-party media used by Sharv Enterprises.',
-  alternates: { canonical: '/media-credits' },
-  robots: { index: false, follow: true },
-}
+  pathname: '/media-credits',
+  noIndex: true,
+})
 
 const credits = [
   {

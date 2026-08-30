@@ -3,14 +3,15 @@ import Link from 'next/link'
 
 import { DiscoveryCard } from '@/components/discovery/discovery-card'
 import { EmptyState } from '@/components/site/empty-state'
+import { buildPageMetadata } from '@/lib/seo/metadata'
 import { getApplications } from '@/lib/strapi/queries'
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildPageMetadata({
   title: 'Applications',
   description:
-    'Browse mechanical sealing applications and discover the products connected to each equipment or operating use case.',
-  alternates: { canonical: '/applications' },
-}
+    'Browse packaging applications for carton sealing, pallet unitisation, cargo security, export packing and transit protection.',
+  pathname: '/applications',
+})
 
 export default async function ApplicationsPage() {
   const applications = await getApplications()

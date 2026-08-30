@@ -101,17 +101,6 @@ export function SiteFooter({ setting }: SiteFooterProps) {
           </ul>
         </div>
       </div>
-      <div className="border-t border-slate-800">
-        <div className="mx-auto flex max-w-7xl flex-col gap-2 px-5 py-5 text-xs text-slate-500 sm:flex-row sm:items-center sm:justify-between sm:px-8">
-          <span>© {new Date().getFullYear()} {companyName}</span>
-          <span className="flex flex-wrap items-center gap-x-4 gap-y-2">
-            <span>Product availability and specifications subject to confirmation.</span>
-            <Link className="hover:text-slate-300" href="/media-credits">
-              Media credits
-            </Link>
-          </span>
-        </div>
-      </div>
     </footer>
   )
 }

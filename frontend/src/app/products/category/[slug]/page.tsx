@@ -8,7 +8,7 @@ import { EmptyState } from '@/components/site/empty-state'
 import { FaqList } from '@/components/site/faq-list'
 import { getMediaUrl } from '@/lib/strapi/client'
 import { getCategoryBySlug, getProducts } from '@/lib/strapi/queries'
-import { buildSeoMetadata } from '@/lib/seo/metadata'
+import { buildPageMetadata, buildSeoMetadata } from '@/lib/seo/metadata'
 
 type CategoryPageProps = {
   params: Promise<{ slug: string }>
@@ -18,7 +18,14 @@ export async function generateMetadata({ params }: CategoryPageProps): Promise<M
   const { slug } = await params
   const category = await getCategoryBySlug(slug)
 
-  if (!category) return { title: 'Category not found' }
+  if (!category) {
+    return buildPageMetadata({
+      title: 'Category not found',
+      description: 'The requested Sharv Enterprises product category could not be found.',
+      pathname: `/products/category/${slug}`,
+      noIndex: true,
+    })
+  }
 
   return buildSeoMetadata({
     seo: category.seo,

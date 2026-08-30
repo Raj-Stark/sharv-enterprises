@@ -5,14 +5,15 @@ import Link from 'next/link'
 import { WhatsAppIcon } from '@/components/icons/whatsapp-icon'
 import { cleanCatalogueLabel } from '@/lib/business/catalogue'
 import { OFFICIAL_WHATSAPP_DISPLAY } from '@/lib/business/contact'
+import { buildPageMetadata } from '@/lib/seo/metadata'
 import { getProductCategories } from '@/lib/strapi/queries'
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildPageMetadata({
   title: 'About Sharv Enterprises',
   description:
     'Sharv Enterprises supplies industrial packaging materials for packing, protection and domestic or export dispatch requirements.',
-  alternates: { canonical: '/about' },
-}
+  pathname: '/about',
+})
 
 const fallbackProductRange = [
   'Stretch Films',

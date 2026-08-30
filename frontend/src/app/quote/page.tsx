@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 
 import { QuotationForm } from '@/components/quotation/quotation-form'
+import { buildPageMetadata } from '@/lib/seo/metadata'
 import { getStrapiPublicUrl } from '@/lib/strapi/client'
 import { getProducts } from '@/lib/strapi/queries'
 
@@ -11,12 +12,12 @@ type QuotePageProps = {
   }>
 }
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildPageMetadata({
   title: 'WhatsApp Quotation',
   description:
     'Save a packaging requirement and continue the quotation conversation on WhatsApp.',
-  alternates: { canonical: '/quote' },
-}
+  pathname: '/quote',
+})
 
 export default async function QuotePage({ searchParams }: QuotePageProps) {
   const params = await searchParams
