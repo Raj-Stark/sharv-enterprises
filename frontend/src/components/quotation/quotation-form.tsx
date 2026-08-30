@@ -53,17 +53,14 @@ export function QuotationForm({
   endpoint,
   defaultDeliveryDestination,
   defaultProductDocumentId,
-  defaultEnquiryType = 'domestic',
   turnstileSiteKey,
 }: {
   products: ProductSummary[]
   endpoint: string
   defaultDeliveryDestination?: string
   defaultProductDocumentId?: string
-  defaultEnquiryType?: 'domestic' | 'export'
   turnstileSiteKey?: string
 }) {
-  const [enquiryType, setEnquiryType] = useState<'domestic' | 'export'>(defaultEnquiryType)
   const [selectedProduct, setSelectedProduct] = useState(defaultProductDocumentId ?? '')
   const [captchaToken, setCaptchaToken] = useState<string | null>(null)
   const [turnstileReset, setTurnstileReset] = useState(0)
@@ -107,7 +104,7 @@ export function QuotationForm({
     const payload = {
       data: {
         submissionToken: submissionToken.current,
-        enquiryType,
+        enquiryType: stringValue(formData, 'enquiryType'),
         fullName: stringValue(formData, 'fullName'),
         whatsappNumber: stringValue(formData, 'whatsappNumber'),
         companyName: optionalString(formData, 'companyName'),
@@ -236,28 +233,6 @@ export function QuotationForm({
         </span>
       </div>
 
-      <fieldset className="mt-6">
-        <legend className={labelClass}>Quotation type</legend>
-        <div className="mt-2 grid grid-cols-2 rounded-xl bg-slate-100 p-1">
-          {(['domestic', 'export'] as const).map((type) => (
-            <label
-              className={`cursor-pointer rounded-lg px-4 py-3 text-center text-xs font-extrabold capitalize transition ${enquiryType === type ? 'bg-brand-navy text-white shadow-sm' : 'text-slate-700 hover:bg-white'}`}
-              key={type}
-            >
-              <input
-                checked={enquiryType === type}
-                className="sr-only"
-                name="enquiryType"
-                onChange={() => setEnquiryType(type)}
-                type="radio"
-                value={type}
-              />
-              {type === 'domestic' ? 'India enquiry' : 'Export enquiry'}
-            </label>
-          ))}
-        </div>
-      </fieldset>
-
       <div className="mt-6 grid gap-4 sm:grid-cols-2">
           <label className={labelClass}>
             Full name *
@@ -277,12 +252,17 @@ export function QuotationForm({
               type="tel"
             />
           </label>
-          {enquiryType === 'export' && (
-            <label className={`${labelClass} sm:col-span-2`}>
-              Company name *
-              <input autoComplete="organization" className={inputClass} maxLength={200} name="companyName" placeholder="Company or business name" required />
-            </label>
-          )}
+          <label className={`${labelClass} sm:col-span-2`}>
+            Company name <span className="font-medium normal-case tracking-normal text-slate-500">(optional)</span>
+            <input autoComplete="organization" className={inputClass} maxLength={200} name="companyName" placeholder="Company or business name" />
+          </label>
+          <label className={`${labelClass} sm:col-span-2`}>
+            Enquiry type *
+            <select className={inputClass} defaultValue="domestic" name="enquiryType" required>
+              <option value="domestic">India enquiry</option>
+              <option value="export">Export enquiry</option>
+            </select>
+          </label>
           <label className={`${labelClass} sm:col-span-2`}>
             Product *
             <select
@@ -311,7 +291,6 @@ export function QuotationForm({
               <input aria-label="Quantity" className={`${inputClass} !mt-0`} defaultValue="1" min="0.001" name="quantity" required step="0.001" type="number" />
               <select aria-label="Unit" className={`${inputClass} !mt-0 px-3`} defaultValue="piece" name="unit" required>
                 <option value="piece">Pieces</option>
-                <option value="roll">Rolls</option>
                 <option value="pack">Packs</option>
                 <option value="box">Boxes</option>
                 <option value="set">Sets</option>
@@ -321,13 +300,13 @@ export function QuotationForm({
             </span>
           </label>
           <label className={labelClass}>
-            {enquiryType === 'export' ? 'Destination country *' : 'Delivery city *'}
+            Delivery destination *
             <input
               className={inputClass}
               defaultValue={defaultDeliveryDestination}
               maxLength={200}
               name="deliveryDestination"
-              placeholder={enquiryType === 'export' ? 'Country or port' : 'City or state'}
+              placeholder="City, state, country or port"
               required
             />
           </label>

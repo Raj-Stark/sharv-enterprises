@@ -5,6 +5,7 @@
   "description": "A Strapi application",
   "scripts": {
     "build": "strapi build",
+    "build:backend": "npm run build",
     "console": "strapi console",
     "deploy": "strapi deploy",
     "dev": "strapi develop",
@@ -19,7 +20,7 @@
     "@strapi/plugin-cloud": "5.51.0",
     "@strapi/plugin-users-permissions": "5.51.0",
     "@strapi/strapi": "5.51.0",
-    "better-sqlite3": "12.8.0",
+    "mysql2": "^3.24.2",
     "pg": "^8.22.0",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
@@ -31,6 +32,9 @@
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "typescript": "^5"
+  },
+  "optionalDependencies": {
+    "better-sqlite3": "12.8.0"
   },
   "engines": {
     "node": ">=20.0.0 <=26.x.x",

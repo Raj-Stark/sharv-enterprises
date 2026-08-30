@@ -202,6 +202,18 @@ export type HomeDeliveryArea = {
   sortOrder?: number
 }
 
+export type HomeProductShowcase = {
+  id: number
+  badgeEyebrow: string
+  badgeTitle: string
+  primaryProduct: ProductSummary
+  secondaryProduct: ProductSummary
+  tertiaryProduct: ProductSummary
+  footerEyebrow: string
+  footerText: string
+  ctaLabel: string
+}
+
 export type HomePage = {
   id: number
   documentId: string
@@ -209,6 +221,7 @@ export type HomePage = {
   heroTitle: string
   heroDescription: string
   heroImage: StrapiMedia
+  productShowcase?: HomeProductShowcase | null
   deliveryEyebrow?: string | null
   deliveryTitle?: string | null
   deliveryDescription?: string | null

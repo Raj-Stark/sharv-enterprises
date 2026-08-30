@@ -2,6 +2,9 @@ import Link from 'next/link'
 
 import {
   OFFICIAL_COMPANY_NAME,
+  OFFICIAL_EMAIL,
+  OFFICIAL_PHONE_DISPLAY,
+  OFFICIAL_PHONE_URL,
   OFFICIAL_WHATSAPP_DISPLAY,
   OFFICIAL_WHATSAPP_URL,
 } from '@/lib/business/contact'
@@ -15,6 +18,11 @@ type SiteFooterProps = {
 
 export function SiteFooter({ setting }: SiteFooterProps) {
   const companyName = setting?.companyName ?? OFFICIAL_COMPANY_NAME
+  const enquiryEmail = setting?.enquiryEmail?.trim() || OFFICIAL_EMAIL
+  const enquiryPhone = setting?.phone?.trim() || OFFICIAL_PHONE_DISPLAY
+  const enquiryPhoneUrl = setting?.phone?.trim()
+    ? `tel:${enquiryPhone.replace(/[^\d+]/g, '')}`
+    : OFFICIAL_PHONE_URL
 
   return (
     <footer className="border-t-4 border-orange-500 bg-slate-950 text-slate-300" id="site-footer">
@@ -39,7 +47,7 @@ export function SiteFooter({ setting }: SiteFooterProps) {
               </Link>
             </li>
             <li>
-              <Link className="hover:text-white" href="/products#categories">
+              <Link className="hover:text-white" href="/products#families">
                 Product categories
               </Link>
             </li>
@@ -62,8 +70,6 @@ export function SiteFooter({ setting }: SiteFooterProps) {
           </h2>
           <ul className="mt-4 space-y-3 text-sm">
             <li><Link className="hover:text-white" href="/quote">WhatsApp quotation</Link></li>
-            <li><Link className="hover:text-white" href="/quote?type=domestic">Domestic WhatsApp enquiry</Link></li>
-            <li><Link className="hover:text-white" href="/quote?type=export">Export WhatsApp enquiry</Link></li>
           </ul>
         </div>
         <div>
@@ -76,20 +82,16 @@ export function SiteFooter({ setting }: SiteFooterProps) {
                 WhatsApp {OFFICIAL_WHATSAPP_DISPLAY}
               </a>
             </li>
-            {setting?.enquiryEmail && (
-              <li>
-                <a className="break-all hover:text-white" href={`mailto:${setting.enquiryEmail}`}>
-                  {setting.enquiryEmail}
-                </a>
-              </li>
-            )}
-            {setting?.phone && (
-              <li>
-                <a className="hover:text-white" href={`tel:${setting.phone}`}>
-                  {setting.phone}
-                </a>
-              </li>
-            )}
+            <li>
+              <a className="break-all hover:text-white" href={`mailto:${enquiryEmail}`}>
+                {enquiryEmail}
+              </a>
+            </li>
+            <li>
+              <a className="hover:text-white" href={enquiryPhoneUrl}>
+                {enquiryPhone}
+              </a>
+            </li>
             <li>
               <Link className="hover:text-white" href="/quote">
                 Tracked WhatsApp enquiry

@@ -17,12 +17,17 @@ export default async function ApplicationsPage() {
 
   return (
     <main>
-      <section className="relative overflow-hidden bg-slate-950 py-16 text-white sm:py-24">
+      <section className="relative overflow-hidden bg-slate-950 py-8 text-white sm:py-10 lg:py-12">
         <div className="industrial-grid absolute inset-0 opacity-30" />
         <div className="relative mx-auto max-w-7xl px-5 sm:px-8">
-          <p className="text-[11px] font-black uppercase tracking-[0.22em] text-orange-400">Application discovery</p>
-          <h1 className="mt-4 max-w-4xl text-4xl font-black tracking-[-0.05em] sm:text-6xl">Start with what the seal needs to do.</h1>
-          <p className="mt-6 max-w-2xl text-base leading-8 text-slate-300">
+          <nav className="text-[10px] font-black uppercase tracking-[0.12em] text-white/50" aria-label="Breadcrumb">
+            <Link className="transition hover:text-white" href="/">Home</Link>
+            <span className="px-2">/</span>
+            <span className="text-white">Applications</span>
+          </nav>
+          <p className="mt-5 text-[11px] font-black uppercase tracking-[0.16em] text-orange-400">Application discovery</p>
+          <h1 className="mt-3 max-w-4xl text-[2.15rem] font-black leading-[1.08] tracking-[-0.04em] sm:text-[2.7rem] lg:text-5xl">Start with what the seal needs to do.</h1>
+          <p className="mt-4 max-w-2xl text-base leading-7 text-slate-300">
             Application pages connect equipment and operating requirements to the published product catalogue.
           </p>
         </div>

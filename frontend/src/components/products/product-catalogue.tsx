@@ -7,7 +7,13 @@ import type { ProductSummary } from '@/lib/strapi/types'
 
 import { ProductCard } from './product-card'
 
-export function ProductCatalogue({ products }: { products: ProductSummary[] }) {
+export function ProductCatalogue({
+  products,
+  familyName,
+}: {
+  products: ProductSummary[]
+  familyName: string
+}) {
   const [query, setQuery] = useState('')
   const deferredQuery = useDeferredValue(query)
   const normalizedQuery = deferredQuery.trim().toLocaleLowerCase()
@@ -29,8 +35,8 @@ export function ProductCatalogue({ products }: { products: ProductSummary[] }) {
 
   return (
     <>
-      <div className="mb-6 flex flex-col gap-3 rounded-2xl border border-slate-200 bg-white p-3 shadow-sm sm:flex-row sm:items-center sm:justify-between sm:p-4">
-        <label className="relative block min-w-0 flex-1" htmlFor="catalogue-search">
+      <div className="mb-7 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <label className="relative block w-full sm:max-w-2xl" htmlFor="catalogue-search">
           <span className="sr-only">Search products, models or SKUs</span>
           <span className="pointer-events-none absolute inset-y-0 left-4 grid place-items-center text-slate-400" aria-hidden="true">
             <svg className="size-4" fill="none" viewBox="0 0 24 24">
@@ -42,7 +48,7 @@ export function ProductCatalogue({ products }: { products: ProductSummary[] }) {
             className="min-h-12 w-full appearance-none rounded-xl border border-slate-200 bg-slate-50 py-3 pl-11 pr-10 text-sm font-medium text-slate-950 outline-none transition placeholder:text-slate-400 focus:border-brand-blue focus:bg-white focus:ring-3 focus:ring-blue-100 [&::-webkit-search-cancel-button]:hidden"
             id="catalogue-search"
             onChange={(event) => setQuery(event.target.value)}
-            placeholder="Search product, model or SKU"
+            placeholder={`Search within ${familyName}`}
             type="search"
             value={query}
           />
@@ -57,8 +63,8 @@ export function ProductCatalogue({ products }: { products: ProductSummary[] }) {
             </button>
           )}
         </label>
-        <p className="shrink-0 px-1 text-xs font-bold text-slate-500" aria-live="polite">
-          <span className="text-slate-950">{filteredProducts.length}</span> {filteredProducts.length === 1 ? 'product' : 'products'} found
+        <p className="shrink-0 self-start rounded-full border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-slate-500 sm:self-auto" aria-live="polite">
+          <span className="text-slate-950">{filteredProducts.length}</span> {filteredProducts.length === 1 ? 'product' : 'products'} in this family
         </p>
       </div>
 

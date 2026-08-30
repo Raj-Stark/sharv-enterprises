@@ -3,6 +3,7 @@ import type { Metadata } from 'next'
 import { FloatingWhatsAppButton } from '@/components/site/floating-whatsapp-button'
 import { SiteFooter } from '@/components/site/site-footer'
 import { SiteHeader } from '@/components/site/site-header'
+import { OFFICIAL_EMAIL } from '@/lib/business/contact'
 import { getSiteSetting } from '@/lib/strapi/queries'
 
 import './globals.css'
@@ -50,11 +51,12 @@ export default async function RootLayout({
 }>) {
   const setting = await getSiteSetting().catch(() => null)
   const companyName = setting?.companyName ?? 'Sharv Enterprises'
+  const enquiryEmail = setting?.enquiryEmail?.trim() || OFFICIAL_EMAIL
 
   return (
     <html lang="en" className="h-full scroll-smooth antialiased">
       <body className="flex min-h-full flex-col">
-        <SiteHeader companyName={companyName} />
+        <SiteHeader companyName={companyName} enquiryEmail={enquiryEmail} />
         <div className="flex-1">{children}</div>
         <SiteFooter setting={setting} />
         <FloatingWhatsAppButton />

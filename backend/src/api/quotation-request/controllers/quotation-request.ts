@@ -17,7 +17,6 @@ const SOURCE_PATH_PATTERN = /^\/(?!\/)[^?#\s]*$/;
 const ENQUIRY_TYPES = new Set(['domestic', 'export'] as const);
 const UNITS = new Set([
   'piece',
-  'roll',
   'pack',
   'box',
   'set',
@@ -227,7 +226,6 @@ function buildWhatsappMessage(
     intro,
     '',
     `Reference: ${quotationRequest.requestNumber}`,
-    `Enquiry: ${quotationRequest.enquiryType === 'export' ? 'Export' : 'Domestic'}`,
     `Name: ${quotationRequest.fullName}`,
   ];
 
@@ -342,8 +340,8 @@ export default factories.createCoreController(
           fields: ['companyName', 'defaultInquiryMessage'],
         })) as SiteSettingSnapshot | null;
 
-      const enquiryType = requiredEnum(data, 'enquiryType', ENQUIRY_TYPES);
       const fullName = requiredString(data, 'fullName', 120);
+      const enquiryType = requiredEnum(data, 'enquiryType', ENQUIRY_TYPES);
       const whatsappNumber = normalizeBuyerWhatsappNumber(data);
       const companyName = optionalString(data, 'companyName', 200);
       const deliveryDestination = requiredString(
@@ -351,10 +349,6 @@ export default factories.createCoreController(
         'deliveryDestination',
         200,
       );
-
-      if (enquiryType === 'export' && !companyName) {
-        throw new ValidationError('companyName is required for export enquiries.');
-      }
 
       if (data.consentToContact !== true) {
         throw new ValidationError('consentToContact must be accepted.');

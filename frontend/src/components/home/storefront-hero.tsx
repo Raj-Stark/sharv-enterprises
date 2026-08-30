@@ -12,6 +12,11 @@ type StorefrontHeroProps = {
   imageUrl: string | null
   imageAlt: string
   products: ProductSummary[]
+  showcaseBadgeEyebrow: string
+  showcaseBadgeTitle: string
+  showcaseFooterEyebrow: string
+  showcaseFooterText: string
+  showcaseCtaLabel: string
 }
 
 function cleanCategoryName(value: string): string {
@@ -28,8 +33,17 @@ export function StorefrontHero({
   imageUrl,
   imageAlt,
   products,
+  showcaseBadgeEyebrow,
+  showcaseBadgeTitle,
+  showcaseFooterEyebrow,
+  showcaseFooterText,
+  showcaseCtaLabel,
 }: StorefrontHeroProps) {
   const featuredProducts = products.slice(0, 3)
+  const primaryProduct = featuredProducts[0]
+  const primaryImageUrl = getMediaUrl(primaryProduct?.coverImage?.url) ?? imageUrl
+  const primaryImageAlt =
+    primaryProduct?.coverImage?.alternativeText ?? primaryProduct?.name ?? imageAlt
 
   return (
     <section className="relative overflow-hidden border-b border-slate-200 bg-[#f5f8fb]">
@@ -88,8 +102,8 @@ export function StorefrontHero({
 
         <div className="relative mx-auto w-full max-w-xl">
           <div className="absolute -left-5 -top-5 z-20 hidden rounded-2xl border border-slate-200 bg-white px-4 py-3 shadow-[0_14px_35px_rgba(15,23,42,0.14)] sm:block">
-            <p className="text-[10px] font-extrabold uppercase tracking-[0.11em] text-orange-600">Built for business</p>
-            <p className="mt-1 text-sm font-extrabold text-slate-950">Pack · Protect · Dispatch</p>
+            <p className="text-[10px] font-extrabold uppercase tracking-[0.11em] text-orange-600">{showcaseBadgeEyebrow}</p>
+            <p className="mt-1 text-sm font-extrabold text-slate-950">{showcaseBadgeTitle}</p>
           </div>
 
           <div className="relative overflow-hidden rounded-[2rem] bg-brand-navy p-3 shadow-[0_32px_85px_rgba(12,53,86,0.25)] sm:p-4">
@@ -100,14 +114,14 @@ export function StorefrontHero({
                 className="group relative row-span-2 min-h-[21rem] overflow-hidden rounded-[1.4rem] bg-white sm:min-h-[26rem]"
                 href={featuredProducts[0] ? `/products/${featuredProducts[0].slug}` : '/products'}
               >
-                {imageUrl ? (
+                {primaryImageUrl ? (
                   <Image
-                    alt={imageAlt}
+                    alt={primaryImageAlt}
                     className="object-cover transition duration-700 group-hover:scale-[1.035]"
                     fill
                     priority
                     sizes="(max-width: 1024px) 68vw, 31vw"
-                    src={imageUrl}
+                    src={primaryImageUrl}
                   />
                 ) : (
                   <div className="industrial-grid absolute inset-0 bg-brand-navy opacity-60" />
@@ -163,11 +177,11 @@ export function StorefrontHero({
 
             <div className="relative mt-3 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-white/10 bg-white/8 px-4 py-3 text-white">
               <div>
-                <p className="text-[10px] font-extrabold uppercase tracking-[0.1em] text-white/65">Live catalogue</p>
-                <p className="mt-1 text-[13px] font-semibold leading-5">Compare products. Keep context in your quote.</p>
+                <p className="text-[10px] font-extrabold uppercase tracking-[0.1em] text-white/65">{showcaseFooterEyebrow}</p>
+                <p className="mt-1 text-[13px] font-semibold leading-5">{showcaseFooterText}</p>
               </div>
               <Link className="inline-flex items-center text-[10px] font-extrabold uppercase tracking-[0.08em] text-blue-100 hover:text-white" href="/products">
-                View all <span className="ml-2" aria-hidden="true">→</span>
+                {showcaseCtaLabel} <span className="ml-2" aria-hidden="true">→</span>
               </Link>
             </div>
           </div>

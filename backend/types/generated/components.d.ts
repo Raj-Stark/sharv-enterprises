@@ -105,7 +105,7 @@ export interface QuotationLineItem extends Struct.ComponentSchema {
         maxLength: 100;
       }>;
     unit: Schema.Attribute.Enumeration<
-      ['piece', 'roll', 'pack', 'box', 'set', 'meter', 'kilogram']
+      ['piece', 'pack', 'box', 'set', 'meter', 'kilogram']
     > &
       Schema.Attribute.Required &
       Schema.Attribute.DefaultTo<'piece'>;
