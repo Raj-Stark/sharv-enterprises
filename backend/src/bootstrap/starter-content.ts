@@ -325,26 +325,11 @@ export async function seedStarterContent(strapi: Core.Strapi): Promise<void> {
 
   const homePage = documents(strapi, 'api::home-page.home-page');
   if (!(await homePage.findFirst({ status: 'published' }))) {
-    const primary = products.get('bopp-packing-tape');
-    const secondary = products.get('bubble-wrap');
-    const tertiary = products.get('cable-seal');
-    if (!primary || !secondary || !tertiary) throw new Error('Starter showcase products are missing.');
-
     const draft = await homePage.create({ data: {
       heroEyebrow: 'Industrial packaging for India and export',
       heroTitle: 'Packaging that protects every shipment.',
       heroDescription: 'Stretch films, security seals, strapping, tapes and protective packaging supplied with practical product-selection support.',
       heroImage: starterImage.id,
-      productShowcase: {
-        badgeEyebrow: 'Built for business',
-        badgeTitle: 'Pack · Protect · Dispatch',
-        primaryProduct: { connect: [primary.documentId] },
-        secondaryProduct: { connect: [secondary.documentId] },
-        tertiaryProduct: { connect: [tertiary.documentId] },
-        footerEyebrow: 'Live catalogue',
-        footerText: 'Compare products. Keep context in your quote.',
-        ctaLabel: 'View all',
-      },
       deliveryEyebrow: 'Export enquiries',
       deliveryTitle: 'Packaging support across key markets',
       deliveryDescription: 'Share your product, size and destination details for a practical supply discussion.',

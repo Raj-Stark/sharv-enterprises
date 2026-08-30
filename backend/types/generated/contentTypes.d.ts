@@ -728,7 +728,7 @@ export interface ApiCertificationCertification
 export interface ApiHomePageHomePage extends Struct.SingleTypeSchema {
   collectionName: 'home_pages';
   info: {
-    description: 'Editable homepage hero, product showcase, delivery coverage and search metadata';
+    description: 'Editable homepage hero, delivery coverage and search metadata';
     displayName: 'Home Page';
     pluralName: 'home-pages';
     singularName: 'home-page';
@@ -775,10 +775,6 @@ export interface ApiHomePageHomePage extends Struct.SingleTypeSchema {
       'api::home-page.home-page'
     > &
       Schema.Attribute.Private;
-    productShowcase: Schema.Attribute.Component<
-      'homepage.product-showcase',
-      false
-    >;
     publishedAt: Schema.Attribute.DateTime;
     seo: Schema.Attribute.Component<'shared.seo', false>;
     updatedAt: Schema.Attribute.DateTime;
@@ -901,7 +897,7 @@ export interface ApiQuotationRequestQuotationRequest
   extends Struct.CollectionTypeSchema {
   collectionName: 'quotation_requests';
   info: {
-    description: 'Unified quotation enquiries submitted by buyers';
+    description: 'Domestic and export quotation enquiries submitted by buyers';
     displayName: 'Quotation Request';
     pluralName: 'quotation-requests';
     singularName: 'quotation-request';
@@ -923,6 +919,8 @@ export interface ApiQuotationRequestQuotationRequest
       Schema.Attribute.SetMinMaxLength<{
         maxLength: 200;
       }>;
+    enquiryType: Schema.Attribute.Enumeration<['domestic', 'export']> &
+      Schema.Attribute.Required;
     fullName: Schema.Attribute.String &
       Schema.Attribute.Required &
       Schema.Attribute.SetMinMaxLength<{
@@ -1103,9 +1101,7 @@ export interface ApiSiteSettingSiteSetting extends Struct.SingleTypeSchema {
     draftAndPublish: true;
   };
   attributes: {
-    companyName: Schema.Attribute.String &
-      Schema.Attribute.Required &
-      Schema.Attribute.DefaultTo<'Sharv Enterprises'>;
+    companyName: Schema.Attribute.String & Schema.Attribute.Required;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -1129,8 +1125,7 @@ export interface ApiSiteSettingSiteSetting extends Struct.SingleTypeSchema {
       Schema.Attribute.Required &
       Schema.Attribute.SetMinMaxLength<{
         maxLength: 30;
-      }> &
-      Schema.Attribute.DefaultTo<'+91 98188 36151'>;
+      }>;
   };
 }
 

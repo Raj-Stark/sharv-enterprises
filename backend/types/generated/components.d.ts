@@ -31,61 +31,6 @@ export interface HomepageDeliveryArea extends Struct.ComponentSchema {
   };
 }
 
-export interface HomepageProductShowcase extends Struct.ComponentSchema {
-  collectionName: 'components_homepage_product_showcases';
-  info: {
-    description: 'Controls the three-product visual catalogue displayed in the homepage hero';
-    displayName: 'Product Showcase';
-  };
-  attributes: {
-    badgeEyebrow: Schema.Attribute.String &
-      Schema.Attribute.Required &
-      Schema.Attribute.SetMinMaxLength<{
-        maxLength: 40;
-      }> &
-      Schema.Attribute.DefaultTo<'Built for business'>;
-    badgeTitle: Schema.Attribute.String &
-      Schema.Attribute.Required &
-      Schema.Attribute.SetMinMaxLength<{
-        maxLength: 70;
-      }> &
-      Schema.Attribute.DefaultTo<'Pack \u00B7 Protect \u00B7 Dispatch'>;
-    ctaLabel: Schema.Attribute.String &
-      Schema.Attribute.Required &
-      Schema.Attribute.SetMinMaxLength<{
-        maxLength: 30;
-      }> &
-      Schema.Attribute.DefaultTo<'View all'>;
-    footerEyebrow: Schema.Attribute.String &
-      Schema.Attribute.Required &
-      Schema.Attribute.SetMinMaxLength<{
-        maxLength: 40;
-      }> &
-      Schema.Attribute.DefaultTo<'Live catalogue'>;
-    footerText: Schema.Attribute.String &
-      Schema.Attribute.Required &
-      Schema.Attribute.SetMinMaxLength<{
-        maxLength: 120;
-      }> &
-      Schema.Attribute.DefaultTo<'Compare products. Keep context in your quote.'>;
-    primaryProduct: Schema.Attribute.Relation<
-      'manyToOne',
-      'api::product.product'
-    > &
-      Schema.Attribute.Required;
-    secondaryProduct: Schema.Attribute.Relation<
-      'manyToOne',
-      'api::product.product'
-    > &
-      Schema.Attribute.Required;
-    tertiaryProduct: Schema.Attribute.Relation<
-      'manyToOne',
-      'api::product.product'
-    > &
-      Schema.Attribute.Required;
-  };
-}
-
 export interface ProductFeature extends Struct.ComponentSchema {
   collectionName: 'components_product_features';
   info: {
@@ -160,7 +105,7 @@ export interface QuotationLineItem extends Struct.ComponentSchema {
         maxLength: 100;
       }>;
     unit: Schema.Attribute.Enumeration<
-      ['piece', 'roll', 'pack', 'box', 'set', 'meter', 'kilogram']
+      ['piece', 'pack', 'box', 'set', 'meter', 'kilogram']
     > &
       Schema.Attribute.Required &
       Schema.Attribute.DefaultTo<'piece'>;
@@ -222,7 +167,6 @@ declare module '@strapi/strapi' {
   export namespace Public {
     export interface ComponentSchemas {
       'homepage.delivery-area': HomepageDeliveryArea;
-      'homepage.product-showcase': HomepageProductShowcase;
       'product.feature': ProductFeature;
       'product.specification': ProductSpecification;
       'quotation.line-item': QuotationLineItem;
