@@ -11,6 +11,17 @@ import {
 } from './security/public-permissions';
 import { seedStarterContent } from './bootstrap/starter-content';
 
+const POST_STARTUP_DELAY_MS = 5_000;
+
+async function seedStarterContentAfterStartup(strapi: Core.Strapi): Promise<void> {
+  try {
+    await seedStarterContent(strapi);
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    strapi.log.error(`Starter content initialization failed: ${message}`);
+  }
+}
+
 export default {
   /**
    * An asynchronous register function that runs before
@@ -36,6 +47,11 @@ export default {
    */
   async bootstrap({ strapi }: { strapi: Core.Strapi }) {
     await enforcePublicPermissionAllowlist(strapi);
-    await seedStarterContent(strapi);
+
+    const postStartupTimer = setTimeout(() => {
+      void seedStarterContentAfterStartup(strapi);
+    }, POST_STARTUP_DELAY_MS);
+
+    postStartupTimer.unref();
   },
 };
