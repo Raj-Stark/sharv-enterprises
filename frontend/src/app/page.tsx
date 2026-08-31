@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import Image from 'next/image'
+import { ResilientImage as Image } from '@/components/media/resilient-image'
 import Link from 'next/link'
 
 import { BlogCard } from '@/components/blog/blog-card'
