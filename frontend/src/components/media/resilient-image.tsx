@@ -3,7 +3,7 @@
 import Image, { type ImageProps } from 'next/image'
 import { useEffect, useState } from 'react'
 
-const DEFAULT_FALLBACK_IMAGE = '/og-sharv-packaging.jpg'
+const DEFAULT_FALLBACK_IMAGE = '/images/catalogue-fallback.svg'
 
 type ResilientImageProps = ImageProps & {
   fallbackSrc?: ImageProps['src']
