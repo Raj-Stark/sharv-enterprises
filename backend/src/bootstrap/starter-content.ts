@@ -173,6 +173,7 @@ function documents(strapi: Core.Strapi, uid: string) {
     findFirst(args: Record<string, unknown>): Promise<DocumentRecord | null>;
     findOne(args: Record<string, unknown>): Promise<DocumentRecord | null>;
     create(args: Record<string, unknown>): Promise<DocumentRecord>;
+    update(args: Record<string, unknown>): Promise<DocumentRecord>;
     publish(args: Record<string, unknown>): Promise<DocumentRecord>;
   };
 }
@@ -277,6 +278,75 @@ async function ensureStarterImage(strapi: Core.Strapi): Promise<UploadedFile> {
   return uploaded[0];
 }
 
+async function ensureProductImage(
+  strapi: Core.Strapi,
+  seed: ProductSeed,
+): Promise<UploadedFile> {
+  const fileName = `sharv-product-${seed.slug}.webp`;
+  const imagePath = path.resolve(
+    process.cwd(),
+    'seed-assets',
+    'products',
+    `${seed.slug}.webp`,
+  );
+
+  if (!fs.existsSync(imagePath)) {
+    throw new Error(`Product image was not found at ${imagePath}.`);
+  }
+
+  const fileQuery = strapi.db.query('plugin::upload.file') as unknown as {
+    findOne(args: Record<string, unknown>): Promise<UploadedFile | null>;
+  };
+  const existing = await fileQuery.findOne({ where: { name: fileName } });
+
+  if (existing) {
+    if (existing.url?.startsWith('/uploads/')) {
+      const publicDir = path.resolve(
+        process.cwd(),
+        process.env.PUBLIC_DIR || './public',
+      );
+      const targetPath = path.resolve(
+        publicDir,
+        existing.url.replace(/^\/+/, ''),
+      );
+
+      if (!fs.existsSync(targetPath) || fs.statSync(targetPath).size === 0) {
+        fs.mkdirSync(path.dirname(targetPath), { recursive: true });
+        fs.copyFileSync(imagePath, targetPath);
+        strapi.log.warn(`Repaired missing product upload at ${targetPath}.`);
+      }
+    }
+
+    return existing;
+  }
+
+  const stat = fs.statSync(imagePath);
+  const uploadService = strapi.plugin('upload').service('upload') as unknown as {
+    upload(args: Record<string, unknown>): Promise<UploadedFile[]>;
+  };
+  const uploaded = await uploadService.upload({
+    data: {
+      fileInfo: {
+        name: fileName,
+        alternativeText: `${seed.name} supplied by Sharv Enterprises`,
+        caption: `${seed.name} product image`,
+      },
+    },
+    files: {
+      filepath: imagePath,
+      originalFilename: fileName,
+      mimetype: 'image/webp',
+      size: stat.size,
+    },
+  });
+
+  if (!uploaded[0]) {
+    throw new Error(`Product image upload did not return a file for ${seed.slug}.`);
+  }
+
+  return uploaded[0];
+}
+
 export async function seedStarterContent(strapi: Core.Strapi): Promise<void> {
   if (process.env.STARTER_CONTENT_ENABLED !== 'true') return;
 
@@ -309,6 +379,7 @@ export async function seedStarterContent(strapi: Core.Strapi): Promise<void> {
   for (const seed of PRODUCT_SEEDS) {
     const category = categories.get(seed.category);
     if (!category) throw new Error(`Missing starter category ${seed.category}.`);
+    const productImage = await ensureProductImage(strapi, seed);
 
     const product = await ensurePublished(strapi, 'api::product.product', { slug: seed.slug }, {
       name: seed.name,
@@ -320,7 +391,7 @@ export async function seedStarterContent(strapi: Core.Strapi): Promise<void> {
         paragraph(seed.shortDescription),
         paragraph('Final size, grade, colour and packing configuration are confirmed against the application and order quantity.'),
       ],
-      coverImage: starterImage.id,
+      coverImage: productImage.id,
       category: { connect: [category.documentId] },
       specifications: seed.specifications.map(([label, value, unit], index) => ({
         label,
@@ -344,6 +415,12 @@ export async function seedStarterContent(strapi: Core.Strapi): Promise<void> {
         noIndex: false,
       },
     });
+    const productService = documents(strapi, 'api::product.product');
+    await productService.update({
+      documentId: product.documentId,
+      data: { coverImage: productImage.id },
+    });
+    await productService.publish({ documentId: product.documentId });
     products.set(seed.slug, product);
   }
 
