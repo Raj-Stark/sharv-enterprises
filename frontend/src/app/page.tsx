@@ -16,7 +16,6 @@ import { getMediaUrl } from '@/lib/strapi/client'
 import type { ProductSummary } from '@/lib/strapi/types'
 import {
   getHomePage,
-  getHomepageApplications,
   getHomepageBlogPosts,
   getHomepageCertifications,
   getHomepageProducts,
@@ -170,14 +169,12 @@ export default async function Home() {
   const [
     homePage,
     products,
-    applications,
     certifications,
     blogPosts,
     testimonials,
   ] = await Promise.all([
     getHomePage().catch(() => null),
     getHomepageProducts().catch(() => []),
-    getHomepageApplications().catch(() => []),
     getHomepageCertifications().catch(() => []),
     getHomepageBlogPosts().catch(() => []),
     getHomepageTestimonials().catch(() => []),
@@ -553,58 +550,6 @@ export default async function Home() {
           </p>
         </div>
       </section>
-
-      {applications.length > 0 && (
-        <section className="border-y border-slate-200 bg-brand-surface py-14 sm:py-20" aria-labelledby="applications-title">
-          <div className="mx-auto max-w-7xl px-5 sm:px-8">
-            <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
-              <div id="applications-title">
-                <SectionHeading
-                  eyebrow="Shop by use case"
-                  title="Start with your application"
-                  description="Explore application-led buying paths when a product reference is not available."
-                />
-              </div>
-              <Link className="shrink-0 text-xs font-extrabold uppercase tracking-[0.08em] text-brand-blue hover:text-brand-navy" href="/applications">
-                Browse all use cases <span aria-hidden="true">→</span>
-              </Link>
-            </div>
-
-            <div className="mt-9 grid gap-5 md:grid-cols-3">
-              {applications.slice(0, 3).map((application) => {
-                const imageUrl = getMediaUrl(application.image?.url)
-
-                return (
-                  <Link
-                    className="group relative min-h-80 overflow-hidden rounded-2xl bg-slate-950"
-                    href={`/applications/${application.slug}`}
-                    key={application.documentId}
-                  >
-                    {imageUrl ? (
-                      <Image
-                        alt={application.image?.alternativeText ?? application.name}
-                        className="object-cover transition duration-500 group-hover:scale-105"
-                        fill
-                        sizes="(max-width: 768px) 100vw, 33vw"
-                        src={imageUrl}
-                      />
-                    ) : (
-                      <div className="industrial-grid absolute inset-0 opacity-40" />
-                    )}
-                    <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/45 to-transparent" />
-                    <div className="absolute inset-x-0 bottom-0 p-6 text-white">
-                      <p className="text-[10px] font-extrabold uppercase tracking-[0.08em] text-white/75">Use case</p>
-                      <h3 className="mt-2 text-2xl font-extrabold leading-snug tracking-[-0.015em]">{application.name}</h3>
-                      <p className="mt-2 line-clamp-2 text-[15px] leading-6 text-white/80">{application.summary}</p>
-                      <span className="mt-4 inline-flex text-xs font-extrabold uppercase tracking-[0.08em]">Explore <span className="ml-2 transition group-hover:translate-x-1" aria-hidden="true">→</span></span>
-                    </div>
-                  </Link>
-                )
-              })}
-            </div>
-          </div>
-        </section>
-      )}
 
       {testimonials.length > 0 && (
         <section className="overflow-hidden border-y border-slate-200 bg-white py-14 sm:py-20" aria-labelledby="testimonials-title">
