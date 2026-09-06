@@ -474,67 +474,83 @@ export default async function Home() {
         </div>
       </section>
 
-      <section className="relative overflow-hidden border-y border-slate-200 bg-[#f5f8fb] py-14 sm:py-20" id="industries" aria-labelledby="industries-title">
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_12%_18%,rgba(25,84,124,0.12),transparent_27%),radial-gradient(circle_at_88%_80%,rgba(234,88,12,0.09),transparent_24%)]" />
-        <div className="industrial-grid pointer-events-none absolute inset-0 opacity-[0.035]" />
+      <section className="relative overflow-hidden border-y border-slate-200 bg-[#f4f7fa] py-14 sm:py-20" id="industries" aria-labelledby="industries-title">
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_8%_12%,rgba(25,84,124,0.1),transparent_28%),radial-gradient(circle_at_92%_88%,rgba(234,88,12,0.07),transparent_24%)]" />
         <div className="mx-auto max-w-7xl px-5 sm:px-8">
-          <div className="relative grid gap-7 lg:grid-cols-[minmax(0,1fr)_22rem] lg:items-end lg:gap-12">
+          <div className="relative flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
             <div className="max-w-3xl" id="industries-title">
-              <div className="inline-flex items-center gap-2 rounded-full border border-brand-blue/15 bg-white px-3 py-2 text-[11px] font-extrabold uppercase tracking-[0.12em] text-brand-blue shadow-sm">
-                <span className="grid size-5 place-items-center rounded-full bg-blue-50 text-[10px]" aria-hidden="true">09</span>
-                Cross-sector packaging
-              </div>
-              <h2 className="mt-5 text-3xl font-extrabold leading-[1.08] tracking-[-0.025em] text-slate-950 sm:text-[2.75rem]">
+              <p className="text-[11px] font-extrabold uppercase tracking-[0.14em] text-orange-600">
+                Packaging across sectors
+              </p>
+              <h2 className="mt-3 text-3xl font-extrabold leading-[1.08] tracking-[-0.025em] text-slate-950 sm:text-[2.75rem]">
                 Industries we serve
               </h2>
               <p className="mt-4 max-w-2xl text-base leading-7 text-slate-600">
-                Packaging requirements change with every operation. Start with your industry and we’ll help narrow the right protection, sealing and load-security options.
+                From everyday dispatch to export-ready loads, choose your industry to begin with a more relevant packaging requirement.
               </p>
             </div>
-            <div className="rounded-2xl border border-slate-200 bg-white/90 p-5 shadow-[0_16px_40px_rgba(12,53,86,0.08)] backdrop-blur sm:p-6">
-              <p className="text-[10px] font-extrabold uppercase tracking-[0.11em] text-orange-600">Application-led support</p>
-              <p className="mt-2 text-base font-extrabold leading-6 text-slate-950">Tell us what you pack, how it moves and where it needs to arrive.</p>
-              <Link className="group mt-4 inline-flex items-center text-xs font-extrabold uppercase tracking-[0.08em] text-brand-blue transition hover:text-brand-navy" href="/quote">
-                Discuss your requirement <span className="ml-2 transition group-hover:translate-x-1" aria-hidden="true">→</span>
-              </Link>
-            </div>
-          </div>
-
-          <ul className="relative mt-10 grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4">
-            {industries.map((industry, index) => (
-              <li className="flex" key={industry.name}>
-                <Link
-                  aria-label={`Discuss packaging for ${industry.name}`}
-                  className="group relative flex min-h-40 w-full flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition duration-300 hover:-translate-y-1 hover:border-blue-300 hover:shadow-[0_20px_45px_rgba(25,84,124,0.13)] focus-visible:outline-3 focus-visible:outline-offset-3 focus-visible:outline-brand-blue sm:min-h-52 sm:p-6"
-                  href={`/quote?industry=${encodeURIComponent(industry.name)}`}
-                >
-                  <span className="absolute inset-x-0 top-0 h-1 origin-left scale-x-0 bg-gradient-to-r from-brand-blue to-orange-500 transition duration-300 group-hover:scale-x-100" />
-                  <div className="flex items-start justify-between gap-3">
-                    <span className="grid size-11 place-items-center rounded-xl bg-blue-50 text-brand-blue ring-1 ring-blue-100 transition duration-300 group-hover:bg-brand-blue group-hover:text-white sm:size-12">
-                      <IndustryIcon className="size-5 sm:size-6" name={industry.icon} />
-                    </span>
-                    <span className="font-mono text-[10px] font-bold text-slate-400">{String(index + 1).padStart(2, '0')}</span>
-                  </div>
-                  <h3 className="mt-5 text-[15px] font-extrabold leading-snug tracking-[-0.015em] text-slate-950 sm:text-xl">{industry.name}</h3>
-                  <p className="mt-2 hidden text-sm leading-6 text-slate-600 sm:block">{industry.description}</p>
-                  <span className="mt-auto flex items-center pt-4 text-[10px] font-extrabold uppercase tracking-[0.07em] text-brand-blue">
-                    Start enquiry <span className="ml-2 transition group-hover:translate-x-1" aria-hidden="true">→</span>
-                  </span>
-                </Link>
-              </li>
-            ))}
-          </ul>
-
-          <div className="relative mt-5 overflow-hidden rounded-2xl bg-brand-navy px-5 py-5 text-white sm:flex sm:items-center sm:justify-between sm:gap-8 sm:px-7">
-            <div className="industrial-grid pointer-events-none absolute inset-0 opacity-[0.08]" />
-            <div className="relative">
-              <p className="text-[10px] font-extrabold uppercase tracking-[0.11em] text-orange-300">Beyond these sectors</p>
-              <p className="mt-1 text-sm font-semibold leading-6 text-blue-50">If your industry is not listed, share the application—we source by requirement, not by label.</p>
-            </div>
-            <Link className="relative mt-4 inline-flex min-h-11 shrink-0 items-center justify-center rounded-xl bg-white px-5 text-[10px] font-extrabold uppercase tracking-[0.08em] text-brand-navy transition hover:-translate-y-0.5 hover:bg-blue-50 sm:mt-0" href="/quote">
-              Start a custom enquiry <span className="ml-2" aria-hidden="true">→</span>
+            <Link className="group inline-flex min-h-12 w-fit shrink-0 items-center justify-center rounded-xl bg-brand-blue px-5 text-xs font-extrabold uppercase tracking-[0.08em] text-white shadow-[0_12px_28px_rgba(25,84,124,0.2)] transition hover:-translate-y-0.5 hover:bg-brand-navy" href="/quote">
+              Custom requirement <span className="ml-3 transition group-hover:translate-x-1" aria-hidden="true">→</span>
             </Link>
           </div>
+
+          <div className="relative mt-9 grid gap-4 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)]">
+            <Link
+              aria-label={`Discuss packaging for ${industries[0].name}`}
+              className="group relative min-h-80 overflow-hidden rounded-[1.75rem] bg-brand-navy shadow-[0_24px_60px_rgba(12,53,86,0.18)] focus-visible:outline-3 focus-visible:outline-offset-3 focus-visible:outline-brand-blue lg:min-h-[31rem]"
+              href={`/quote?industry=${encodeURIComponent(industries[0].name)}`}
+            >
+              <Image
+                alt="Stretch-wrapped cartons prepared for warehouse and export dispatch"
+                className="object-cover transition duration-700 group-hover:scale-[1.035]"
+                fill
+                priority={false}
+                sizes="(max-width: 1024px) 100vw, 52vw"
+                src="/images/about/export-packaging-dispatch.jpg"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#092f4c] via-[#0c3556]/45 to-transparent" />
+              <div className="absolute inset-x-0 bottom-0 p-6 text-white sm:p-8">
+                <div className="flex items-center gap-3 text-blue-50/85">
+                  <span className="grid size-11 place-items-center rounded-xl border border-white/20 bg-white/10 backdrop-blur">
+                    <IndustryIcon className="size-6" name={industries[0].icon} />
+                  </span>
+                  <span className="text-[10px] font-extrabold uppercase tracking-[0.12em]">Featured sector</span>
+                </div>
+                <h3 className="mt-4 text-2xl font-extrabold tracking-[-0.02em] sm:text-3xl">{industries[0].name}</h3>
+                <p className="mt-2 max-w-xl text-sm leading-6 text-blue-50/85 sm:text-base">{industries[0].description}</p>
+                <span className="mt-5 inline-flex items-center text-xs font-extrabold uppercase tracking-[0.08em]">
+                  Start industry enquiry <span className="ml-3 transition group-hover:translate-x-1" aria-hidden="true">→</span>
+                </span>
+              </div>
+            </Link>
+
+            <ul className="grid grid-cols-2 gap-3 sm:gap-4">
+              {industries.slice(1).map((industry, index) => (
+                <li className="flex" key={industry.name}>
+                  <Link
+                    aria-label={`Discuss packaging for ${industry.name}`}
+                    className="group flex min-h-32 w-full flex-col rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition duration-300 hover:-translate-y-1 hover:border-blue-300 hover:shadow-[0_16px_36px_rgba(25,84,124,0.12)] focus-visible:outline-3 focus-visible:outline-offset-3 focus-visible:outline-brand-blue sm:min-h-36 sm:p-5"
+                    href={`/quote?industry=${encodeURIComponent(industry.name)}`}
+                  >
+                    <div className="flex items-start justify-between gap-3">
+                      <span className="grid size-10 place-items-center rounded-xl bg-blue-50 text-brand-blue ring-1 ring-blue-100 transition duration-300 group-hover:bg-brand-blue group-hover:text-white">
+                        <IndustryIcon className="size-5" name={industry.icon} />
+                      </span>
+                      <span className="font-mono text-[9px] font-bold text-slate-400">{String(index + 2).padStart(2, '0')}</span>
+                    </div>
+                    <h3 className="mt-4 text-sm font-extrabold leading-snug tracking-[-0.01em] text-slate-950 sm:text-base">{industry.name}</h3>
+                    <span className="mt-auto flex items-center pt-3 text-[9px] font-extrabold uppercase tracking-[0.07em] text-brand-blue">
+                      Enquire <span className="ml-2 transition group-hover:translate-x-1" aria-hidden="true">→</span>
+                    </span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <p className="relative mt-5 text-center text-sm leading-6 text-slate-500">
+            Don’t see your sector? <Link className="font-extrabold text-brand-blue underline decoration-blue-200 underline-offset-4 hover:text-brand-navy" href="/quote">Share a custom packaging requirement</Link>.
+          </p>
         </div>
       </section>
 
