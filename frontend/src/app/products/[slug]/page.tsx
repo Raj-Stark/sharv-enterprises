@@ -190,22 +190,6 @@ export default async function ProductPage({ params }: ProductPageProps) {
             <p className="order-1 mt-3 flex items-center gap-2 text-xs leading-5 text-slate-600 lg:order-2"><span className="text-emerald-700" aria-hidden="true">✓</span> Product reference is added automatically. Domestic and export enquiries are supported.</p>
             </div>
 
-            {product.applications && product.applications.length > 0 && (
-              <div className="mt-7 border-t border-slate-200 pt-5">
-                <p className="text-[10px] font-extrabold uppercase tracking-[0.1em] text-slate-500">Common applications</p>
-                <div className="mt-3 flex flex-wrap gap-2">
-                  {product.applications.map((application) => (
-                    <Link
-                      className="text-sm font-bold text-brand-blue underline decoration-blue-200 underline-offset-4 transition hover:text-brand-navy"
-                      href={`/applications/${application.slug}`}
-                      key={application.documentId}
-                    >
-                      {application.name} ↗
-                    </Link>
-                  ))}
-                </div>
-              </div>
-            )}
           </div>
         </div>
       </section>

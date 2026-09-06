@@ -22,7 +22,6 @@ const primaryNavigation = [
   { href: '/', label: 'Home' },
   { href: '/about', label: 'About us' },
   { href: '/products', label: 'Products' },
-  { href: '/applications', label: 'Applications' },
   { href: '/blogs', label: 'Blogs' },
   { href: '/contact', label: 'Contact' },
 ] as const
