@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import Image from 'next/image'
+import { ResilientImage as Image } from '@/components/media/resilient-image'
 import Link from 'next/link'
 
 import { WhatsAppIcon } from '@/components/icons/whatsapp-icon'

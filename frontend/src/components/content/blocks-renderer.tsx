@@ -1,4 +1,4 @@
-import Image from 'next/image'
+import { ResilientImage as Image } from '@/components/media/resilient-image'
 import type { ReactNode } from 'react'
 
 import { getBlockText, slugifyArticleHeading } from '@/lib/content/article'

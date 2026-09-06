@@ -9,6 +9,7 @@ type QuotePageProps = {
   searchParams: Promise<{
     product?: string | string[]
     destination?: string | string[]
+    industry?: string | string[]
   }>
 }
 
@@ -26,6 +27,10 @@ export default async function QuotePage({ searchParams }: QuotePageProps) {
     ? params.destination[0]
     : params.destination
   const defaultDeliveryDestination = rawDestination?.trim().slice(0, 200)
+  const rawIndustry = Array.isArray(params.industry) ? params.industry[0] : params.industry
+  const defaultRequirements = rawIndustry?.trim()
+    ? `Industry: ${rawIndustry.trim().slice(0, 120)}`
+    : undefined
   const products = await getProducts().catch(() => [])
   const selectedProduct = productSlug
     ? products.find((product) => product.slug === productSlug)
@@ -47,6 +52,7 @@ export default async function QuotePage({ searchParams }: QuotePageProps) {
           <QuotationForm
             defaultDeliveryDestination={defaultDeliveryDestination}
             defaultProductDocumentId={selectedProduct?.documentId}
+            defaultRequirements={defaultRequirements}
             endpoint={`${getStrapiPublicUrl()}/api/quotation-requests`}
             products={products}
             turnstileSiteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY}

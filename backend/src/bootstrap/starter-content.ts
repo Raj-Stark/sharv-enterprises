@@ -14,6 +14,8 @@ type UploadedFile = {
   id: number;
   documentId?: string;
   name: string;
+  url?: string | null;
+  formats?: Record<string, { url?: string | null }> | null;
 };
 
 type ProductSeed = {
@@ -198,15 +200,6 @@ async function ensurePublished(
 }
 
 async function ensureStarterImage(strapi: Core.Strapi): Promise<UploadedFile> {
-  const fileQuery = strapi.db.query('plugin::upload.file') as unknown as {
-    findOne(args: Record<string, unknown>): Promise<UploadedFile | null>;
-  };
-  const existing = await fileQuery.findOne({
-    where: { name: 'sharv-packaging-starter.jpg' },
-  });
-
-  if (existing) return existing;
-
   const imagePath = path.resolve(
     process.cwd(),
     process.env.STARTER_IMAGE_PATH || 'seed-assets/sharv-packaging-starter.jpg',
@@ -214,6 +207,49 @@ async function ensureStarterImage(strapi: Core.Strapi): Promise<UploadedFile> {
 
   if (!fs.existsSync(imagePath)) {
     throw new Error(`Starter image was not found at ${imagePath}.`);
+  }
+
+  const fileQuery = strapi.db.query('plugin::upload.file') as unknown as {
+    findOne(args: Record<string, unknown>): Promise<UploadedFile | null>;
+  };
+  const existing = await fileQuery.findOne({
+    where: { name: 'sharv-packaging-starter.jpg' },
+  });
+
+  if (existing) {
+    const publicDir = path.resolve(
+      process.cwd(),
+      process.env.PUBLIC_DIR || './public',
+    );
+    const uploadsDir = path.resolve(publicDir, 'uploads');
+    const mediaUrls = [
+      existing.url,
+      ...Object.values(existing.formats ?? {}).map((format) => format.url),
+    ];
+
+    for (const mediaUrl of mediaUrls) {
+      if (!mediaUrl) continue;
+
+      const pathname = mediaUrl.startsWith('http')
+        ? new URL(mediaUrl).pathname
+        : mediaUrl;
+
+      if (!pathname.startsWith('/uploads/')) continue;
+
+      const targetPath = path.resolve(publicDir, pathname.replace(/^\/+/, ''));
+      const isInsideUploads =
+        targetPath === uploadsDir || targetPath.startsWith(`${uploadsDir}${path.sep}`);
+
+      if (!isInsideUploads) continue;
+
+      if (!fs.existsSync(targetPath) || fs.statSync(targetPath).size === 0) {
+        fs.mkdirSync(path.dirname(targetPath), { recursive: true });
+        fs.copyFileSync(imagePath, targetPath);
+        strapi.log.warn(`Repaired missing starter upload at ${targetPath}.`);
+      }
+    }
+
+    return existing;
   }
 
   const stat = fs.statSync(imagePath);

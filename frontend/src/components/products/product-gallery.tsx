@@ -1,6 +1,6 @@
 'use client'
 
-import Image from 'next/image'
+import { ResilientImage as Image } from '@/components/media/resilient-image'
 import { useState } from 'react'
 
 export type ProductGalleryImage = {

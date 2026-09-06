@@ -1,0 +1,89 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" role="img" aria-label="Industrial packaging materials">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f5f9fc"/>
+      <stop offset="1" stop-color="#d9e8f2"/>
+    </linearGradient>
+    <linearGradient id="box" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#d6a36c"/>
+      <stop offset="1" stop-color="#a86f3c"/>
+    </linearGradient>
+    <linearGradient id="film" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ffffff" stop-opacity=".92"/>
+      <stop offset=".55" stop-color="#b9dce9" stop-opacity=".72"/>
+      <stop offset="1" stop-color="#6fa8bd" stop-opacity=".78"/>
+    </linearGradient>
+    <linearGradient id="strap" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#153f62"/>
+      <stop offset="1" stop-color="#071e31"/>
+    </linearGradient>
+    <pattern id="grid" width="44" height="44" patternUnits="userSpaceOnUse">
+      <path d="M44 0H0V44" fill="none" stroke="#19547c" stroke-opacity=".07"/>
+    </pattern>
+    <filter id="shadow" x="-30%" y="-30%" width="160%" height="180%">
+      <feDropShadow dx="0" dy="22" stdDeviation="22" flood-color="#0c3556" flood-opacity=".18"/>
+    </filter>
+  </defs>
+
+  <rect width="1200" height="900" fill="url(#bg)"/>
+  <rect width="1200" height="900" fill="url(#grid)"/>
+  <ellipse cx="616" cy="780" rx="480" ry="62" fill="#123b5a" opacity=".12"/>
+
+  <g filter="url(#shadow)">
+    <g transform="translate(690 145)">
+      <path d="M0 92 178 0l216 77-180 98z" fill="#e1b078"/>
+      <path d="m0 92 214 83v238L0 322z" fill="url(#box)"/>
+      <path d="m214 175 180-98v239l-180 97z" fill="#966035"/>
+      <path d="m179 0 34 12 215 76-34 19-215-77z" fill="#f0c58f" opacity=".86"/>
+      <path d="M210 171 210 408" stroke="#754521" stroke-opacity=".38" stroke-width="5"/>
+      <path d="M18 262 197 330" stroke="#19547c" stroke-width="15" opacity=".82"/>
+    </g>
+
+    <g transform="translate(545 360)">
+      <path d="m0 72 145-72 170 62-147 78z" fill="#efc690"/>
+      <path d="m0 72 168 68v194L0 260z" fill="#c98d50"/>
+      <path d="m168 140 147-78v194l-147 78z" fill="#9b6336"/>
+      <path d="m143 1 26 10 171 62-26 14-171-61z" fill="#f6d9ad"/>
+    </g>
+  </g>
+
+  <g transform="translate(116 188)" filter="url(#shadow)">
+    <ellipse cx="204" cy="174" rx="165" ry="166" fill="url(#film)" stroke="#76aabd" stroke-width="8"/>
+    <ellipse cx="204" cy="174" rx="72" ry="72" fill="#e2edf2" stroke="#507f91" stroke-width="17"/>
+    <ellipse cx="204" cy="174" rx="38" ry="38" fill="#f8fbfc"/>
+    <path d="M43 145c27-85 88-132 176-138" fill="none" stroke="#fff" stroke-linecap="round" stroke-width="19" opacity=".7"/>
+    <path d="M87 300c86 42 181 29 242-42" fill="none" stroke="#4c8499" stroke-linecap="round" stroke-width="10" opacity=".34"/>
+  </g>
+
+  <g transform="translate(92 570)" filter="url(#shadow)">
+    <ellipse cx="118" cy="92" rx="112" ry="90" fill="#c28342"/>
+    <ellipse cx="118" cy="92" rx="58" ry="47" fill="#f0dcc1"/>
+    <ellipse cx="118" cy="92" rx="34" ry="27" fill="#f8fbfc"/>
+    <path d="M34 49c54-49 132-54 185-9" fill="none" stroke="#efc58e" stroke-linecap="round" stroke-width="13" opacity=".7"/>
+  </g>
+
+  <g transform="translate(325 572)" filter="url(#shadow)">
+    <path d="M18 34h270v139H18z" fill="url(#film)" stroke="#78a9b9" stroke-width="7"/>
+    <ellipse cx="18" cy="103" rx="18" ry="69" fill="#8eb8c6"/>
+    <ellipse cx="288" cy="103" rx="26" ry="69" fill="#d8edf3" stroke="#78a9b9" stroke-width="7"/>
+    <ellipse cx="288" cy="103" rx="10" ry="40" fill="#f8fbfc"/>
+    <g fill="#fff" opacity=".58">
+      <circle cx="72" cy="72" r="10"/><circle cx="105" cy="72" r="10"/><circle cx="138" cy="72" r="10"/><circle cx="171" cy="72" r="10"/><circle cx="204" cy="72" r="10"/><circle cx="237" cy="72" r="10"/>
+      <circle cx="72" cy="110" r="10"/><circle cx="105" cy="110" r="10"/><circle cx="138" cy="110" r="10"/><circle cx="171" cy="110" r="10"/><circle cx="204" cy="110" r="10"/><circle cx="237" cy="110" r="10"/>
+      <circle cx="72" cy="148" r="10"/><circle cx="105" cy="148" r="10"/><circle cx="138" cy="148" r="10"/><circle cx="171" cy="148" r="10"/><circle cx="204" cy="148" r="10"/><circle cx="237" cy="148" r="10"/>
+    </g>
+  </g>
+
+  <g transform="translate(765 610)" filter="url(#shadow)">
+    <ellipse cx="118" cy="90" rx="110" ry="83" fill="url(#strap)"/>
+    <ellipse cx="118" cy="90" rx="69" ry="52" fill="#244f6e"/>
+    <ellipse cx="118" cy="90" rx="39" ry="29" fill="#e6f0f5"/>
+    <path d="M222 88c72-1 109 20 152 64" fill="none" stroke="#0e2e48" stroke-linecap="round" stroke-width="26"/>
+  </g>
+
+  <g transform="translate(1030 615) rotate(9)" filter="url(#shadow)">
+    <path d="M0 10h95v45H0z" rx="8" fill="#22a366"/>
+    <path d="M95 32c68 4 81 39 89 91" fill="none" stroke="#6d8796" stroke-width="9"/>
+    <circle cx="23" cy="32" r="7" fill="#d7f7e5"/>
+  </g>
+</svg>

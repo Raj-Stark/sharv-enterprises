@@ -1,4 +1,4 @@
-import Image from 'next/image'
+import { ResilientImage as Image } from '@/components/media/resilient-image'
 
 import { getMediaUrl } from '@/lib/strapi/client'
 import type { CertificationSummary } from '@/lib/strapi/types'

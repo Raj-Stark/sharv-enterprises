@@ -1,10 +1,11 @@
 import type { Metadata } from 'next'
-import Image from 'next/image'
+import { ResilientImage as Image } from '@/components/media/resilient-image'
 import Link from 'next/link'
 
 import { BlogCard } from '@/components/blog/blog-card'
 import { CertificationCard } from '@/components/certifications/certification-card'
 import { StorefrontHero } from '@/components/home/storefront-hero'
+import { IndustryIcon, type IndustryIconName } from '@/components/icons/industry-icon'
 import { WhatsAppIcon } from '@/components/icons/whatsapp-icon'
 import { ProductCard } from '@/components/products/product-card'
 import { EmptyState } from '@/components/site/empty-state'
@@ -86,19 +87,57 @@ const whyChooseUs = [
   },
 ] as const
 
-const exportMarkets = [
-  { name: 'Germany', shortName: 'Germany', flag: '🇩🇪' },
-  { name: 'United Kingdom', shortName: 'UK', flag: '🇬🇧' },
-  { name: 'United Arab Emirates', shortName: 'UAE', flag: '🇦🇪' },
-  { name: 'Saudi Arabia', shortName: 'Saudi Arabia', flag: '🇸🇦' },
-  { name: 'Qatar', shortName: 'Qatar', flag: '🇶🇦' },
-  { name: 'Kuwait', shortName: 'Kuwait', flag: '🇰🇼' },
-  { name: 'Bahrain', shortName: 'Bahrain', flag: '🇧🇭' },
-  { name: 'Nepal', shortName: 'Nepal', flag: '🇳🇵' },
-  { name: 'Bangladesh', shortName: 'Bangladesh', flag: '🇧🇩' },
-  { name: 'Sri Lanka', shortName: 'Sri Lanka', flag: '🇱🇰' },
-  { name: 'Singapore', shortName: 'Singapore', flag: '🇸🇬' },
-] as const
+const industries = [
+  {
+    name: 'Logistics & Warehousing',
+    icon: 'logistics',
+    description: 'Load stabilisation, carton sealing and safer warehouse movement.',
+  },
+  {
+    name: 'Export & Shipping',
+    icon: 'shipping',
+    description: 'Transit-ready protection and tamper-evident cargo security.',
+  },
+  {
+    name: 'E-commerce',
+    icon: 'ecommerce',
+    description: 'Right-sized protection for fulfilment and last-mile delivery.',
+  },
+  {
+    name: 'Automobile',
+    icon: 'automobile',
+    description: 'Surface protection, bundling and part-safe transit packaging.',
+  },
+  {
+    name: 'Pharmaceuticals',
+    icon: 'pharmaceuticals',
+    description: 'Clean, traceable and tamper-aware secondary packaging.',
+  },
+  {
+    name: 'FMCG',
+    icon: 'fmcg',
+    description: 'High-volume materials for fast and consistent dispatch.',
+  },
+  {
+    name: 'Food & Beverage',
+    icon: 'food',
+    description: 'Secure outer packaging for storage and distribution.',
+  },
+  {
+    name: 'Textile & Garments',
+    icon: 'textile',
+    description: 'Moisture protection, bundling and shipment-ready packing.',
+  },
+  {
+    name: 'Electronics',
+    icon: 'electronics',
+    description: 'Cushioning and secure handling for sensitive products.',
+  },
+] satisfies ReadonlyArray<{
+  name: string
+  icon: IndustryIconName
+  description: string
+}>
 
 function cleanCategoryName(value: string): string {
   return value
@@ -435,51 +474,65 @@ export default async function Home() {
         </div>
       </section>
 
-      <section className="world-dots border-y border-slate-200 bg-[#f5f8fb] py-14 sm:py-20" id="export-countries" aria-labelledby="export-countries-title">
+      <section className="relative overflow-hidden border-y border-slate-200 bg-[#f5f8fb] py-14 sm:py-20" id="industries" aria-labelledby="industries-title">
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_12%_18%,rgba(25,84,124,0.12),transparent_27%),radial-gradient(circle_at_88%_80%,rgba(234,88,12,0.09),transparent_24%)]" />
+        <div className="industrial-grid pointer-events-none absolute inset-0 opacity-[0.035]" />
         <div className="mx-auto max-w-7xl px-5 sm:px-8">
-          <div className="grid gap-6 lg:grid-cols-[1fr_auto] lg:items-end">
-            <div className="max-w-3xl" id="export-countries-title">
+          <div className="relative grid gap-7 lg:grid-cols-[minmax(0,1fr)_22rem] lg:items-end lg:gap-12">
+            <div className="max-w-3xl" id="industries-title">
               <div className="inline-flex items-center gap-2 rounded-full border border-brand-blue/15 bg-white px-3 py-2 text-[11px] font-extrabold uppercase tracking-[0.12em] text-brand-blue shadow-sm">
-                <span className="text-base" aria-hidden="true">✦</span>
-                International enquiries
+                <span className="grid size-5 place-items-center rounded-full bg-blue-50 text-[10px]" aria-hidden="true">09</span>
+                Cross-sector packaging
               </div>
               <h2 className="mt-5 text-3xl font-extrabold leading-[1.08] tracking-[-0.025em] text-slate-950 sm:text-[2.75rem]">
-                Countries we export to
+                Industries we serve
               </h2>
               <p className="mt-4 max-w-2xl text-base leading-7 text-slate-600">
-                Start an export requirement for a frequently requested destination. Product availability, documentation and commercial terms are confirmed against the exact country or port.
+                Packaging requirements change with every operation. Start with your industry and we’ll help narrow the right protection, sealing and load-security options.
               </p>
             </div>
-            <Link className="inline-flex min-h-12 items-center justify-center rounded-xl bg-brand-blue px-6 text-xs font-extrabold uppercase tracking-[0.08em] text-white shadow-[0_12px_28px_rgba(25,84,124,0.2)] transition hover:-translate-y-0.5 hover:bg-brand-navy" href="/quote">
-              Start an enquiry <span className="ml-3" aria-hidden="true">→</span>
-            </Link>
-          </div>
-
-          <div className="mt-10 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">
-            {exportMarkets.map((market) => (
-              <Link
-                aria-label={`Start an export quotation for ${market.name}`}
-                className="group relative overflow-hidden rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition duration-300 hover:-translate-y-1 hover:border-blue-200 hover:shadow-[0_18px_40px_rgba(25,84,124,0.12)] sm:p-5"
-                href={`/quote?destination=${encodeURIComponent(market.name)}`}
-                key={market.name}
-              >
-                <span className="absolute right-3 top-3 text-sm font-black text-slate-300 transition group-hover:translate-x-0.5 group-hover:text-brand-blue" aria-hidden="true">↗</span>
-                <span className="grid size-14 place-items-center rounded-2xl bg-blue-50 text-3xl shadow-inner" aria-hidden="true">
-                  {market.flag}
-                </span>
-                <h3 className="mt-4 text-sm font-extrabold leading-snug text-slate-950 sm:text-base">{market.shortName}</h3>
-                <p className="mt-1 text-[10px] font-extrabold uppercase tracking-[0.07em] text-slate-500">Export enquiry</p>
+            <div className="rounded-2xl border border-slate-200 bg-white/90 p-5 shadow-[0_16px_40px_rgba(12,53,86,0.08)] backdrop-blur sm:p-6">
+              <p className="text-[10px] font-extrabold uppercase tracking-[0.11em] text-orange-600">Application-led support</p>
+              <p className="mt-2 text-base font-extrabold leading-6 text-slate-950">Tell us what you pack, how it moves and where it needs to arrive.</p>
+              <Link className="group mt-4 inline-flex items-center text-xs font-extrabold uppercase tracking-[0.08em] text-brand-blue transition hover:text-brand-navy" href="/quote">
+                Discuss your requirement <span className="ml-2 transition group-hover:translate-x-1" aria-hidden="true">→</span>
               </Link>
-            ))}
+            </div>
           </div>
 
-          <div className="mt-5 flex flex-col gap-4 rounded-2xl border border-dashed border-blue-200 bg-white/80 px-5 py-5 sm:flex-row sm:items-center sm:justify-between sm:px-6">
-            <div>
-              <p className="text-sm font-extrabold text-slate-950">Your destination is not listed?</p>
-              <p className="mt-1 text-xs leading-5 text-slate-600">Share the country or destination port and we’ll evaluate the requirement.</p>
+          <ul className="relative mt-10 grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4">
+            {industries.map((industry, index) => (
+              <li className="flex" key={industry.name}>
+                <Link
+                  aria-label={`Discuss packaging for ${industry.name}`}
+                  className="group relative flex min-h-40 w-full flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition duration-300 hover:-translate-y-1 hover:border-blue-300 hover:shadow-[0_20px_45px_rgba(25,84,124,0.13)] focus-visible:outline-3 focus-visible:outline-offset-3 focus-visible:outline-brand-blue sm:min-h-52 sm:p-6"
+                  href={`/quote?industry=${encodeURIComponent(industry.name)}`}
+                >
+                  <span className="absolute inset-x-0 top-0 h-1 origin-left scale-x-0 bg-gradient-to-r from-brand-blue to-orange-500 transition duration-300 group-hover:scale-x-100" />
+                  <div className="flex items-start justify-between gap-3">
+                    <span className="grid size-11 place-items-center rounded-xl bg-blue-50 text-brand-blue ring-1 ring-blue-100 transition duration-300 group-hover:bg-brand-blue group-hover:text-white sm:size-12">
+                      <IndustryIcon className="size-5 sm:size-6" name={industry.icon} />
+                    </span>
+                    <span className="font-mono text-[10px] font-bold text-slate-400">{String(index + 1).padStart(2, '0')}</span>
+                  </div>
+                  <h3 className="mt-5 text-[15px] font-extrabold leading-snug tracking-[-0.015em] text-slate-950 sm:text-xl">{industry.name}</h3>
+                  <p className="mt-2 hidden text-sm leading-6 text-slate-600 sm:block">{industry.description}</p>
+                  <span className="mt-auto flex items-center pt-4 text-[10px] font-extrabold uppercase tracking-[0.07em] text-brand-blue">
+                    Start enquiry <span className="ml-2 transition group-hover:translate-x-1" aria-hidden="true">→</span>
+                  </span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+
+          <div className="relative mt-5 overflow-hidden rounded-2xl bg-brand-navy px-5 py-5 text-white sm:flex sm:items-center sm:justify-between sm:gap-8 sm:px-7">
+            <div className="industrial-grid pointer-events-none absolute inset-0 opacity-[0.08]" />
+            <div className="relative">
+              <p className="text-[10px] font-extrabold uppercase tracking-[0.11em] text-orange-300">Beyond these sectors</p>
+              <p className="mt-1 text-sm font-semibold leading-6 text-blue-50">If your industry is not listed, share the application—we source by requirement, not by label.</p>
             </div>
-            <Link className="shrink-0 text-xs font-extrabold uppercase tracking-[0.08em] text-brand-blue hover:text-brand-navy" href="/quote">
-              Add another destination <span aria-hidden="true">→</span>
+            <Link className="relative mt-4 inline-flex min-h-11 shrink-0 items-center justify-center rounded-xl bg-white px-5 text-[10px] font-extrabold uppercase tracking-[0.08em] text-brand-navy transition hover:-translate-y-0.5 hover:bg-blue-50 sm:mt-0" href="/quote">
+              Start a custom enquiry <span className="ml-2" aria-hidden="true">→</span>
             </Link>
           </div>
         </div>
