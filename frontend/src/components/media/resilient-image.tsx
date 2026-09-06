@@ -1,7 +1,7 @@
 'use client'
 
 import Image, { type ImageProps } from 'next/image'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 
 const DEFAULT_FALLBACK_IMAGE = '/images/catalogue-fallback.svg'
 
@@ -15,28 +15,24 @@ type ResilientImageProps = ImageProps & {
  */
 export function ResilientImage({
   src,
+  alt,
   fallbackSrc = DEFAULT_FALLBACK_IMAGE,
   onError,
   ...props
 }: ResilientImageProps) {
-  const [activeSrc, setActiveSrc] = useState(src)
-  const [isFallback, setIsFallback] = useState(false)
-
-  useEffect(() => {
-    setActiveSrc(src)
-    setIsFallback(false)
-  }, [src])
+  const [failedSource, setFailedSource] = useState<ImageProps['src'] | null>(null)
+  const isFallback = failedSource === src
 
   return (
     <Image
       {...props}
-      src={activeSrc}
+      alt={alt}
+      src={isFallback ? fallbackSrc : src}
       onError={(event) => {
         onError?.(event)
 
         if (!isFallback) {
-          setIsFallback(true)
-          setActiveSrc(fallbackSrc)
+          setFailedSource(src)
         }
       }}
     />

@@ -53,12 +53,14 @@ export function QuotationForm({
   endpoint,
   defaultDeliveryDestination,
   defaultProductDocumentId,
+  defaultRequirements,
   turnstileSiteKey,
 }: {
   products: ProductSummary[]
   endpoint: string
   defaultDeliveryDestination?: string
   defaultProductDocumentId?: string
+  defaultRequirements?: string
   turnstileSiteKey?: string
 }) {
   const [selectedProduct, setSelectedProduct] = useState(defaultProductDocumentId ?? '')
@@ -314,6 +316,7 @@ export function QuotationForm({
             Additional details <span className="font-medium normal-case tracking-normal text-slate-500">(optional)</span>
             <textarea
               className={`${inputClass} min-h-24 resize-y py-3`}
+              defaultValue={defaultRequirements}
               maxLength={600}
               name="requirements"
               placeholder="Size, application or any special requirement"
