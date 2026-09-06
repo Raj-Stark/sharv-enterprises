@@ -119,15 +119,6 @@ export type ProductSummary = {
   publishedAt?: string
 }
 
-export type NamedRelation = {
-  id: number
-  documentId: string
-  name: string
-  slug: string
-  description?: string | null
-  summary?: string | null
-}
-
 export type CertificationSummary = {
   id: number
   documentId: string
@@ -168,7 +159,6 @@ export type TestimonialSummary = {
 export type ProductDetail = ProductSummary & {
   description: BlocksNode[]
   gallery?: StrapiMedia[] | null
-  applications?: NamedRelation[]
   certifications?: CertificationSummary[]
   specifications?: ProductSpecification[]
   features?: ProductFeature[]
@@ -230,27 +220,6 @@ export type HomePage = {
   createdAt?: string
   updatedAt?: string
   publishedAt?: string
-}
-
-export type ApplicationSummary = {
-  id: number
-  documentId: string
-  name: string
-  slug: string
-  summary: string
-  image?: StrapiMedia | null
-  featured: boolean
-  sortOrder?: number
-  createdAt?: string
-  updatedAt?: string
-  publishedAt?: string
-}
-
-export type ApplicationDetail = ApplicationSummary & {
-  content?: BlocksNode[] | null
-  products?: ProductSummary[]
-  faqs?: FaqComponent[]
-  seo?: SeoComponent | null
 }
 
 export type BlogCategorySummary = {
@@ -327,7 +296,6 @@ export type SeoLandingPage = {
   content: BlocksNode[]
   heroImage?: StrapiMedia | null
   category?: ProductCategorySummary | null
-  application?: ApplicationSummary | null
   certification?: CertificationSummary | null
   products?: ProductSummary[]
   faqs?: FaqComponent[]

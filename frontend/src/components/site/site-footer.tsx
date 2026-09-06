@@ -52,11 +52,6 @@ export function SiteFooter({ setting }: SiteFooterProps) {
               </Link>
             </li>
             <li>
-              <Link className="hover:text-white" href="/applications">
-                Use cases
-              </Link>
-            </li>
-            <li>
               <Link className="hover:text-white" href="/blogs">
                 Packaging guides
               </Link>

@@ -4,8 +4,6 @@ import { cache } from 'react'
 
 import { StrapiRequestError, strapiFetch } from './client'
 import type {
-  ApplicationDetail,
-  ApplicationSummary,
   BlogCategorySummary,
   BlogPostDetail,
   BlogPostSummary,
@@ -56,21 +54,12 @@ function hasRequiredBlogRelations(
   )
 }
 
-function addDiscoverySort(params: URLSearchParams): void {
-  params.set('sort[0]', 'featured:desc')
-  params.set('sort[1]', 'sortOrder:asc')
-  params.set('sort[2]', 'name:asc')
-}
-
-async function getFilteredProducts(
-  relation: 'category' | 'applications',
-  slug: string,
-): Promise<ProductSummary[]> {
+async function getProductsByCategory(slug: string): Promise<ProductSummary[]> {
   const params = new URLSearchParams()
   params.set('sort[0]', 'featured:desc')
   params.set('sort[1]', 'name:asc')
   params.set('pagination[pageSize]', '100')
-  params.set(`filters[${relation}][slug][$eq]`, slug)
+  params.set('filters[category][slug][$eq]', slug)
   addProductCardPopulate(params)
 
   const response = await strapiFetch<StrapiCollectionResponse<ProductSummary>>(
@@ -82,7 +71,7 @@ async function getFilteredProducts(
 }
 
 export async function getProducts(categorySlug?: string): Promise<ProductSummary[]> {
-  if (categorySlug) return getFilteredProducts('category', categorySlug)
+  if (categorySlug) return getProductsByCategory(categorySlug)
 
   const params = new URLSearchParams()
   params.set('sort[0]', 'featured:desc')
@@ -96,10 +85,6 @@ export async function getProducts(categorySlug?: string): Promise<ProductSummary
   )
 
   return response.data
-}
-
-export function getProductsByApplication(slug: string): Promise<ProductSummary[]> {
-  return getFilteredProducts('applications', slug)
 }
 
 export async function getHomepageProducts(): Promise<ProductSummary[]> {
@@ -140,7 +125,6 @@ export const getProductBySlug = cache(
     params.set('populate[coverImage]', 'true')
     params.set('populate[gallery]', 'true')
     params.set('populate[category][populate][image]', 'true')
-    params.set('populate[applications]', 'true')
     params.set('populate[certifications][populate][logo]', 'true')
     params.set('populate[certifications][populate][document]', 'true')
     params.set('populate[specifications]', 'true')
@@ -172,49 +156,6 @@ export const getCategoryBySlug = cache(
     const response = await strapiFetch<
       StrapiCollectionResponse<ProductCategoryDetail>
     >('/api/product-categories', params)
-
-    return response.data[0] ?? null
-  },
-)
-
-export async function getApplications(): Promise<ApplicationSummary[]> {
-  const params = new URLSearchParams()
-  addDiscoverySort(params)
-  params.set('pagination[pageSize]', '100')
-  params.set('populate[image]', 'true')
-
-  const response = await strapiFetch<
-    StrapiCollectionResponse<ApplicationSummary>
-  >('/api/applications', params)
-
-  return response.data
-}
-
-export async function getHomepageApplications(): Promise<ApplicationSummary[]> {
-  const params = new URLSearchParams()
-  addDiscoverySort(params)
-  params.set('pagination[pageSize]', '6')
-  params.set('populate[image]', 'true')
-
-  const response = await strapiFetch<
-    StrapiCollectionResponse<ApplicationSummary>
-  >('/api/applications', params)
-
-  return response.data
-}
-
-export const getApplicationBySlug = cache(
-  async (slug: string): Promise<ApplicationDetail | null> => {
-    const params = new URLSearchParams()
-    params.set('filters[slug][$eq]', slug)
-    params.set('pagination[pageSize]', '1')
-    params.set('populate[image]', 'true')
-    params.set('populate[faqs]', 'true')
-    params.set('populate[seo][populate][ogImage]', 'true')
-
-    const response = await strapiFetch<
-      StrapiCollectionResponse<ApplicationDetail>
-    >('/api/applications', params)
 
     return response.data[0] ?? null
   },
@@ -323,7 +264,6 @@ export const getSeoLandingByPath = cache(
     params.set('pagination[pageSize]', '1')
     params.set('populate[heroImage]', 'true')
     params.set('populate[category][populate][image]', 'true')
-    params.set('populate[application][populate][image]', 'true')
     params.set('populate[certification][populate][logo]', 'true')
     params.set('populate[certification][populate][document]', 'true')
     addProductCardPopulate(params, 'products')
@@ -425,18 +365,16 @@ async function getAllSitemapEntries(
 export async function getSitemapContent(): Promise<{
   products: SitemapEntry[]
   categories: SitemapEntry[]
-  applications: SitemapEntry[]
   blogs: SitemapEntry[]
   landings: SitemapEntry[]
 }> {
-  const [products, categories, applications, blogs, landings] =
+  const [products, categories, blogs, landings] =
     await Promise.all([
       getAllSitemapEntries('/api/products', 'slug'),
       getAllSitemapEntries('/api/product-categories', 'slug'),
-      getAllSitemapEntries('/api/applications', 'slug'),
       getAllSitemapEntries('/api/blog-posts', 'slug'),
       getAllSitemapEntries('/api/seo-landing-pages', 'path'),
     ])
 
-  return { products, categories, applications, blogs, landings }
+  return { products, categories, blogs, landings }
 }

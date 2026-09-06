@@ -50,7 +50,7 @@ export default async function BlogsPage({ searchParams }: BlogsPageProps) {
           <p className="mt-5 text-[11px] font-black uppercase tracking-[0.16em] text-orange-400">Technical insight</p>
           <h1 className="mt-3 max-w-4xl text-[2.15rem] font-black leading-[1.08] tracking-[-0.04em] sm:text-[2.7rem] lg:text-5xl">Practical knowledge for better product decisions.</h1>
           <p className="mt-4 max-w-2xl text-base leading-7 text-slate-300">
-            Browse published articles connected to products, applications and operating requirements.
+            Browse published articles connected to products, packaging methods and operating requirements.
           </p>
         </div>
       </section>

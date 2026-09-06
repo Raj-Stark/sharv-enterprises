@@ -168,11 +168,10 @@ export default async function ContactPage() {
           <div>
             <p className="text-[10px] font-extrabold uppercase tracking-[0.1em] text-orange-600">Prefer to research first?</p>
             <h2 className="mt-2 text-3xl font-extrabold tracking-[-0.03em] text-slate-950 sm:text-4xl">Find the right starting point.</h2>
-            <p className="mt-3 max-w-xl text-sm leading-7 text-slate-600">Browse the catalogue directly or explore products by their packaging application.</p>
+            <p className="mt-3 max-w-xl text-sm leading-7 text-slate-600">Browse the catalogue to compare product categories and technical details before enquiring.</p>
           </div>
-          <div className="grid gap-3 sm:grid-cols-2">
+          <div>
             <Link className="inline-flex min-h-12 items-center justify-center rounded-xl bg-brand-navy px-6 text-xs font-extrabold uppercase tracking-[0.07em] text-white transition hover:bg-brand-blue" href="/products">Browse products →</Link>
-            <Link className="inline-flex min-h-12 items-center justify-center rounded-xl border border-slate-300 bg-white px-6 text-xs font-extrabold uppercase tracking-[0.07em] text-brand-navy transition hover:border-brand-blue" href="/applications">View applications →</Link>
           </div>
         </div>
       </section>

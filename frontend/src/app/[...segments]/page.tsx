@@ -35,10 +35,12 @@ function safeExternalUrl(value?: string | null): string | null {
 
 export async function generateMetadata({ params }: LandingPageProps): Promise<Metadata> {
   const { segments } = await params
+  if (segments[0] === 'applications') notFound()
+
   const path = landingPath(segments)
   const landing = await getSeoLandingByPath(path)
 
-  if (!landing) notFound()
+  if (!landing || landing.pageType === 'application') notFound()
 
   return buildSeoMetadata({
     seo: landing.seo,
@@ -51,10 +53,12 @@ export async function generateMetadata({ params }: LandingPageProps): Promise<Me
 
 export default async function SeoLandingPage({ params }: LandingPageProps) {
   const { segments } = await params
+  if (segments[0] === 'applications') notFound()
+
   const path = landingPath(segments)
   const landing = await getSeoLandingByPath(path)
 
-  if (!landing) notFound()
+  if (!landing || landing.pageType === 'application') notFound()
 
   const imageUrl = getMediaUrl(landing.heroImage?.url)
   const verificationUrl = safeExternalUrl(landing.certification?.verificationUrl)
@@ -111,12 +115,11 @@ export default async function SeoLandingPage({ params }: LandingPageProps) {
         </div>
       </section>
 
-      {(landing.category || landing.application) && (
+      {landing.category && (
         <section className="border-b border-slate-200 bg-white">
           <div className="mx-auto flex max-w-7xl flex-wrap items-center gap-3 px-5 py-5 sm:px-8">
             <span className="mr-2 text-[9px] font-black uppercase tracking-[0.16em] text-slate-400">Related discovery</span>
-            {landing.category && <Link className="rounded-full border border-slate-300 px-4 py-2 text-xs font-bold text-slate-700 hover:border-slate-950" href={`/products/category/${landing.category.slug}`}>{landing.category.name}</Link>}
-            {landing.application && <Link className="rounded-full border border-slate-300 px-4 py-2 text-xs font-bold text-slate-700 hover:border-slate-950" href={`/applications/${landing.application.slug}`}>{landing.application.name}</Link>}
+            <Link className="rounded-full border border-slate-300 px-4 py-2 text-xs font-bold text-slate-700 hover:border-slate-950" href={`/products/category/${landing.category.slug}`}>{landing.category.name}</Link>
           </div>
         </section>
       )}
