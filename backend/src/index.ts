@@ -3,6 +3,7 @@ import type { Core } from '@strapi/strapi';
 import { registerBlogPostPublicationValidation } from './api/blog-post/content-types/blog-post/publication-validation';
 import { registerCertificationValidation } from './api/certification/content-types/certification/validation';
 import { registerProductCategoryHierarchyValidation } from './api/product-category/content-types/product-category/hierarchy';
+import { registerProductPublicationValidation } from './api/product/content-types/product/publication-validation';
 import { registerQuotationWhatsappTracking } from './api/quotation-request/content-types/quotation-request/tracking';
 import { registerSeoLandingPathValidation } from './api/seo-landing-page/content-types/seo-landing-page/path-validation';
 import {
@@ -33,6 +34,7 @@ export default {
     registerBlogPostPublicationValidation(strapi);
     registerCertificationValidation(strapi);
     registerProductCategoryHierarchyValidation(strapi);
+    registerProductPublicationValidation(strapi);
     registerQuotationWhatsappTracking(strapi);
     registerSeoLandingPathValidation(strapi);
     validateQuotationSecurityConfig(strapi);

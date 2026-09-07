@@ -1,6 +1,11 @@
 import type { Core } from '@strapi/strapi';
 import { errors } from '@strapi/utils';
 
+import {
+  isStoredMediaAvailable,
+  type StoredMedia,
+} from '../../../../media/upload-integrity';
+
 const BLOG_POST_UID = 'api::blog-post.blog-post' as const;
 const BLOG_AUTHOR_UID = 'api::blog-author.blog-author' as const;
 const BLOG_CATEGORY_UID = 'api::blog-category.blog-category' as const;
@@ -15,7 +20,7 @@ type BlogPostDraft = {
   title?: string;
   author?: RelationSummary | null;
   category?: RelationSummary | null;
-  coverImage?: unknown;
+  coverImage?: StoredMedia | null;
 };
 
 async function requirePublishedRelation(
@@ -76,6 +81,12 @@ async function validateBlogPostPublication(
   if (!draft.coverImage) {
     throw new ValidationError(
       'Publish blocked: add a cover image before publishing this blog post.',
+    );
+  }
+
+  if (!isStoredMediaAvailable(draft.coverImage)) {
+    throw new ValidationError(
+      'Publish blocked: the selected cover image file is missing from media storage. Remove it, upload the image again, and then publish the blog post.',
     );
   }
 
