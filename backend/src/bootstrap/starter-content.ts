@@ -3,6 +3,12 @@ import path from 'node:path';
 
 import type { Core } from '@strapi/strapi';
 
+import {
+  isStoredMediaAvailable,
+  restoreLocalMediaFromAsset,
+  type StoredMedia,
+} from '../media/upload-integrity';
+
 type DocumentRecord = {
   id?: number;
   documentId: string;
@@ -14,19 +20,38 @@ type UploadedFile = {
   id: number;
   documentId?: string;
   name: string;
+  provider?: string | null;
   url?: string | null;
   formats?: Record<string, { url?: string | null }> | null;
+};
+
+type ProductDocumentRecord = DocumentRecord & {
+  coverImage?: UploadedFile | null;
+};
+
+type BlogPostDocumentRecord = DocumentRecord & {
+  coverImage?: UploadedFile | null;
+};
+
+type HomePageDocumentRecord = DocumentRecord & {
+  heroImage?: UploadedFile | null;
 };
 
 type ProductSeed = {
   name: string;
   slug: string;
+  legacySlugs?: string[];
   sku: string;
   category: string;
   shortDescription: string;
   featured?: boolean;
   specifications: Array<[string, string, string?]>;
   features: Array<[string, string]>;
+};
+
+type ProductRecoverySeed = {
+  name: string;
+  slug: string;
 };
 
 const CATEGORY_SEEDS = [
@@ -98,6 +123,7 @@ const PRODUCT_SEEDS: ProductSeed[] = [
   {
     name: 'Coloured Stretch Film',
     slug: 'colored-stretch-film',
+    legacySlugs: ['coloured-stretch-film'],
     sku: 'SE-SF-CLR-003',
     category: 'stretch-film',
     shortDescription: 'Coloured stretch film for load identification, light concealment and organised pallet handling.',
@@ -163,6 +189,23 @@ const PRODUCT_SEEDS: ProductSeed[] = [
   },
 ];
 
+/**
+ * Products that already exist in the production catalogue but are not part of
+ * the starter catalogue. They are never created automatically; these assets
+ * are used only to heal an existing product whose upload record points to a
+ * missing local file.
+ */
+const LEGACY_PRODUCT_RECOVERY_SEEDS: ProductRecoverySeed[] = [
+  { name: 'Container Bolt Seal', slug: 'container-bolt-seal' },
+  { name: 'Double-Sided Tape', slug: 'double-sided-tape' },
+  { name: 'Dunnage Air Bags', slug: 'dunnage-air-bags' },
+  { name: 'Edge Protectors', slug: 'edge-protectors' },
+  { name: 'Masking Tape', slug: 'masking-tape' },
+  { name: 'Plastic Seal', slug: 'plastic-seal' },
+  { name: 'Pre-Stretched Film', slug: 'pre-stretched-film' },
+  { name: 'Steel Strapping', slug: 'steel-strapping' },
+];
+
 const paragraph = (text: string) => ({
   type: 'paragraph',
   children: [{ type: 'text', text }],
@@ -171,6 +214,7 @@ const paragraph = (text: string) => ({
 function documents(strapi: Core.Strapi, uid: string) {
   return strapi.documents(uid as never) as unknown as {
     findFirst(args: Record<string, unknown>): Promise<DocumentRecord | null>;
+    findMany(args: Record<string, unknown>): Promise<DocumentRecord[]>;
     findOne(args: Record<string, unknown>): Promise<DocumentRecord | null>;
     create(args: Record<string, unknown>): Promise<DocumentRecord>;
     update(args: Record<string, unknown>): Promise<DocumentRecord>;
@@ -280,7 +324,7 @@ async function ensureStarterImage(strapi: Core.Strapi): Promise<UploadedFile> {
 
 async function ensureProductImage(
   strapi: Core.Strapi,
-  seed: ProductSeed,
+  seed: ProductRecoverySeed,
 ): Promise<UploadedFile> {
   const fileName = `sharv-product-${seed.slug}.webp`;
   const imagePath = path.resolve(
@@ -300,21 +344,17 @@ async function ensureProductImage(
   const existing = await fileQuery.findOne({ where: { name: fileName } });
 
   if (existing) {
-    if (existing.url?.startsWith('/uploads/')) {
-      const publicDir = path.resolve(
-        process.cwd(),
-        process.env.PUBLIC_DIR || './public',
-      );
-      const targetPath = path.resolve(
-        publicDir,
-        existing.url.replace(/^\/+/, ''),
-      );
+    const wasAvailable = isStoredMediaAvailable(existing);
+    const isAvailable = restoreLocalMediaFromAsset(existing, imagePath);
 
-      if (!fs.existsSync(targetPath) || fs.statSync(targetPath).size === 0) {
-        fs.mkdirSync(path.dirname(targetPath), { recursive: true });
-        fs.copyFileSync(imagePath, targetPath);
-        strapi.log.warn(`Repaired missing product upload at ${targetPath}.`);
-      }
+    if (!isAvailable) {
+      throw new Error(
+        `Product image record ${fileName} exists, but its stored file could not be repaired.`,
+      );
+    }
+
+    if (!wasAvailable) {
+      strapi.log.warn(`Repaired missing product upload for ${seed.slug}.`);
     }
 
     return existing;
@@ -347,10 +387,103 @@ async function ensureProductImage(
   return uploaded[0];
 }
 
+async function findProductBySlugs(
+  strapi: Core.Strapi,
+  slugs: string[],
+  status: 'draft' | 'published',
+): Promise<ProductDocumentRecord | null> {
+  const productService = documents(strapi, 'api::product.product');
+
+  for (const slug of slugs) {
+    const product = (await productService.findFirst({
+      filters: { slug },
+      status,
+      fields: ['documentId', 'name', 'slug'],
+      populate: { coverImage: true },
+    })) as ProductDocumentRecord | null;
+
+    if (product) {
+      return product;
+    }
+  }
+
+  return null;
+}
+
+async function publishProductWithRecoveryImage(
+  strapi: Core.Strapi,
+  product: ProductDocumentRecord,
+  recoverySeed: ProductRecoverySeed,
+): Promise<ProductDocumentRecord> {
+  const productService = documents(strapi, 'api::product.product');
+  const productImage = await ensureProductImage(strapi, recoverySeed);
+
+  await productService.update({
+    documentId: product.documentId,
+    data: { coverImage: productImage.id },
+  });
+  await productService.publish({ documentId: product.documentId });
+
+  const published = (await productService.findOne({
+    documentId: product.documentId,
+    status: 'published',
+    fields: ['documentId', 'name', 'slug'],
+    populate: { coverImage: true },
+  })) as ProductDocumentRecord | null;
+
+  if (!published || !isStoredMediaAvailable(published.coverImage)) {
+    throw new Error(
+      `Product media recovery did not produce a healthy published image for ${recoverySeed.slug}.`,
+    );
+  }
+
+  strapi.log.info(`Product media recovery completed for ${published.slug ?? recoverySeed.slug}.`);
+
+  return published;
+}
+
+async function repairLegacyProductImages(strapi: Core.Strapi): Promise<void> {
+  for (const recoverySeed of LEGACY_PRODUCT_RECOVERY_SEEDS) {
+    const product = await findProductBySlugs(
+      strapi,
+      [recoverySeed.slug],
+      'published',
+    );
+
+    if (!product || isStoredMediaAvailable(product.coverImage)) {
+      continue;
+    }
+
+    await publishProductWithRecoveryImage(strapi, product, recoverySeed);
+  }
+}
+
+async function auditPublishedProductMedia(strapi: Core.Strapi): Promise<void> {
+  const productService = documents(strapi, 'api::product.product');
+  const products = (await productService.findMany({
+    status: 'published',
+    fields: ['documentId', 'name', 'slug'],
+    populate: { coverImage: true },
+    pagination: { page: 1, pageSize: 500 },
+  })) as ProductDocumentRecord[];
+  const brokenProducts = products.filter(
+    (product) => !isStoredMediaAvailable(product.coverImage as StoredMedia | null),
+  );
+
+  if (brokenProducts.length === 0) {
+    strapi.log.info(`Product media integrity check passed for ${products.length} published products.`);
+    return;
+  }
+
+  for (const product of brokenProducts) {
+    strapi.log.error(
+      `Product media integrity check failed for ${product.slug ?? product.name ?? product.documentId}. Re-upload its cover image before the next publish.`,
+    );
+  }
+}
+
 export async function seedStarterContent(strapi: Core.Strapi): Promise<void> {
   if (process.env.STARTER_CONTENT_ENABLED !== 'true') return;
-
-  const starterImage = await ensureStarterImage(strapi);
   const categories = new Map<string, DocumentRecord>();
 
   for (const [name, slug, description] of CATEGORY_SEEDS) {
@@ -379,50 +512,75 @@ export async function seedStarterContent(strapi: Core.Strapi): Promise<void> {
   for (const seed of PRODUCT_SEEDS) {
     const category = categories.get(seed.category);
     if (!category) throw new Error(`Missing starter category ${seed.category}.`);
-    const productImage = await ensureProductImage(strapi, seed);
+    const lookupSlugs = [seed.slug, ...(seed.legacySlugs ?? [])];
+    let product = await findProductBySlugs(strapi, lookupSlugs, 'published');
 
-    const product = await ensurePublished(strapi, 'api::product.product', { slug: seed.slug }, {
-      name: seed.name,
-      slug: seed.slug,
-      sku: seed.sku,
-      modelNumber: seed.sku,
-      shortDescription: seed.shortDescription,
-      description: [
-        paragraph(seed.shortDescription),
-        paragraph('Final size, grade, colour and packing configuration are confirmed against the application and order quantity.'),
-      ],
-      coverImage: productImage.id,
-      category: { connect: [category.documentId] },
-      specifications: seed.specifications.map(([label, value, unit], index) => ({
-        label,
-        value,
-        unit,
-        groupName: 'General',
-        highlighted: index < 3,
-        sortOrder: index,
-      })),
-      features: seed.features.map(([title, description], index) => ({
-        title,
-        description,
-        highlighted: index === 0,
-        sortOrder: index,
-      })),
-      featured: seed.featured ?? false,
-      seo: {
-        metaTitle: `${seed.name} Supplier | Sharv Enterprises`,
-        metaDescription: seed.shortDescription.slice(0, 180),
-        focusKeyword: seed.name,
-        noIndex: false,
-      },
-    });
-    const productService = documents(strapi, 'api::product.product');
-    await productService.update({
-      documentId: product.documentId,
-      data: { coverImage: productImage.id },
-    });
-    await productService.publish({ documentId: product.documentId });
+    if (product && !isStoredMediaAvailable(product.coverImage)) {
+      product = await publishProductWithRecoveryImage(strapi, product, seed);
+    }
+
+    if (!product) {
+      const draft = await findProductBySlugs(strapi, lookupSlugs, 'draft');
+
+      if (draft) {
+        if (isStoredMediaAvailable(draft.coverImage)) {
+          const productService = documents(strapi, 'api::product.product');
+          await productService.publish({ documentId: draft.documentId });
+          product = await findProductBySlugs(strapi, lookupSlugs, 'published');
+        } else {
+          product = await publishProductWithRecoveryImage(strapi, draft, seed);
+        }
+      }
+    }
+
+    if (!product) {
+      const productImage = await ensureProductImage(strapi, seed);
+      product = (await ensurePublished(strapi, 'api::product.product', { slug: seed.slug }, {
+        name: seed.name,
+        slug: seed.slug,
+        sku: seed.sku,
+        modelNumber: seed.sku,
+        shortDescription: seed.shortDescription,
+        description: [
+          paragraph(seed.shortDescription),
+          paragraph('Final size, grade, colour and packing configuration are confirmed against the application and order quantity.'),
+        ],
+        coverImage: productImage.id,
+        category: { connect: [category.documentId] },
+        specifications: seed.specifications.map(([label, value, unit], index) => ({
+          label,
+          value,
+          unit,
+          groupName: 'General',
+          highlighted: index < 3,
+          sortOrder: index,
+        })),
+        features: seed.features.map(([title, description], index) => ({
+          title,
+          description,
+          highlighted: index === 0,
+          sortOrder: index,
+        })),
+        featured: seed.featured ?? false,
+        seo: {
+          metaTitle: `${seed.name} Supplier | Sharv Enterprises`,
+          metaDescription: seed.shortDescription.slice(0, 180),
+          focusKeyword: seed.name,
+          noIndex: false,
+        },
+      })) as ProductDocumentRecord;
+    }
+
     products.set(seed.slug, product);
   }
+
+  await repairLegacyProductImages(strapi);
+  await auditPublishedProductMedia(strapi);
+
+  // Keep starter-image failure isolated from product media recovery. Product
+  // repairs above must still complete if this separate editorial image is ever
+  // missing from an incorrectly built runtime image.
+  const starterImage = await ensureStarterImage(strapi);
 
   const siteSetting = documents(strapi, 'api::site-setting.site-setting');
   if (!(await siteSetting.findFirst({ status: 'published' }))) {
@@ -437,7 +595,13 @@ export async function seedStarterContent(strapi: Core.Strapi): Promise<void> {
   }
 
   const homePage = documents(strapi, 'api::home-page.home-page');
-  if (!(await homePage.findFirst({ status: 'published' }))) {
+  const publishedHomePage = (await homePage.findFirst({
+    status: 'published',
+    fields: ['documentId'],
+    populate: { heroImage: true },
+  })) as HomePageDocumentRecord | null;
+
+  if (!publishedHomePage) {
     const draft = await homePage.create({ data: {
       heroEyebrow: 'Industrial packaging for India and export',
       heroTitle: 'Packaging that protects every shipment.',
@@ -472,6 +636,13 @@ export async function seedStarterContent(strapi: Core.Strapi): Promise<void> {
       },
     } });
     await homePage.publish({ documentId: draft.documentId });
+  } else if (!isStoredMediaAvailable(publishedHomePage.heroImage)) {
+    await homePage.update({
+      documentId: publishedHomePage.documentId,
+      data: { heroImage: starterImage.id },
+    });
+    await homePage.publish({ documentId: publishedHomePage.documentId });
+    strapi.log.warn('Repaired the published homepage hero image.');
   }
 
   const blogCategory = await ensurePublished(strapi, 'api::blog-category.blog-category', { slug: 'packaging-guides' }, {
@@ -489,7 +660,14 @@ export async function seedStarterContent(strapi: Core.Strapi): Promise<void> {
     expertise: 'Stretch film, protective packaging, cargo security and dispatch materials',
   });
   const blogService = documents(strapi, 'api::blog-post.blog-post');
-  if (!(await blogService.findFirst({ filters: { slug: 'what-is-stretch-film' }, status: 'published' }))) {
+  const publishedStarterBlog = (await blogService.findFirst({
+    filters: { slug: 'what-is-stretch-film' },
+    status: 'published',
+    fields: ['documentId', 'slug'],
+    populate: { coverImage: true },
+  })) as BlogPostDocumentRecord | null;
+
+  if (!publishedStarterBlog) {
     const stretchProducts = ['hand-stretch-film', 'machine-stretch-film', 'colored-stretch-film']
       .map((slug) => products.get(slug)?.documentId)
       .filter((documentId): documentId is string => Boolean(documentId));
@@ -518,6 +696,13 @@ export async function seedStarterContent(strapi: Core.Strapi): Promise<void> {
       },
     } });
     await blogService.publish({ documentId: draft.documentId });
+  } else if (!isStoredMediaAvailable(publishedStarterBlog.coverImage)) {
+    await blogService.update({
+      documentId: publishedStarterBlog.documentId,
+      data: { coverImage: starterImage.id },
+    });
+    await blogService.publish({ documentId: publishedStarterBlog.documentId });
+    strapi.log.warn('Repaired the starter blog cover image.');
   }
 
   strapi.log.info('Sharv starter content is ready.');

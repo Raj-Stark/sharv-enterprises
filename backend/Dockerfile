@@ -22,6 +22,7 @@ COPY --from=builder --chown=node:node /app/node_modules ./node_modules
 COPY --from=builder --chown=node:node /app/dist ./dist
 COPY --from=builder --chown=node:node /app/public ./public
 COPY --from=builder --chown=node:node /app/config ./config
+COPY --from=builder --chown=node:node /app/seed-assets ./seed-assets
 COPY --from=builder --chown=node:node /app/src ./src
 COPY --from=builder --chown=node:node /app/types ./types
 COPY --from=builder --chown=node:node /app/tsconfig.json ./tsconfig.json

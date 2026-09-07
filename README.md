@@ -638,6 +638,21 @@ Production checklist:
 - PostgreSQL aur uploads volumes ke scheduled Coolify backups configure hon.
 - Strapi admin aur database services public raw ports par expose na hon.
 
+### CMS media durability
+
+Production compose mein `/app/public/uploads` named volume par persist hota hai;
+redeploy ke waqt is volume ko delete ya replace mat karo. Database backup ke
+saath `sharv-strapi-uploads` volume ka backup bhi mandatory hai—sirf database
+mein media record hone se original image recover nahi hoti.
+
+Backend startup published product images ko audit karta hai. Known catalogue
+images missing milne par bundled recovery asset se relation/file repair hoti
+hai. CMS mein Product ya Blog Post publish karte waqt backend cover image ka
+actual stored file validate karta hai; Product gallery mein koi missing file ho
+to publish bhi block hota hai aur editor ko actionable error milta hai. Recovery
+starter content production compose mein enabled hai, lekin healthy CMS-selected
+images ko overwrite nahi karta.
+
 ## Common errors
 
 ### Port 3000 already in use
