@@ -273,7 +273,7 @@ export function QuotationForm({
               onChange={(event) => setSelectedProduct(event.target.value)}
               value={selectedProduct}
             >
-              <option value="">Custom product / not listed</option>
+              <option value="">Others</option>
               {products.map((product) => (
                 <option key={product.documentId} value={product.documentId}>
                   {product.name}{product.sku ? ` · ${product.sku}` : ''}
