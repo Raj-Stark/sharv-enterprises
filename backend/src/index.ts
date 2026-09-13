@@ -12,8 +12,6 @@ import {
 } from './security/public-permissions';
 import { seedStarterContent } from './bootstrap/starter-content';
 
-const POST_STARTUP_DELAY_MS = 5_000;
-
 async function seedStarterContentAfterStartup(strapi: Core.Strapi): Promise<void> {
   try {
     await seedStarterContent(strapi);
@@ -50,10 +48,10 @@ export default {
   async bootstrap({ strapi }: { strapi: Core.Strapi }) {
     await enforcePublicPermissionAllowlist(strapi);
 
-    const postStartupTimer = setTimeout(() => {
-      void seedStarterContentAfterStartup(strapi);
-    }, POST_STARTUP_DELAY_MS);
-
-    postStartupTimer.unref();
+    // Hostinger can recycle a process during its short startup probe. Do not
+    // defer recovery behind an unref'ed timer: that timer may never execute,
+    // leaving otherwise healthy CMS media records pointing at absent files.
+    // Start the non-blocking recovery task immediately once Strapi bootstraps.
+    void seedStarterContentAfterStartup(strapi);
   },
 };
