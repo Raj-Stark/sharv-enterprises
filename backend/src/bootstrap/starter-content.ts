@@ -594,6 +594,57 @@ export async function seedStarterContent(strapi: Core.Strapi): Promise<void> {
     await siteSetting.publish({ documentId: draft.documentId });
   }
 
+  // Create editable About page copy without attaching or moving any media.
+  // The frontend keeps its existing checked-in hero image as a fallback until
+  // an editor intentionally selects an About Page hero image in the CMS.
+  const aboutPage = documents(strapi, 'api::about-page.about-page');
+  if (!(await aboutPage.findFirst({ status: 'published' }))) {
+    const draft = await aboutPage.create({ data: {
+      heroEyebrow: 'About Sharv Enterprises',
+      heroTitle: 'Packaging products for everyday operations and export dispatch.',
+      heroDescription: 'We supply industrial packaging materials for packing, protection and dispatch requirements across local and export-oriented businesses.',
+      heroImageAlt: 'Stretch-wrapped and strapped cartons prepared beside an export container',
+      heroCaptionEyebrow: 'Domestic & export enquiries',
+      heroCaptionTitle: 'Pack · Protect · Dispatch',
+      heroCaptionTag: 'Industrial packaging',
+      introEyebrow: 'What we do',
+      introTitle: 'What we supply, and how we work.',
+      introParagraphOne: 'Sharv Enterprises is an industrial packaging supplier serving businesses with materials used for packing, protection, unitisation and dispatch.',
+      introParagraphTwo: 'Our range includes stretch films, container seals, strapping rolls, packaging tapes, bubble wrap, corrugated boxes and related products selected according to the buyer\'s requirement.',
+      introParagraphThree: 'We begin with the practical details—product type, size or grade, quantity and delivery destination—so the enquiry stays focused. We support local manufacturers as well as export-oriented businesses, with clear communication from product selection through quotation.',
+      introStatement: 'Our aim is straightforward: dependable products, transparent communication and long-term working relationships.',
+      processEyebrow: 'How enquiries are handled',
+      processTitle: 'A simple path from requirement to quotation.',
+      enquirySteps: [
+        {
+          title: 'Share the requirement',
+          description: 'Send the product type, size or grade, quantity and delivery destination available to you.',
+          sortOrder: 0,
+        },
+        {
+          title: 'Review relevant options',
+          description: 'We keep the discussion focused on the product family and specifications connected to your need.',
+          sortOrder: 1,
+        },
+        {
+          title: 'Continue the quotation',
+          description: 'Confirm the remaining details and continue the conversation on our official WhatsApp number.',
+          sortOrder: 2,
+        },
+      ],
+      ctaEyebrow: 'Have a packaging requirement?',
+      ctaTitle: 'Share the product, quantity and destination.',
+      ctaDescription: 'Official WhatsApp · +91 98188 36151',
+      seo: {
+        metaTitle: 'About Sharv Enterprises | Industrial Packaging Supplier',
+        metaDescription: 'Learn about Sharv Enterprises, an industrial packaging supplier for packing, protection and dispatch requirements.',
+        focusKeyword: 'about Sharv Enterprises',
+        noIndex: false,
+      },
+    } });
+    await aboutPage.publish({ documentId: draft.documentId });
+  }
+
   const homePage = documents(strapi, 'api::home-page.home-page');
   const publishedHomePage = (await homePage.findFirst({
     status: 'published',

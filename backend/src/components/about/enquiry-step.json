@@ -1,0 +1,24 @@
+{
+  "collectionName": "components_about_enquiry_steps",
+  "info": {
+    "displayName": "Enquiry step",
+    "description": "One step in the About page quotation process"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true,
+      "maxLength": 100
+    },
+    "description": {
+      "type": "text",
+      "required": true,
+      "maxLength": 300
+    },
+    "sortOrder": {
+      "type": "integer",
+      "default": 0
+    }
+  }
+}

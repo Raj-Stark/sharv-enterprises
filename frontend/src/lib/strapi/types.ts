@@ -222,6 +222,42 @@ export type HomePage = {
   publishedAt?: string
 }
 
+export type AboutEnquiryStep = {
+  id: number
+  title: string
+  description: string
+  sortOrder?: number
+}
+
+export type AboutPage = {
+  id: number
+  documentId: string
+  heroEyebrow: string
+  heroTitle: string
+  heroDescription: string
+  heroImage?: StrapiMedia | null
+  heroImageAlt?: string | null
+  heroCaptionEyebrow?: string | null
+  heroCaptionTitle?: string | null
+  heroCaptionTag?: string | null
+  introEyebrow: string
+  introTitle: string
+  introParagraphOne: string
+  introParagraphTwo?: string | null
+  introParagraphThree?: string | null
+  introStatement?: string | null
+  processEyebrow: string
+  processTitle: string
+  enquirySteps?: AboutEnquiryStep[] | null
+  ctaEyebrow: string
+  ctaTitle: string
+  ctaDescription?: string | null
+  seo?: SeoComponent | null
+  createdAt?: string
+  updatedAt?: string
+  publishedAt?: string
+}
+
 export type BlogCategorySummary = {
   id: number
   documentId: string
