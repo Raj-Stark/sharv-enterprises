@@ -106,7 +106,6 @@ export function QuotationForm({
     const payload = {
       data: {
         submissionToken: submissionToken.current,
-        enquiryType: stringValue(formData, 'enquiryType'),
         fullName: stringValue(formData, 'fullName'),
         whatsappNumber: stringValue(formData, 'whatsappNumber'),
         companyName: optionalString(formData, 'companyName'),
@@ -257,13 +256,6 @@ export function QuotationForm({
           <label className={`${labelClass} sm:col-span-2`}>
             Company name <span className="font-medium normal-case tracking-normal text-slate-500">(optional)</span>
             <input autoComplete="organization" className={inputClass} maxLength={200} name="companyName" placeholder="Company or business name" />
-          </label>
-          <label className={`${labelClass} sm:col-span-2`}>
-            Enquiry type *
-            <select className={inputClass} defaultValue="domestic" name="enquiryType" required>
-              <option value="domestic">India enquiry</option>
-              <option value="export">Export enquiry</option>
-            </select>
           </label>
           <label className={`${labelClass} sm:col-span-2`}>
             Product *

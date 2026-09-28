@@ -14,7 +14,7 @@ const MAX_WHATSAPP_MESSAGE_LENGTH = 3000;
 const PHONE_PATTERN = /^[0-9+() .-]{8,30}$/;
 const SUBMISSION_TOKEN_PATTERN = /^[A-Za-z0-9_-]{16,64}$/;
 const SOURCE_PATH_PATTERN = /^\/(?!\/)[^?#\s]*$/;
-const ENQUIRY_TYPES = new Set(['domestic', 'export'] as const);
+const DEFAULT_ENQUIRY_TYPE = 'domestic' as const;
 const UNITS = new Set([
   'piece',
   'pack',
@@ -341,7 +341,10 @@ export default factories.createCoreController(
         })) as SiteSettingSnapshot | null;
 
       const fullName = requiredString(data, 'fullName', 120);
-      const enquiryType = requiredEnum(data, 'enquiryType', ENQUIRY_TYPES);
+      // Enquiry type is intentionally not exposed in the public form. Keep
+      // every new request consistently classified as an India enquiry, rather
+      // than trusting a client-supplied value.
+      const enquiryType = DEFAULT_ENQUIRY_TYPE;
       const whatsappNumber = normalizeBuyerWhatsappNumber(data);
       const companyName = optionalString(data, 'companyName', 200);
       const deliveryDestination = requiredString(

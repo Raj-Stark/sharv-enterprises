@@ -7,6 +7,7 @@ import type {
   BlogCategorySummary,
   BlogPostDetail,
   BlogPostSummary,
+  AboutPage,
   CertificationSummary,
   HomePage,
   ProductCategoryDetail,
@@ -331,6 +332,30 @@ export const getHomePage = cache(async (): Promise<HomePage | null> => {
     )
 
     return legacyResponse.data
+  }
+})
+
+export const getAboutPage = cache(async (): Promise<AboutPage | null> => {
+  const params = new URLSearchParams()
+  params.set('populate[heroImage]', 'true')
+  params.set('populate[enquirySteps]', 'true')
+  params.set('populate[seo][populate][ogImage]', 'true')
+
+  try {
+    const response = await strapiFetch<StrapiSingleResponse<AboutPage>>(
+      '/api/about-page',
+      params,
+    )
+
+    return response.data
+  } catch (error) {
+    // Keep the public page available while an existing CMS instance is being
+    // upgraded with the About Page content type.
+    if (error instanceof StrapiRequestError && error.status === 404) {
+      return null
+    }
+
+    throw error
   }
 })
 

@@ -1,5 +1,26 @@
 import type { Schema, Struct } from '@strapi/strapi';
 
+export interface AboutEnquiryStep extends Struct.ComponentSchema {
+  collectionName: 'components_about_enquiry_steps';
+  info: {
+    description: 'One step in the About page quotation process';
+    displayName: 'Enquiry step';
+  };
+  attributes: {
+    description: Schema.Attribute.Text &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 300;
+      }>;
+    sortOrder: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
+    title: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 100;
+      }>;
+  };
+}
+
 export interface HomepageDeliveryArea extends Struct.ComponentSchema {
   collectionName: 'components_homepage_delivery_areas';
   info: {
@@ -166,6 +187,7 @@ export interface SharedSeo extends Struct.ComponentSchema {
 declare module '@strapi/strapi' {
   export namespace Public {
     export interface ComponentSchemas {
+      'about.enquiry-step': AboutEnquiryStep;
       'homepage.delivery-area': HomepageDeliveryArea;
       'product.feature': ProductFeature;
       'product.specification': ProductSpecification;
